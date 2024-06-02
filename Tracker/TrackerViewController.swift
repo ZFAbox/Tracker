@@ -25,8 +25,15 @@ final class TrackerViewController: UIViewController {
         searchField.placeholder = "Поиск"
         searchField.sizeToFit()
         searchField.searchTextField.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-        searchField.tintColor = .white
+        searchField.layer.borderWidth = 1
+        searchField.layer.borderColor = UIColor.white.cgColor
         return searchField
+    }()
+    
+    private lazy var emptyTrackerListImage: UIImage = {
+        let emptyTrackerListImage = UIImage(named: "Empty Tracker List")
+        
+        return emptyTrackerListImage
     }()
     
     override func viewDidLoad() {
