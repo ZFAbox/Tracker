@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		904FC6022C0C439700A6E2DB /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC6002C0C435800A6E2DB /* SF-Pro-Display-Bold.otf */; };
+		904FC6032C0C439700A6E2DB /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC6012C0C435D00A6E2DB /* SF-Pro-Display-Medium.otf */; };
+		904FC6042C0C439700A6E2DB /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC5FF2C0C435500A6E2DB /* SF-Pro-Display-Regular.otf */; };
+		904FC6062C0C447D00A6E2DB /* SF-Pro.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC6052C0C447D00A6E2DB /* SF-Pro.ttf */; };
 		90704A442C0BBE2100C7CC57 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704A432C0BBE2100C7CC57 /* TabBarViewController.swift */; };
 		90704A462C0BBF6C00C7CC57 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */; };
 		90D8EC312C0A70F60050C398 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D8EC302C0A70F60050C398 /* Colors.swift */; };
@@ -18,6 +22,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		904FC5FF2C0C435500A6E2DB /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
+		904FC6002C0C435800A6E2DB /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
+		904FC6012C0C435D00A6E2DB /* SF-Pro-Display-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Medium.otf"; sourceTree = "<group>"; };
+		904FC6052C0C447D00A6E2DB /* SF-Pro.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro.ttf"; sourceTree = "<group>"; };
 		90704A432C0BBE2100C7CC57 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
 		90D8EC302C0A70F60050C398 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -49,6 +57,17 @@
 			path = Resourses;
 			sourceTree = "<group>";
 		};
+		904FC5FE2C0C41E200A6E2DB /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				904FC6052C0C447D00A6E2DB /* SF-Pro.ttf */,
+				904FC6002C0C435800A6E2DB /* SF-Pro-Display-Bold.otf */,
+				904FC6012C0C435D00A6E2DB /* SF-Pro-Display-Medium.otf */,
+				904FC5FF2C0C435500A6E2DB /* SF-Pro-Display-Regular.otf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		90DE58522C0A655400351750 = {
 			isa = PBXGroup;
 			children = (
@@ -68,6 +87,7 @@
 		90DE585D2C0A655400351750 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				904FC5FE2C0C41E200A6E2DB /* Fonts */,
 				9020E9322C0A70D1002E57B5 /* Resourses */,
 				90DE585E2C0A655400351750 /* AppDelegate.swift */,
 				90DE58602C0A655400351750 /* SceneDelegate.swift */,
@@ -139,6 +159,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				904FC6022C0C439700A6E2DB /* SF-Pro-Display-Bold.otf in Resources */,
+				904FC6062C0C447D00A6E2DB /* SF-Pro.ttf in Resources */,
+				904FC6032C0C439700A6E2DB /* SF-Pro-Display-Medium.otf in Resources */,
+				904FC6042C0C439700A6E2DB /* SF-Pro-Display-Regular.otf in Resources */,
 				90DE58682C0A655600351750 /* Assets.xcassets in Resources */,
 				90DE586B2C0A655600351750 /* Base in Resources */,
 			);

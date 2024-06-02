@@ -4,25 +4,74 @@
 //
 //  Created by Федор Завьялов on 31.05.2024.
 //
-
+import Foundation
 import UIKit
 
-class TrackerViewController: UIViewController {
-
+final class TrackerViewController: UIViewController {
+    
+    private lazy var trackerLabel: UILabel = {
+        let trackerLabel = UILabel()
+        trackerLabel.font = UIFont(name: "SFProDisplay-Bold", size: 34)
+        
+        trackerLabel.text = "Трекеры"
+        trackerLabel.translatesAutoresizingMaskIntoConstraints = false
+        trackerLabel.textColor = .black
+        return trackerLabel
+    }()
+    
+    private lazy var searchField: UISearchBar = {
+        let searchField = UISearchBar()
+//        searchField.placeholder = "Поиск"
+//        searchField.searchTextField.font = UIFont(name: "SFProDisplay-Bold", size: 10)
+        
+        return searchField
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        
         view.backgroundColor = .white
-//        let leftNavigationbuttonImage = UIImage(systemName: "plus")
-//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
-//        self.navigationItem.leftBarButtonItem?.tintColor = .black
+        
+//        fontNmaes()
+        
+        setSublayer()
+        setConstrains()
+        
     }
-
     
-//    @objc func addTarget(){
-//        print("Добавить цель")
-//    }
-
+    func fontNmaes(){
+        for family in UIFont.familyNames.sorted() {
+            let names = UIFont.fontNames(forFamilyName: family)
+            print("Family: \(family) Font names: \(names)")
+        }
+    }
+    
+    func setSublayer(){
+        view.addSubview(trackerLabel)
+        view.addSubview(searchField)
+    }
+    func setConstrains(){
+        setLableConstrains()
+//        setSearchFieldConstrains()
+    }
+    
+    func setLableConstrains(){
+        NSLayoutConstraint.activate([
+            trackerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
+            trackerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            trackerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+    
+    func setSearchFieldConstrains (){
+        NSLayoutConstraint.activate([
+            searchField.topAnchor.constraint(equalTo: trackerLabel.bottomAnchor, constant: 16),
+            searchField.leadingAnchor.constraint(equalTo: trackerLabel.leadingAnchor),
+            searchField.trailingAnchor.constraint(equalTo: trackerLabel.trailingAnchor),
+            searchField.heightAnchor.constraint(equalToConstant: 56)
+        ])
+    }
+    
+    
+    
 }
 
