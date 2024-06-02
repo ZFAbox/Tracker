@@ -21,9 +21,11 @@ final class TrackerViewController: UIViewController {
     
     private lazy var searchField: UISearchBar = {
         let searchField = UISearchBar()
-//        searchField.placeholder = "Поиск"
-//        searchField.searchTextField.font = UIFont(name: "SFProDisplay-Bold", size: 10)
-        
+        searchField.translatesAutoresizingMaskIntoConstraints = false
+        searchField.placeholder = "Поиск"
+        searchField.sizeToFit()
+        searchField.searchTextField.font = UIFont(name: "SFProDisplay-Regular", size: 17)
+        searchField.tintColor = .white
         return searchField
     }()
     
@@ -51,7 +53,7 @@ final class TrackerViewController: UIViewController {
     }
     func setConstrains(){
         setLableConstrains()
-//        setSearchFieldConstrains()
+        setSearchFieldConstrains()
     }
     
     func setLableConstrains(){
@@ -66,8 +68,7 @@ final class TrackerViewController: UIViewController {
         NSLayoutConstraint.activate([
             searchField.topAnchor.constraint(equalTo: trackerLabel.bottomAnchor, constant: 16),
             searchField.leadingAnchor.constraint(equalTo: trackerLabel.leadingAnchor),
-            searchField.trailingAnchor.constraint(equalTo: trackerLabel.trailingAnchor),
-            searchField.heightAnchor.constraint(equalToConstant: 56)
+            searchField.trailingAnchor.constraint(equalTo: trackerLabel.trailingAnchor)
         ])
     }
     
