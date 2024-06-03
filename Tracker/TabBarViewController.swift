@@ -44,14 +44,10 @@ final class TabBarViewController: UITabBarController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
         self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
         var datePicker = UIDatePicker()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.YY"
-        let date = dateFormatter.string(from: Date())
+//        let locale = Locale(identifier: "ru")
+//        datePicker.locale = locale
         datePicker.preferredDatePickerStyle = .compact
-        
         datePicker.datePickerMode = .date
-        datePicker.locale
-    
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
     }
     
