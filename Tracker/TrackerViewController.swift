@@ -15,7 +15,7 @@ final class TrackerViewController: UIViewController {
         
         trackerLabel.text = "Трекеры"
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
-        trackerLabel.textColor = .black
+        trackerLabel.textColor = .trackerBlack
         return trackerLabel
     }()
     
@@ -30,10 +30,29 @@ final class TrackerViewController: UIViewController {
         return searchField
     }()
     
-    private lazy var emptyTrackerListImage: UIImage = {
-        let emptyTrackerListImage = UIImage(named: "Empty Tracker List")
-        
+    private lazy var emptyTrackerListImage: UIImageView = {
+        let emptyTrackerListImage = UIImageView()
+        emptyTrackerListImage.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImage(named: "Empty Tracker List") ?? UIImage()
+        emptyTrackerListImage.image = image
         return emptyTrackerListImage
+    }()
+    
+    private lazy var emptyTrackerListText: UILabel = {
+        let emptyTrackerListText = UILabel()
+        emptyTrackerListText.translatesAutoresizingMaskIntoConstraints = false
+        emptyTrackerListText.text = "Что будем отслеживать?"
+        emptyTrackerListText.font = UIFont(name: "SFProDisplay-Medium", size: 12)
+        emptyTrackerListText.tintColor = .trackerBlack
+        return emptyTrackerListText
+    }()
+    
+    private lazy var dummyView: UIView = {
+        let dummyView = UIView()
+        dummyView.translatesAutoresizingMaskIntoConstraints = false
+//        dummyView.backgroundColor = .blue
+        dummyView.sizeToFit()
+        return dummyView
     }()
     
     override func viewDidLoad() {
@@ -57,10 +76,19 @@ final class TrackerViewController: UIViewController {
     func setSublayer(){
         view.addSubview(trackerLabel)
         view.addSubview(searchField)
+        view.addSubview(dummyView)
+        setDummySublayers()
     }
+    
+    func setDummySublayers(){
+        dummyView.addSubview(emptyTrackerListImage)
+        dummyView.addSubview(emptyTrackerListText)
+    }
+    
     func setConstrains(){
         setLableConstrains()
         setSearchFieldConstrains()
+        dummyViewConstrains()
     }
     
     func setLableConstrains(){
@@ -79,7 +107,32 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
+    func dummyViewConstrains() {
+        NSLayoutConstraint.activate([
+            dummyView.topAnchor.constraint(equalTo: searchField.bottomAnchor),
+            dummyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            dummyView.leadingAnchor.constraint(equalTo: searchField.leadingAnchor),
+            dummyView.trailingAnchor.constraint(equalTo: searchField.trailingAnchor)
+        ])
+        emptyTrackerListImageConstrains()
+        emptyTrackerListTextConstrains()
+    }
     
+    func emptyTrackerListImageConstrains(){
+        NSLayoutConstraint.activate([
+            emptyTrackerListImage.centerXAnchor.constraint(equalTo: dummyView.centerXAnchor),
+            emptyTrackerListImage.centerYAnchor.constraint(equalTo: dummyView.centerYAnchor, constant: -26),
+            emptyTrackerListImage.heightAnchor.constraint(equalToConstant: 80),
+            emptyTrackerListImage.widthAnchor.constraint(equalToConstant: 80)
+        ])
+    }
+    
+    func emptyTrackerListTextConstrains(){
+        NSLayoutConstraint.activate([
+            emptyTrackerListText.centerXAnchor.constraint(equalTo: dummyView.centerXAnchor),
+            emptyTrackerListText.topAnchor.constraint(equalTo: emptyTrackerListImage.bottomAnchor, constant: 8)
+        ])
+    }
     
 }
 
