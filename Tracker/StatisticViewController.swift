@@ -11,9 +11,6 @@ import UIKit
 
 final class StatisticViewController: UIViewController {
     
-    
-    
-//    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.backgroundColor = .gray

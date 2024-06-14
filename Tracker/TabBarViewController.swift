@@ -43,36 +43,35 @@ final class TabBarViewController: UITabBarController {
         let leftNavigationbuttonImage = UIImage(systemName: "plus")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
         self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
-        let rightNavigationLable = UILabel()
-        rightNavigationLable.backgroundColor = .red
-        rightNavigationLable.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-        let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "dd.MM.YY"
-        let date = dateformatter.string(from: Date())
-        rightNavigationLable.text = date
-        let datePicker = UIDatePicker()
-//        let locale = Locale(identifier: "ru")
-//        datePicker.locale = locale
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.datePickerMode = .date
 
-//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: date, style: .plain, target: self, action: #selector(datePickerActivate))
+        let datePicker = UIDatePicker()
+        datePickerActivate(datePicker: datePicker)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         self.navigationItem.rightBarButtonItem?.tintColor = .trackerBlack
-        self.navigationItem.rightBarButtonItem?.customView?.layer.backgroundColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)
-        
     }
     
     @objc func addTarget(){
         print("Добавить цель")
     }
     
-    @objc func datePickerActivate(){
-        let datePicker = UIDatePicker()
-//        let locale = Locale(identifier: "ru")
-//        datePicker.locale = locale
+    func datePickerActivate(datePicker: UIDatePicker){
+        datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .automatic
+        let locale = Locale(identifier: "it_CH")
+        datePicker.locale = locale
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
+        NSLayoutConstraint.activate([
+            datePicker.widthAnchor.constraint(equalToConstant: 80),
+            datePicker.heightAnchor.constraint(equalToConstant: 34)])
+    }
+    
+    @objc func datePickerChangeValue(_ sender: UIDatePicker){
+        let selectedDate = sender.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.NN.yyyy"
+        let formattedDate = dateFormatter.string(from: selectedDate)
+        print(formattedDate)
     }
 }
 

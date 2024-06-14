@@ -9,6 +9,10 @@ import UIKit
 
 final class TrackerViewController: UIViewController {
     
+    private var categories: [TrackerCategory] = []
+    private var complitedTrackers: [TrackerRecord] = []
+    private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
+    
     private lazy var trackerLabel: UILabel = {
         let trackerLabel = UILabel()
         trackerLabel.font = UIFont(name: "SFProDisplay-Bold", size: 34)
@@ -50,16 +54,23 @@ final class TrackerViewController: UIViewController {
     private lazy var dummyView: UIView = {
         let dummyView = UIView()
         dummyView.translatesAutoresizingMaskIntoConstraints = false
-//        dummyView.backgroundColor = .blue
         dummyView.sizeToFit()
         return dummyView
+    }()
+    
+    private lazy var trackerCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let trackerCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        trackerCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        trackerCollectionView.register(TrackerCollectionViewCell.self, forCellWithReuseIdentifier: "trackerCell")
+        trackerCollectionView.dataSource = self
+        trackerCollectionView.delegate = self
+        return trackerCollectionView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-//        fontNmaes()
         
         setSublayer()
         setConstrains()
@@ -78,6 +89,7 @@ final class TrackerViewController: UIViewController {
         view.addSubview(searchField)
         view.addSubview(dummyView)
         setDummySublayers()
+        view.addSubview(trackerCollectionView)
     }
     
     func setDummySublayers(){
@@ -89,6 +101,7 @@ final class TrackerViewController: UIViewController {
         setLableConstrains()
         setSearchFieldConstrains()
         dummyViewConstrains()
+        setTrackerCollectionContraints()
     }
     
     func setLableConstrains(){
@@ -134,5 +147,46 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
+    func setTrackerCollectionContraints(){
+        NSLayoutConstraint.activate([
+            trackerCollectionView.topAnchor.constraint(equalTo: searchField.bottomAnchor),
+            trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            trackerCollectionView.leadingAnchor.constraint(equalTo: searchField.leadingAnchor),
+            trackerCollectionView.trailingAnchor.constraint(equalTo: searchField.trailingAnchor)
+        ])
+    }
+    
+}
+
+extension TrackerViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
+        guard let cell = cell else { return UICollectionViewCell() }
+        cell.cardView.backgroundColor = .yellow
+        return cell
+    }
+    
+    
+}
+
+extension TrackerViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let height = CGFloat(trackerCellParameters.height)
+        let width = (CGFloat(collectionView.frame.width) - CGFloat((trackerCellParameters.numberOfCellsInRow - 1)*trackerCellParameters.horizontalSpacing)) / CGFloat(trackerCellParameters.numberOfCellsInRow)
+        let size = CGSize(width: width, height: height)
+        return size
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return CGFloat(trackerCellParameters.horizontalSpacing)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return CGFloat(trackerCellParameters.verticalSpacing)
+    }
 }
 
