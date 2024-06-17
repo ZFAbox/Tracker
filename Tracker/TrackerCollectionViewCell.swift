@@ -20,43 +20,98 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         let trackerView = UIView()
         trackerView.translatesAutoresizingMaskIntoConstraints = false
         trackerView.layer.cornerRadius = 16
+        trackerView.backgroundColor = .trackerGreen
         return trackerView
     }()
     
     let emojiView: UIView = {
         let emojiView = UIView()
         emojiView.translatesAutoresizingMaskIntoConstraints = false
-        emojiView.layer.cornerRadius = emojiView.frame.height / 2
+        emojiView.layer.cornerRadius = 12
+        emojiView.backgroundColor = .ypWhite
+        emojiView.layer.opacity = 0.7
         return emojiView
     }()
     
     let emoji: UILabel = {
         let emoji = UILabel()
         emoji.translatesAutoresizingMaskIntoConstraints = false
+        emoji.text = "😂"
         emoji.font = UIFont(name: "SFProDisplay-Medium", size: 12)
         return emoji
     }()
     
-    let trackerName: UILabel = {
-        let trackerName = UILabel()
-        trackerName.translatesAutoresizingMaskIntoConstraints = false
-        trackerName.font = UIFont(name: "SFProDisplay-Medium", size: 12)
-        trackerName.tintColor = .ypWhite
-        return trackerName
+    let trackerNameLable: UILabel = {
+        let trackerNameLable = UILabel()
+        trackerNameLable.translatesAutoresizingMaskIntoConstraints = false
+        trackerNameLable.text = "Бегать по утрам"
+        trackerNameLable.font = UIFont(name: "SFProDisplay-Medium", size: 12)
+        trackerNameLable.textColor = .ypWhite
+        return trackerNameLable
     }()
+    
+    let dayMarkLable: UILabel = {
+        let dayMarkLable = UILabel()
+        dayMarkLable.translatesAutoresizingMaskIntoConstraints = false
+        dayMarkLable.text = "1 день"
+        dayMarkLable.font = UIFont(name: "SFProDisplay-Medium", size: 12)
+        dayMarkLable.textColor = .trackerBlack
+        return dayMarkLable
+    }()
+    
+    
+    let dayMarkButton: UIButton = {
+        let dayMarkButton = UIButton(type: .system)
+        dayMarkButton.translatesAutoresizingMaskIntoConstraints = false
+        dayMarkButton.backgroundColor = .trackerGreen
+        dayMarkButton.layer.cornerRadius = 17
+        let buttonImage = UIImage(named: "Tracker Plus")
+        dayMarkButton.setImage(buttonImage, for: .normal)
+        dayMarkButton.tintColor = .ypWhite
+        dayMarkButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        return dayMarkButton
+    }()
+    
+    var isTrackerTapped: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubviews()
         setConstrains()
+        
+    }
+    
+    @objc func buttonTapped(){
+        if !isTrackerTapped {
+            let buttonImage = UIImage(named: "Tracker Done")
+            dayMarkButton.layer.opacity = 0.7
+            dayMarkButton.setImage(buttonImage, for: .normal)
+        }else {
+            let buttonImage = UIImage(named: "Tracker Plus")
+            dayMarkButton.layer.opacity = 1
+            dayMarkButton.setImage(buttonImage, for: .normal)
+        }
+        isTrackerTapped = !isTrackerTapped
     }
     
     func addSubviews(){
         self.addSubview(cardView)
+        cardView.addSubview(trackerView)
+        trackerView.addSubview(emojiView)
+        trackerView.addSubview(emoji)
+        trackerView.addSubview(trackerNameLable)
+        cardView.addSubview(dayMarkLable)
+        self.addSubview(dayMarkButton)
     }
     
     func setConstrains(){
         setCardViewConstrains()
+        setTrackerViewConstrains()
+        setEmojiViewConstrains()
+        setEmojiConstrains()
+        setTrackerNameConstrains()
+        setDayMarkLable()
+        setDayMarkButton()
     }
     
     func setCardViewConstrains(){
@@ -80,7 +135,9 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     func setEmojiViewConstrains(){
         NSLayoutConstraint.activate([
             emojiView.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
-            emojiView.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12)
+            emojiView.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
+            emojiView.heightAnchor.constraint(equalToConstant: 24),
+            emojiView.widthAnchor.constraint(equalToConstant: 24)
         ])
     }
     
@@ -93,12 +150,28 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     func setTrackerNameConstrains(){
         NSLayoutConstraint.activate([
-            trackerName.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
-            trackerName.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -12),
-            trackerName.bottomAnchor.constraint(equalTo: trackerView.bottomAnchor, constant: -12),
-            trackerName.topAnchor.constraint(equalTo: emojiView.topAnchor, constant: 12)
+            trackerNameLable.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
+            trackerNameLable.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -12),
+            trackerNameLable.bottomAnchor.constraint(equalTo: trackerView.bottomAnchor, constant: -12)
         ])
     }
+    
+    func setDayMarkLable(){
+        NSLayoutConstraint.activate([
+            dayMarkLable.leadingAnchor.constraint(equalTo: trackerView.leadingAnchor, constant: 12),
+            dayMarkLable.topAnchor.constraint(equalTo: trackerView.bottomAnchor, constant: 16)])
+    }
+    
+    func setDayMarkButton(){
+        NSLayoutConstraint.activate([
+            dayMarkButton.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -12),
+            dayMarkButton.topAnchor.constraint(equalTo: trackerView.bottomAnchor, constant: 8),
+            dayMarkButton.heightAnchor.constraint(equalToConstant: 34),
+            dayMarkButton.widthAnchor.constraint(equalToConstant: 34)
+        ])
+
+    }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

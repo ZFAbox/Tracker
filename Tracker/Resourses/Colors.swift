@@ -17,6 +17,7 @@ extension UIColor {
     static var lunchScreeBlue = UIColor.rgbColors(red: 55, green: 114, blue: 231, alpha: 1)
     static var trackerBlack = UIColor.rgbColors(red: 26, green: 27, blue: 34, alpha: 1)
     static var trackerGray = UIColor.rgbColors(red: 240, green: 240, blue: 240, alpha: 1)
-    
+    static var trackerGreen = UIColor.rgbColors(red: 51, green: 207, blue: 105, alpha: 1)
+    static var trackerOrnage = UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1)
     static var ypWhite = UIColor.rgbColors(red: 245, green: 245, blue: 245, alpha: 1)
 }
