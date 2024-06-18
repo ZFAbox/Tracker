@@ -10,6 +10,9 @@ import UIKit
 
 class TrackerCollectionViewCell: UICollectionViewCell {
     
+    var count = 0
+    
+
     let cardView: UIView = {
         let cardView = UIView()
         cardView.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +56,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     let dayMarkLable: UILabel = {
         let dayMarkLable = UILabel()
         dayMarkLable.translatesAutoresizingMaskIntoConstraints = false
-        dayMarkLable.text = "1 день"
+        dayMarkLable.text = "0 дней"
         dayMarkLable.font = UIFont(name: "SFProDisplay-Medium", size: 12)
         dayMarkLable.textColor = .trackerBlack
         return dayMarkLable
@@ -83,13 +86,22 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     @objc func buttonTapped(){
         if !isTrackerTapped {
-            let buttonImage = UIImage(named: "Tracker Done")
-            dayMarkButton.layer.opacity = 0.7
-            dayMarkButton.setImage(buttonImage, for: .normal)
+            UIView.animate(withDuration: 0.2, delay: 0) {
+                self.count += 1
+                self.dayMarkLable.text = self.count.daysEnding()
+                let buttonImage = UIImage(named: "Tracker Done")
+                self.dayMarkButton.layer.opacity = 0.7
+                self.dayMarkButton.setImage(buttonImage, for: .normal)
+            }
+           
         }else {
-            let buttonImage = UIImage(named: "Tracker Plus")
-            dayMarkButton.layer.opacity = 1
-            dayMarkButton.setImage(buttonImage, for: .normal)
+            UIView.animate(withDuration: 0.2, delay: 0) {
+                self.count -= 1
+                self.dayMarkLable.text = self.count.daysEnding()
+                let buttonImage = UIImage(named: "Tracker Plus")
+                self.dayMarkButton.layer.opacity = 1
+                self.dayMarkButton.setImage(buttonImage, for: .normal)
+            }
         }
         isTrackerTapped = !isTrackerTapped
     }

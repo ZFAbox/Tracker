@@ -8,6 +8,9 @@ import Foundation
 import UIKit
 
 final class TrackerViewController: UIViewController {
+   
+    private var trackers:[Tracker] = [/*Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", schedule: "понедельинк"), Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", schedule: "вторник"), Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", schedule: "среда")*/]
+    
     
     private var categories: [TrackerCategory] = []
     private var complitedTrackers: [TrackerRecord] = []
@@ -75,6 +78,11 @@ final class TrackerViewController: UIViewController {
         
         setSublayer()
         setConstrains()
+        if trackers.isEmpty {
+            trackerCollectionView.isHidden = true
+        } else {
+            trackerCollectionView.isHidden = false
+        }
         
     }
     
@@ -161,13 +169,14 @@ final class TrackerViewController: UIViewController {
 
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        3
+        trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
         guard let cell = cell else { return UICollectionViewCell() }
-//        cell.cardView.backgroundColor = .yellow
+        cell.trackerNameLable.text = trackers[indexPath.row].name
+        cell.emoji.text = trackers[indexPath.row].emoji
         return cell
     }
     

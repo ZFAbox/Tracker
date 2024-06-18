@@ -10,13 +10,16 @@ import UIKit
 
 class TrackerSupplementaryViewCell: UICollectionReusableView {
     
-    var titleLable = UILabel()
-    
+    var titleLable: UILabel = {
+        let titleLable = UILabel()
+        titleLable.translatesAutoresizingMaskIntoConstraints = false
+        titleLable.font = UIFont(name: "SFProDisplay-Bold", size: 19)
+        return titleLable
+    }()
     override init(frame: CGRect) {
         super .init(frame: frame)
         
         addSubview(titleLable)
-        titleLable.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
