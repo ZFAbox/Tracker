@@ -52,6 +52,9 @@ final class TabBarViewController: UITabBarController {
     
     @objc func addTarget(){
         print("Добавить цель")
+        let viewController = TrackerTypeSelectViewController()
+        viewController.modalPresentationStyle = .popover
+        self.present(viewController, animated: true)
     }
     
     func datePickerActivate(datePicker: UIDatePicker){
