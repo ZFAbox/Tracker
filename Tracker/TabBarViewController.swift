@@ -10,6 +10,10 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
     
+    
+    let trackerViewController = TrackerViewController()
+    let statisticViewController = StatisticViewController()
+    
     enum TabBars: String {
         case trackers = "Трекеры"
         case statistic = "Статистика"
@@ -23,10 +27,7 @@ final class TabBarViewController: UITabBarController {
     
     func setupTabBar(){
         self.tabBar.backgroundColor = .white
-        
-        let trackerViewController = TrackerViewController()
-        let statisticViewController = StatisticViewController()
-        
+    
         trackerViewController.tabBarItem = UITabBarItem(
             title: TabBars.trackers.rawValue,
             image: UIImage(systemName: "record.circle.fill"),
@@ -71,10 +72,25 @@ final class TabBarViewController: UITabBarController {
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){
         let selectedDate = sender.date
+        trackerViewController.currentDate = selectedDate
+        
+        let weekdayNumber = Calendar.current.dateComponents([.weekday], from: selectedDate).weekday
+        guard let weekdayNumber = weekdayNumber else { return }
+        var weekday = ""
+        switch weekdayNumber {
+        case 1: weekday = "Воскресенье"
+        case 2: weekday = "Понедельник"
+        case 3: weekday = "Вторник"
+        case 4: weekday = "Среда"
+        case 5: weekday = "Четверг"
+        case 6: weekday = "Пятница"
+        case 7: weekday = "Суббота"
+        default: weekday = "Нет такой даты"
+        }
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.NN.yyyy"
+        dateFormatter.dateFormat = "dd.mm.YYYY"
         let formattedDate = dateFormatter.string(from: selectedDate)
-        print(formattedDate)
+        print(weekday)
     }
 }
 

@@ -9,11 +9,18 @@ import UIKit
 
 final class TrackerViewController: UIViewController {
    
-    private var trackers:[Tracker] = [/*Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", schedule: "понедельинк"), Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", schedule: "вторник"), Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", schedule: "среда")*/]
+    private var trackers:[Tracker] = [
+        Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", schedule: "понедельинк"),
+        Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", schedule: "вторник"),
+        Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", schedule: "среда")]
     
     
-    private var categories: [TrackerCategory] = []
+    private var categories: [TrackerCategory] = [
+        TrackerCategory(categoryName: "Повседневное", trackersOfCategory: ["Игра в теннис", "Ходьба", "Рисование"])
+    ]
     private var complitedTrackers: [TrackerRecord] = []
+    
+    var currentDate: Date?
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
     private lazy var trackerLabel: UILabel = {
@@ -177,6 +184,8 @@ extension TrackerViewController: UICollectionViewDataSource {
         guard let cell = cell else { return UICollectionViewCell() }
         cell.trackerNameLable.text = trackers[indexPath.row].name
         cell.emoji.text = trackers[indexPath.row].emoji
+        cell.delegate = self
+        cell.tracker = trackers[indexPath.row]
         return cell
     }
     
@@ -192,7 +201,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerSupplementaryViewCell
         if id == "header" {
-            headerView.titleLable.text = "Заголовок трэкера"
+            headerView.titleLable.text = categories[indexPath.section].categoryName
         } else {
             headerView.titleLable.text = ""
         }

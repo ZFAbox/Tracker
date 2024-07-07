@@ -12,7 +12,10 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     var count = 0
     
-
+    var delegate: TrackerViewController?
+    
+    var tracker: Tracker?
+    
     let cardView: UIView = {
         let cardView = UIView()
         cardView.translatesAutoresizingMaskIntoConstraints = false
@@ -75,6 +78,8 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return dayMarkButton
     }()
     
+    
+    
     var isTrackerTapped: Bool = false
     
     override init(frame: CGRect) {
@@ -87,6 +92,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     @objc func buttonTapped(){
         if !isTrackerTapped {
             UIView.animate(withDuration: 0.2, delay: 0) {
+                
                 self.count += 1
                 self.dayMarkLable.text = self.count.daysEnding()
                 let buttonImage = UIImage(named: "Tracker Done")
