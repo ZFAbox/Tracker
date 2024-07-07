@@ -72,9 +72,10 @@ final class TrackerTypeSelectViewController: UIViewController {
     
     func setButtonViewConstarins(){
         NSLayoutConstraint.activate([
-            buttonsView.leadingAnchor.constraint(equalTo: scene, constant: 20),
+            buttonsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            buttonsView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            buttonsView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            buttonsView.heightAnchor.constraint(equalToConstant: 136)
         ])
     }
     
