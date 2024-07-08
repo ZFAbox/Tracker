@@ -10,9 +10,9 @@ import UIKit
 final class TrackerViewController: UIViewController {
    
     private var trackers:[Tracker] = [
-        Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", schedule: "понедельинк"),
-        Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", schedule: "вторник"),
-        Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", schedule: "среда")]
+        Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue]),
+        Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", schedule: [Weekdays.Monday.rawValue, Weekdays.Wednesday.rawValue, Weekdays.Friday.rawValue]),
+        Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue])]
     
     
     private var categories: [TrackerCategory] = [
@@ -20,7 +20,31 @@ final class TrackerViewController: UIViewController {
     ]
     private var complitedTrackers: [TrackerRecord] = []
     
-    var currentDate: Date?
+    private var trackersForCurrentDate: [Tracker] = []
+    
+    var currentDate: Date? {
+        didSet {
+            guard let currentDate = currentDate else {
+                print("Нет текущей даты")
+                return }
+            let weekday = DateFormatter.weekday(date: currentDate)
+            trackersForCurrentDate = []
+            for tracker in trackers {
+                if tracker.schedule.contains(weekday) {
+                    trackersForCurrentDate.append(tracker)
+                }
+            }
+            if trackersForCurrentDate.isEmpty {
+                trackerCollectionView.isHidden = true
+            } else {
+                trackerCollectionView.isHidden = false
+            }
+            trackerCollectionView.reloadData()
+        }
+    }
+    
+
+    
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
     private lazy var trackerLabel: UILabel = {
@@ -85,7 +109,17 @@ final class TrackerViewController: UIViewController {
         
         setSublayer()
         setConstrains()
-        if trackers.isEmpty {
+        
+        guard let currentDate = currentDate else {
+            print("Нет текущей даты")
+            return }
+        let weekday = DateFormatter.weekday(date: currentDate)
+        for tracker in trackers {
+            if tracker.schedule.contains(weekday) {
+                trackersForCurrentDate.append(tracker)
+            }
+        }
+        if trackersForCurrentDate.isEmpty {
             trackerCollectionView.isHidden = true
         } else {
             trackerCollectionView.isHidden = false
@@ -176,16 +210,16 @@ final class TrackerViewController: UIViewController {
 
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        trackers.count
+        return trackersForCurrentDate.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
         guard let cell = cell else { return UICollectionViewCell() }
-        cell.trackerNameLable.text = trackers[indexPath.row].name
-        cell.emoji.text = trackers[indexPath.row].emoji
+        cell.trackerId = trackersForCurrentDate[indexPath.row].trackerId
+        cell.trackerNameLable.text = trackersForCurrentDate[indexPath.row].name
+        cell.emoji.text = trackersForCurrentDate[indexPath.row].emoji
         cell.delegate = self
-        cell.tracker = trackers[indexPath.row]
         return cell
     }
     

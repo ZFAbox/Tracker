@@ -68,12 +68,12 @@ final class TabBarViewController: UITabBarController {
         NSLayoutConstraint.activate([
             datePicker.widthAnchor.constraint(equalToConstant: 80),
             datePicker.heightAnchor.constraint(equalToConstant: 34)])
+        trackerViewController.currentDate = Date()
     }
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){
         let selectedDate = sender.date
         trackerViewController.currentDate = selectedDate
-        
         let weekdayNumber = Calendar.current.dateComponents([.weekday], from: selectedDate).weekday
         guard let weekdayNumber = weekdayNumber else { return }
         var weekday = ""
@@ -88,8 +88,8 @@ final class TabBarViewController: UITabBarController {
         default: weekday = "Нет такой даты"
         }
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.mm.YYYY"
-        let formattedDate = dateFormatter.string(from: selectedDate)
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        let formattedDate = dateFormatter.string(from: selectedDate).capitalized
         print(weekday)
     }
 }

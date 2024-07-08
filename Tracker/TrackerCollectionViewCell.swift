@@ -14,7 +14,11 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     var delegate: TrackerViewController?
     
-    var tracker: Tracker?
+    var trackerId: UUID?
+    
+    var dates:[Date] = []
+    
+    var trackerRecord: TrackerRecord?
     
     let cardView: UIView = {
         let cardView = UIView()
@@ -92,8 +96,9 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     @objc func buttonTapped(){
         if !isTrackerTapped {
             UIView.animate(withDuration: 0.2, delay: 0) {
-                
-                self.count += 1
+                guard let date = self.delegate?.currentDate else { return }
+                self.dates.append(date)
+                self.count = self.dates.count
                 self.dayMarkLable.text = self.count.daysEnding()
                 let buttonImage = UIImage(named: "Tracker Done")
                 self.dayMarkButton.layer.opacity = 0.7
@@ -102,7 +107,9 @@ class TrackerCollectionViewCell: UICollectionViewCell {
            
         }else {
             UIView.animate(withDuration: 0.2, delay: 0) {
-                self.count -= 1
+                guard let date = self.delegate?.currentDate else { return }
+                self.dates.removeLast()
+                self.count = self.dates.count
                 self.dayMarkLable.text = self.count.daysEnding()
                 let buttonImage = UIImage(named: "Tracker Plus")
                 self.dayMarkButton.layer.opacity = 1

@@ -11,5 +11,5 @@ struct Tracker {
     let trackerId: UUID
     let name: String
     let emoji: String
-    let schedule: String
+    let schedule: [String]
 }
