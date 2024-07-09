@@ -11,7 +11,7 @@ import Foundation
 extension Int {
     func daysEnding() -> String {
         var dayString: String!
-        var remain = self % 10
+        let remain = self % 10
         switch remain {
         case 1: dayString = "день"
         case 2, 3, 4: dayString = "дня"

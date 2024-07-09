@@ -18,7 +18,9 @@ final class TrackerViewController: UIViewController {
     private var categories: [TrackerCategory] = [
         TrackerCategory(categoryName: "Повседневное", trackersOfCategory: ["Игра в теннис", "Ходьба", "Рисование"])
     ]
-    private var complitedTrackers: [TrackerRecord] = []
+    
+    var completerTrackerId: Set<UUID> = []
+    var completedTrackers: [TrackerRecord] = []
     
     private var trackersForCurrentDate: [Tracker] = []
     
@@ -28,12 +30,14 @@ final class TrackerViewController: UIViewController {
                 print("Нет текущей даты")
                 return }
             let weekday = DateFormatter.weekday(date: currentDate)
+            print(weekday)
             trackersForCurrentDate = []
             for tracker in trackers {
                 if tracker.schedule.contains(weekday) {
                     trackersForCurrentDate.append(tracker)
                 }
             }
+            
             if trackersForCurrentDate.isEmpty {
                 trackerCollectionView.isHidden = true
             } else {
@@ -124,7 +128,7 @@ final class TrackerViewController: UIViewController {
         } else {
             trackerCollectionView.isHidden = false
         }
-        
+
     }
     
     func fontNmaes(){
@@ -210,6 +214,7 @@ final class TrackerViewController: UIViewController {
 
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(trackersForCurrentDate.count)
         return trackersForCurrentDate.count
     }
     

@@ -9,29 +9,48 @@ import Foundation
 
 extension DateFormatter {
     
-    static let dateFormatter = DateFormatter()
+//    static let dateFormatter = DateFormatter()
+//
+//    static func weekday(date: Date) -> String {
+//
+//        dateFormatter.dateFormat = "EEEE"
+//        let weekday = dateFormatter.string(from: date).capitalized
+//        print(weekday)
+//        switch weekday {
+//        case "Sunday":
+//            return Weekdays.Sunday.rawValue
+//        case "Monday":
+//            return Weekdays.Monday.rawValue
+//        case "Tuesday":
+//            return Weekdays.Tuesday.rawValue
+//        case "Wednesday":
+//            return Weekdays.Wednesday.rawValue
+//        case "Thursday":
+//            return Weekdays.Thursday.rawValue
+//        case "Friday":
+//            return Weekdays.Friday.rawValue
+//        case "Saturday":
+//            return Weekdays.Saturday.rawValue
+//        default:
+//            return ""
+//        }
+//    }
     
     static func weekday(date: Date) -> String {
-        
-        dateFormatter.dateFormat = "EEEE"
-        let weekday = dateFormatter.string(from: date).capitalized
-        switch weekday {
-        case "Sunday":
-            return Weekdays.Sunday.rawValue
-        case "Monday":
-            return Weekdays.Monday.rawValue
-        case "Tuesday":
-            return Weekdays.Tuesday.rawValue
-        case "Wednesday":
-            return Weekdays.Wednesday.rawValue
-        case "Thursday":
-            return Weekdays.Thursday.rawValue
-        case "Friday":
-            return Weekdays.Friday.rawValue
-        case "Saturday":
-            return Weekdays.Saturday.rawValue
-        default:
-            return ""
+        let weekdayNumber = Calendar.current.dateComponents([.weekday], from: date).weekday
+        var weekday = "Нет такого дня недели"
+        if let weekdayNumber = weekdayNumber {
+            switch weekdayNumber {
+            case 1: weekday = Weekdays.Sunday.rawValue
+            case 2: weekday = Weekdays.Monday.rawValue
+            case 3: weekday = Weekdays.Tuesday.rawValue
+            case 4: weekday = Weekdays.Wednesday.rawValue
+            case 5: weekday = Weekdays.Thursday.rawValue
+            case 6: weekday = Weekdays.Friday.rawValue
+            case 7: weekday = Weekdays.Saturday.rawValue
+            default: weekday = "Нет такого дня недели"
+            }
         }
+        return weekday
     }
 }

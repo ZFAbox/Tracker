@@ -18,8 +18,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     var dates:[Date] = []
     
-    var trackerRecord: TrackerRecord?
-    
     let cardView: UIView = {
         let cardView = UIView()
         cardView.translatesAutoresizingMaskIntoConstraints = false
@@ -93,10 +91,68 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         
     }
     
+    
+    func isButtonStateOn() -> Bool {
+        guard let delegate = self.delegate, let trackerId = self.trackerId, let date = delegate.currentDate else { return false }
+        if delegate.completerTrackerId.contains(trackerId) {
+            var records: [TrackerRecord] = []
+            for trackerRecord in delegate.completedTrackers {
+                if trackerRecord.tackerDate == date {
+                    records.append(trackerRecord)
+                }
+            }
+            if records.isEmpty {
+                return false
+            } else {
+                return true
+            }
+        } else {
+            return false
+        }
+    }
+    
+    func trackerButtonState(){
+        guard let delegate = self.delegate, let trackerId = self.trackerId else { return }
+        var records: [TrackerRecord] = []
+        isTrackerTapped = isButtonStateOn()
+        if isTrackerTapped {
+            for record in delegate.completedTrackers {
+                if record.trackerId == trackerId {
+                    records.append(record)
+                }
+            }
+            let buttonImage = UIImage(named: "Tracker Done")
+            self.dayMarkButton.layer.opacity = 0.7
+            self.dayMarkButton.setImage(buttonImage, for: .normal)
+            self.count = records.count
+        } else {
+            let buttonImage = UIImage(named: "Tracker Plus")
+            self.dayMarkButton.layer.opacity = 1
+            self.dayMarkButton.setImage(buttonImage, for: .normal)
+            self.count = records.count
+        }
+    }
+
+//        for tracker in delegate.complitedTrackers {
+//            if tracker.trackerId == trackerId, tracker.tackerDates.contains(date) {
+//                isTrackerTapped = true
+//                let buttonImage = UIImage(named: "Tracker Done")
+//                self.dayMarkButton.layer.opacity = 0.7
+//                self.dayMarkButton.setImage(buttonImage, for: .normal)
+//                self.count = tracker.tackerDates.count
+//            } else {
+//                isTrackerTapped = false
+//                let buttonImage = UIImage(named: "Tracker Plus")
+//                self.dayMarkButton.layer.opacity = 1
+//                self.dayMarkButton.setImage(buttonImage, for: .normal)
+//                self.count = tracker.tackerDates.count
+//            }
+//        }
+    
     @objc func buttonTapped(){
         if !isTrackerTapped {
             UIView.animate(withDuration: 0.2, delay: 0) {
-                guard let date = self.delegate?.currentDate else { return }
+                guard let delegate = self.delegate, let trackerId = self.trackerId, let date = delegate.currentDate  else {return}
                 self.dates.append(date)
                 self.count = self.dates.count
                 self.dayMarkLable.text = self.count.daysEnding()
@@ -107,7 +163,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
            
         }else {
             UIView.animate(withDuration: 0.2, delay: 0) {
-                guard let date = self.delegate?.currentDate else { return }
                 self.dates.removeLast()
                 self.count = self.dates.count
                 self.dayMarkLable.text = self.count.daysEnding()

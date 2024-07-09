@@ -21,6 +21,7 @@ final class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        trackerViewController.currentDate = Date()
         setupTabBar()
         setupNavigationBar()
     }
@@ -61,36 +62,39 @@ final class TabBarViewController: UITabBarController {
     func datePickerActivate(datePicker: UIDatePicker){
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
-        let locale = Locale(identifier: "it_CH")
+        let locale = Locale(identifier: "ru_CH")
         datePicker.locale = locale
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
         NSLayoutConstraint.activate([
             datePicker.widthAnchor.constraint(equalToConstant: 80),
             datePicker.heightAnchor.constraint(equalToConstant: 34)])
-        trackerViewController.currentDate = Date()
+//        trackerViewController.currentDate = Date()
+        print(trackerViewController.currentDate!)
     }
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){
         let selectedDate = sender.date
         trackerViewController.currentDate = selectedDate
-        let weekdayNumber = Calendar.current.dateComponents([.weekday], from: selectedDate).weekday
-        guard let weekdayNumber = weekdayNumber else { return }
-        var weekday = ""
-        switch weekdayNumber {
-        case 1: weekday = "Воскресенье"
-        case 2: weekday = "Понедельник"
-        case 3: weekday = "Вторник"
-        case 4: weekday = "Среда"
-        case 5: weekday = "Четверг"
-        case 6: weekday = "Пятница"
-        case 7: weekday = "Суббота"
-        default: weekday = "Нет такой даты"
-        }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        let formattedDate = dateFormatter.string(from: selectedDate).capitalized
-        print(weekday)
+//        let weekday = DateFormatter.weekday(date: selectedDate)
+//        let weekdayNumber = Calendar.current.dateComponents([.weekday], from: selectedDate).weekday
+//        guard let weekdayNumber = weekdayNumber else { return }
+//        var weekday = ""
+//        switch weekdayNumber {
+//        case 1: weekday = "Воскресенье"
+//        case 2: weekday = "Понедельник"
+//        case 3: weekday = "Вторник"
+//        case 4: weekday = "Среда"
+//        case 5: weekday = "Четверг"
+//        case 6: weekday = "Пятница"
+//        case 7: weekday = "Суббота"
+//        default: weekday = "Нет такой даты"
+//        }
+//        let weekday = DateFormatter.weekday(date: selectedDate)
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "dd.MM.yyyy"
+//        let formattedDate = dateFormatter.string(from: selectedDate).capitalized
+//        print(weekday)
     }
 }
 

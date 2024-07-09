@@ -9,5 +9,5 @@ import Foundation
 
 struct TrackerRecord{
     let trackerId: UUID
-    var tackerDates: [Date]
+    let tackerDate: Date
 }
