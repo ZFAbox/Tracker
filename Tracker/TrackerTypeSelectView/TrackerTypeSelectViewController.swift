@@ -33,6 +33,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         habbitButton.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         habbitButton.backgroundColor = .trackerBlack
         habbitButton.tintColor = .ypWhite
+        habbitButton.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         return habbitButton
     }()
     
@@ -45,6 +46,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         notRegularButton.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         notRegularButton.backgroundColor = .trackerBlack
         notRegularButton.tintColor = .ypWhite
+        notRegularButton.addTarget(self, action: #selector(notRegularButtonTapped), for: .touchUpInside)
         return notRegularButton
     }()
     
@@ -54,6 +56,17 @@ final class TrackerTypeSelectViewController: UIViewController {
         view.backgroundColor = .ypWhite
         addSubviews()
         setConstrains()
+    }
+    
+    @objc func habbitButtonTapped(){
+        //TODO: - move to habbit screen
+        let viewController = HabbitCreateViewController()
+        viewController.modalPresentationStyle = .popover
+        self.present(viewController, animated: true)
+    }
+    
+    @objc func notRegularButtonTapped(){
+        //TODO: - move to notRegular screen
     }
     
     func addSubviews(){

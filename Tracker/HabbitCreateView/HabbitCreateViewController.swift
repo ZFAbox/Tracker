@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-class HabbitCreateViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class HabbitCreateViewController: UIViewController {
 
-    private let categoryAndScheduleArray = ["Категория, Расписание"]
+    private let categoryAndScheduleArray = ["Категория", "Расписание"]
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
@@ -35,47 +35,53 @@ class HabbitCreateViewController: UIViewController, UITableViewDataSource, UITab
         UIColor.rgbColors(red: 47, green: 208, blue: 88, alpha: 1)
     ]
    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        categoryAndScheduleArray.count
-    }
-    
-    private lazy var cell: UITableViewCell = {
-        let cell = UITableViewCell()
-        cell.accessibilityIdentifier = "cell"
-        cell.textLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-        return cell
-    }()
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = categoryAndScheduleArray[indexPath.row]
-        cell.accessoryType = .disclosureIndicator
-        return cell
-    }
-    
-    
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
         titleLable.text = "Новая привычка"
+        titleLable.tintColor = .trackerBlack
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
     
     
-    private lazy var trakcerName: UITextField = {
+    private lazy var layerTextFieldView: UIView = {
+        let layerTextFieldView = UIView()
+        layerTextFieldView.translatesAutoresizingMaskIntoConstraints = false
+        layerTextFieldView.backgroundColor = .textFiledBackground
+        layerTextFieldView.layer.cornerRadius = 16
+        return layerTextFieldView
+    }()
+    
+    private lazy var trackerName: UITextField = {
         let trackerName = UITextField()
-        trackerName.placeholder = "Введите название трекера"
+        trackerName.translatesAutoresizingMaskIntoConstraints = false
+//        trackerName.placeholder = "Введите название трекера"
+        let attributes = [
+            NSAttributedString.Key.foregroundColor: UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 1),
+            NSAttributedString.Key.font : UIFont(name: "SFProDisplay-Regular", size: 17)!
+        ]
+        trackerName.attributedPlaceholder = NSAttributedString(string: "Введите название трекера", attributes:attributes)
         trackerName.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-        trackerName.backgroundColor = .textFiledBackground
+        trackerName.backgroundColor = .none
         return trackerName
     }()
     
     private lazy var categoryAndScheduleTableView: UITableView = {
         let categoryAndSchedule = UITableView()
+        categoryAndSchedule.translatesAutoresizingMaskIntoConstraints = false
+        categoryAndSchedule.layer.cornerRadius = 16
         categoryAndSchedule.dataSource = self
         categoryAndSchedule.delegate = self
+        categoryAndSchedule.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         return categoryAndSchedule
+    }()
+    
+    private lazy var buttonStack: UIStackView = {
+        let hStack = UIStackView()
+        hStack.axis = .horizontal
+        hStack.spacing = 8
+        hStack.distribution = .fillEqually
     }()
     
     private lazy var emojiAndColors: UICollectionView = {
@@ -91,7 +97,86 @@ class HabbitCreateViewController: UIViewController, UITableViewDataSource, UITab
     
     override func viewDidLoad(){
         super.viewDidLoad()
+        view.backgroundColor = .ypWhite
+        addSubviews()
+        setConstraints()
     }
+    
+    private func addSubviews(){
+        view.addSubview(layerTextFieldView)
+        view.addSubview(titleLable)
+        view.addSubview(trackerName)
+        view.addSubview(categoryAndScheduleTableView)
+    }
+    
+    private func setConstraints(){
+        setTitleConstraints()
+        setLayerTextFieldViewConstrains()
+        setTrackerNameConstraints()
+        setCategoryAndScheduleTableViewConstraints()
+    }
+    
+
+    
+    private func setTitleConstraints(){
+        NSLayoutConstraint.activate([
+            titleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
+            titleLable.centerXAnchor.constraint(equalTo: view.centerXAnchor)])
+    }
+    
+    private func setLayerTextFieldViewConstrains(){
+        NSLayoutConstraint.activate([
+            layerTextFieldView.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
+            layerTextFieldView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            layerTextFieldView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            layerTextFieldView.heightAnchor.constraint(equalToConstant: 75)
+        ])
+    }
+    
+    private func setTrackerNameConstraints(){
+        NSLayoutConstraint.activate([
+            trackerName.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
+            trackerName.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
+            trackerName.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            trackerName.heightAnchor.constraint(equalToConstant: 75)
+        ])
+    }
+    
+    private func setCategoryAndScheduleTableViewConstraints(){
+        NSLayoutConstraint.activate([
+            categoryAndScheduleTableView.topAnchor.constraint(equalTo: trackerName.bottomAnchor, constant: 24),
+            categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: 150)
+        ])
+    }
+    
+}
+
+extension HabbitCreateViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        categoryAndScheduleArray.count
+    }
+    
+//    private lazy var cell: UITableViewCell = {
+//        let cell = UITableViewCell()
+//        cell.accessibilityIdentifier = "cell"
+//        cell.textLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 17)
+//        return cell
+//    }()
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.textLabel?.text = categoryAndScheduleArray[indexPath.row]
+        cell.accessoryType = .disclosureIndicator
+        return cell
+    }
+    
+    
+}
+
+extension HabbitCreateViewController: UITableViewDelegate {
     
 }
 

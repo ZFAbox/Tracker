@@ -18,9 +18,7 @@ final class TrackerViewController: UIViewController{
     ]
     
     var completerTrackerId: Set<UUID> = []
-    
     var completedTrackers: [TrackerRecord] = []
-    
     private var trackersForCurrentDate: [TrackerCategory] = []
     
     var currentDate: Date? {
@@ -46,8 +44,10 @@ final class TrackerViewController: UIViewController{
             
             if trackersForCurrentDate.isEmpty {
                 trackerCollectionView.isHidden = true
+                filterButton.isHidden = true
             } else {
                 trackerCollectionView.isHidden = false
+                filterButton.isHidden = false
                 trackerCollectionView.reloadData()
             }
 
@@ -55,7 +55,7 @@ final class TrackerViewController: UIViewController{
     }
     
     
-        private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
+    private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
     private lazy var trackerLabel: UILabel = {
         let trackerLabel = UILabel()
@@ -113,6 +113,19 @@ final class TrackerViewController: UIViewController{
         return trackerCollectionView
     }()
     
+    private lazy var filterButton: UIButton = {
+        let filterButton = UIButton(type: .system)
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+        filterButton.backgroundColor = .lunchScreeBlue
+        filterButton.layer.cornerRadius = 17
+        let filterButtonText = "Фильтры"
+        filterButton.setTitle(filterButtonText, for: .normal)
+        filterButton.titleLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 16)
+        filterButton.titleLabel?.tintColor = .ypWhite
+        filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
+        return filterButton
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -137,7 +150,11 @@ final class TrackerViewController: UIViewController{
         
     }
     
-    func fontNmaes(){
+    @objc func filterButtonTapped(){
+        //TODO: - add filter button action
+    }
+    
+    func fontNames(){
         for family in UIFont.familyNames.sorted() {
             let names = UIFont.fontNames(forFamilyName: family)
             print("Family: \(family) Font names: \(names)")
@@ -150,6 +167,7 @@ final class TrackerViewController: UIViewController{
         view.addSubview(dummyView)
         setDummySublayers()
         view.addSubview(trackerCollectionView)
+        view.addSubview(filterButton)
     }
     
     func setDummySublayers(){
@@ -162,6 +180,7 @@ final class TrackerViewController: UIViewController{
         setSearchFieldConstrains()
         dummyViewConstrains()
         setTrackerCollectionContraints()
+        setFilterButtonContraints()
     }
     
     func setLableConstrains(){
@@ -213,6 +232,15 @@ final class TrackerViewController: UIViewController{
             trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             trackerCollectionView.leadingAnchor.constraint(equalTo: searchField.leadingAnchor),
             trackerCollectionView.trailingAnchor.constraint(equalTo: searchField.trailingAnchor)
+        ])
+    }
+    
+    func setFilterButtonContraints(){
+        NSLayoutConstraint.activate([
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114)
         ])
     }
     

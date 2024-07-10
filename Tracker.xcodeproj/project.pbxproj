@@ -134,11 +134,9 @@
 				90DE585E2C0A655400351750 /* AppDelegate.swift */,
 				90DE58602C0A655400351750 /* SceneDelegate.swift */,
 				90704A432C0BBE2100C7CC57 /* TabBarViewController.swift */,
-				90DE58622C0A655400351750 /* TrackerViewController.swift */,
-				9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */,
-				9061D3782C20E9D2008C84D5 /* TrackerSupplementaryViewCell.swift */,
-				90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */,
-				9FE74DC02C21C1EA007ACB54 /* TrackerTypeSelectViewController.swift */,
+				9FA7612C2C3EBEF70006A0D6 /* TrackercMainView */,
+				9FA7612E2C3EC2370006A0D6 /* TrackerTypeSelectView */,
+				9FA7612D2C3EBF600006A0D6 /* StatisticView */,
 				906E489C2C3A0570008035EC /* HabbitCreateView */,
 				90DE58672C0A655600351750 /* Assets.xcassets */,
 				90DE58692C0A655600351750 /* LaunchScreen.storyboard */,
@@ -156,6 +154,32 @@
 				9F9ED0F22C1C6EAF0013D4D4 /* TrackerCellParameters.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		9FA7612C2C3EBEF70006A0D6 /* TrackercMainView */ = {
+			isa = PBXGroup;
+			children = (
+				90DE58622C0A655400351750 /* TrackerViewController.swift */,
+				9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */,
+				9061D3782C20E9D2008C84D5 /* TrackerSupplementaryViewCell.swift */,
+			);
+			path = TrackercMainView;
+			sourceTree = "<group>";
+		};
+		9FA7612D2C3EBF600006A0D6 /* StatisticView */ = {
+			isa = PBXGroup;
+			children = (
+				90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */,
+			);
+			path = StatisticView;
+			sourceTree = "<group>";
+		};
+		9FA7612E2C3EC2370006A0D6 /* TrackerTypeSelectView */ = {
+			isa = PBXGroup;
+			children = (
+				9FE74DC02C21C1EA007ACB54 /* TrackerTypeSelectViewController.swift */,
+			);
+			path = TrackerTypeSelectView;
 			sourceTree = "<group>";
 		};
 		9FE74DBD2C219BD1007ACB54 /* Extensions */ = {
