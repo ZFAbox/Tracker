@@ -248,7 +248,13 @@ final class TrackerViewController: UIViewController{
 
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return trackersForCurrentDate[section].trackersOfCategory.count
+        print(trackersForCurrentDate.count)
+        if trackersForCurrentDate.count == 0 {
+            return 0
+        } else {
+            let trackers = trackersForCurrentDate[section].trackersOfCategory
+            return trackers.count
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -346,3 +352,31 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+
+extension TrackerViewController: HabbitCreateViewControllerProtocol {
+    func createTracker(category: String, tracker: Tracker) {
+        let isCategoryExist = categories.contains { trackerCategory in
+            trackerCategory.categoryName == category
+        }
+        
+        var trackers: [Tracker] = []
+        if isCategoryExist {
+            for eachCategory in categories {
+                if eachCategory.categoryName == category {
+                    trackers = eachCategory.trackersOfCategory
+                    trackers.append(tracker)
+                    categories.removeAll { trackerCategory in
+                        trackerCategory.categoryName == category
+                    }
+                    categories.append(TrackerCategory(categoryName: category, trackersOfCategory: trackers))
+
+                }
+            }
+        } else {
+            categories.append(TrackerCategory(categoryName: category, trackersOfCategory: [tracker]))
+        }
+        trackerCollectionView.isHidden = false
+        filterButton.isHidden = false
+        trackerCollectionView.reloadData()
+    }
+}

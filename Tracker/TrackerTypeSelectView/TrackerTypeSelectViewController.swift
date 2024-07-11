@@ -10,6 +10,7 @@ import UIKit
 
 final class TrackerTypeSelectViewController: UIViewController {
     
+    var trackerViewController: TrackerViewController?
     
     private var buttonsView: UIView = {
         let buttonsView = UIView()
@@ -61,6 +62,7 @@ final class TrackerTypeSelectViewController: UIViewController {
     @objc func habbitButtonTapped(){
         //TODO: - move to habbit screen
         let viewController = HabbitCreateViewController()
+        viewController.delegate = trackerViewController
         viewController.modalPresentationStyle = .popover
         self.present(viewController, animated: true)
     }

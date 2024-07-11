@@ -8,8 +8,14 @@
 import Foundation
 import UIKit
 
+protocol HabbitCreateViewControllerProtocol {
+    func createTracker(category: String, tracker: Tracker)
+}
 class HabbitCreateViewController: UIViewController {
-
+    
+    var delegate: HabbitCreateViewControllerProtocol?
+    var category: String?
+    
     private let categoryAndScheduleArray = ["Категория", "Расписание"]
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
@@ -74,14 +80,26 @@ class HabbitCreateViewController: UIViewController {
         categoryAndSchedule.dataSource = self
         categoryAndSchedule.delegate = self
         categoryAndSchedule.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        categoryAndSchedule.rowHeight = 75
+        categoryAndSchedule.separatorStyle = .none
+        categoryAndSchedule.isScrollEnabled = false
         return categoryAndSchedule
+    }()
+    
+    private lazy var lineView: UIView = {
+        let line = UIView()
+        line.translatesAutoresizingMaskIntoConstraints = false
+        line.backgroundColor = .trackerDarkGray
+        return line
     }()
     
     private lazy var buttonStack: UIStackView = {
         let hStack = UIStackView()
+        hStack.translatesAutoresizingMaskIntoConstraints = false
         hStack.axis = .horizontal
         hStack.spacing = 8
         hStack.distribution = .fillEqually
+        return hStack
     }()
     
     private lazy var emojiAndColors: UICollectionView = {
@@ -95,18 +113,60 @@ class HabbitCreateViewController: UIViewController {
         return emojiAndColors
     }()
     
+    private lazy var createButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 16
+        button.clipsToBounds = true
+        button.setTitle("Создать", for: .normal)
+        button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
+        button.tintColor = .ypWhite
+        button.backgroundColor = .trackerDarkGray
+        button.addTarget(self, action: #selector(createTracker), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 16
+        button.clipsToBounds = true
+        button.setTitle("Отменить", for: .normal)
+        button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
+        button.tintColor = .trackerPink
+        button.backgroundColor = .ypWhite
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.trackerPink.cgColor
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
+        return button
+    }()
+    
+    
     override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
+        buttonStack.addArrangedSubview(cancelButton)
+        buttonStack.addArrangedSubview(createButton)
         addSubviews()
         setConstraints()
     }
     
+    @objc func createTracker(){
+        let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .lunchScreeBlue, schedule: ["Понедельник", "Четверг"])
+        delegate?.createTracker(category: "Повседневное", tracker: tracker)
+        self.dismiss(animated: true)
+    }
+    
+    @objc func cancel(){
+        self.dismiss(animated: true)
+    }
     private func addSubviews(){
         view.addSubview(layerTextFieldView)
         view.addSubview(titleLable)
         view.addSubview(trackerName)
         view.addSubview(categoryAndScheduleTableView)
+        view.addSubview(buttonStack)
+        view.addSubview(lineView)
     }
     
     private func setConstraints(){
@@ -114,6 +174,8 @@ class HabbitCreateViewController: UIViewController {
         setLayerTextFieldViewConstrains()
         setTrackerNameConstraints()
         setCategoryAndScheduleTableViewConstraints()
+        setButtonStackConstraints()
+        setLineConstraints()
     }
     
 
@@ -151,6 +213,25 @@ class HabbitCreateViewController: UIViewController {
         ])
     }
     
+    private func setButtonStackConstraints(){
+        NSLayoutConstraint.activate([
+            buttonStack.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonStack.heightAnchor.constraint(equalToConstant: 60),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+    
+    private func setLineConstraints(){
+        NSLayoutConstraint.activate([
+            lineView.centerXAnchor.constraint(equalTo: categoryAndScheduleTableView.centerXAnchor),
+            lineView.centerYAnchor.constraint(equalTo: categoryAndScheduleTableView.centerYAnchor),
+            lineView.widthAnchor.constraint(equalToConstant: 311),
+            lineView.heightAnchor.constraint(equalToConstant: 1)
+        ])
+    }
+
+    
 }
 
 extension HabbitCreateViewController: UITableViewDataSource {
@@ -177,7 +258,9 @@ extension HabbitCreateViewController: UITableViewDataSource {
 }
 
 extension HabbitCreateViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 extension HabbitCreateViewController: UICollectionViewDataSource {
