@@ -11,12 +11,30 @@ import UIKit
 protocol HabbitCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker)
 }
-class HabbitCreateViewController: UIViewController {
+class TrackerCreateViewController: UIViewController {
     
     var delegate: HabbitCreateViewControllerProtocol?
     var category: String?
+    var regular: Bool
+    var trackerTypeSelectViewController: TrackerTypeSelectViewController
     
-    private let categoryAndScheduleArray = ["Категория", "Расписание"]
+    init(regular: Bool, trackerTypeSelectViewController: TrackerTypeSelectViewController) {
+        self.regular = regular
+        self.trackerTypeSelectViewController = trackerTypeSelectViewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private lazy var categoryAndScheduleArray:[String] = {
+        if regular {
+         return ["Категория", "Расписание"]
+        } else {
+         return ["Категория"]
+        }
+    }()
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
@@ -54,7 +72,7 @@ class HabbitCreateViewController: UIViewController {
     private lazy var layerTextFieldView: UIView = {
         let layerTextFieldView = UIView()
         layerTextFieldView.translatesAutoresizingMaskIntoConstraints = false
-        layerTextFieldView.backgroundColor = .textFiledBackground
+        layerTextFieldView.backgroundColor = .trackerBackgroundOpacityGray
         layerTextFieldView.layer.cornerRadius = 16
         return layerTextFieldView
     }()
@@ -77,20 +95,17 @@ class HabbitCreateViewController: UIViewController {
         let categoryAndSchedule = UITableView()
         categoryAndSchedule.translatesAutoresizingMaskIntoConstraints = false
         categoryAndSchedule.layer.cornerRadius = 16
+        categoryAndSchedule.backgroundColor = .ypWhite
         categoryAndSchedule.dataSource = self
         categoryAndSchedule.delegate = self
         categoryAndSchedule.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         categoryAndSchedule.rowHeight = 75
-        categoryAndSchedule.separatorStyle = .none
+        categoryAndSchedule.separatorStyle = .singleLine
+        categoryAndSchedule.separatorInset.left = 16
+        categoryAndSchedule.separatorInset.right = 16
+        categoryAndSchedule.separatorColor = .trackerDarkGray
         categoryAndSchedule.isScrollEnabled = false
         return categoryAndSchedule
-    }()
-    
-    private lazy var lineView: UIView = {
-        let line = UIView()
-        line.translatesAutoresizingMaskIntoConstraints = false
-        line.backgroundColor = .trackerDarkGray
-        return line
     }()
     
     private lazy var buttonStack: UIStackView = {
@@ -154,19 +169,20 @@ class HabbitCreateViewController: UIViewController {
     @objc func createTracker(){
         let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .lunchScreeBlue, schedule: ["Понедельник", "Четверг"])
         delegate?.createTracker(category: "Повседневное", tracker: tracker)
-        self.dismiss(animated: true)
+        self.dismiss(animated: false)
+        trackerTypeSelectViewController.dismiss(animated: false)
     }
     
     @objc func cancel(){
         self.dismiss(animated: true)
     }
+    
     private func addSubviews(){
         view.addSubview(layerTextFieldView)
         view.addSubview(titleLable)
         view.addSubview(trackerName)
         view.addSubview(categoryAndScheduleTableView)
         view.addSubview(buttonStack)
-        view.addSubview(lineView)
     }
     
     private func setConstraints(){
@@ -175,7 +191,6 @@ class HabbitCreateViewController: UIViewController {
         setTrackerNameConstraints()
         setCategoryAndScheduleTableViewConstraints()
         setButtonStackConstraints()
-        setLineConstraints()
     }
     
 
@@ -209,7 +224,7 @@ class HabbitCreateViewController: UIViewController {
             categoryAndScheduleTableView.topAnchor.constraint(equalTo: trackerName.bottomAnchor, constant: 24),
             categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: 150)
+            categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categoryAndScheduleArray.count - 1))
         ])
     }
     
@@ -222,19 +237,9 @@ class HabbitCreateViewController: UIViewController {
         ])
     }
     
-    private func setLineConstraints(){
-        NSLayoutConstraint.activate([
-            lineView.centerXAnchor.constraint(equalTo: categoryAndScheduleTableView.centerXAnchor),
-            lineView.centerYAnchor.constraint(equalTo: categoryAndScheduleTableView.centerYAnchor),
-            lineView.widthAnchor.constraint(equalToConstant: 311),
-            lineView.heightAnchor.constraint(equalToConstant: 1)
-        ])
-    }
-
-    
 }
 
-extension HabbitCreateViewController: UITableViewDataSource {
+extension TrackerCreateViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categoryAndScheduleArray.count
@@ -250,6 +255,7 @@ extension HabbitCreateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = categoryAndScheduleArray[indexPath.row]
+        cell.backgroundColor = .trackerBackgroundOpacityGray
         cell.accessoryType = .disclosureIndicator
         return cell
     }
@@ -257,13 +263,18 @@ extension HabbitCreateViewController: UITableViewDataSource {
     
 }
 
-extension HabbitCreateViewController: UITableViewDelegate {
+extension TrackerCreateViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.row == 1 {
+            let viewController = ScheduleViewController()
+            viewController.modalPresentationStyle = .popover
+            self.present(viewController, animated: true)
+        }
     }
 }
 
-extension HabbitCreateViewController: UICollectionViewDataSource {
+extension TrackerCreateViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         2
     }
@@ -303,7 +314,7 @@ extension HabbitCreateViewController: UICollectionViewDataSource {
     }
 }
 
-extension HabbitCreateViewController: UICollectionViewDelegateFlowLayout {
+extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width / 6

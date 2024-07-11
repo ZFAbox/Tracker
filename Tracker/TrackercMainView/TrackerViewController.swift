@@ -23,34 +23,37 @@ final class TrackerViewController: UIViewController{
     
     var currentDate: Date? {
         didSet {
-            guard let currentDate = currentDate else {
-                print("Нет текущей даты")
-                return }
-            let weekday = DateFormatter.weekday(date: currentDate)
-            print(weekday)
-            trackersForCurrentDate = categories.compactMap({ category in
-                let trackers = category.trackersOfCategory.filter { tracker in
-                    let weekdayMatch = tracker.schedule.contains { weekday in
-                        weekday == DateFormatter.weekday(date: currentDate)
-                    }
-                    return weekdayMatch
+            updateTrackersForCurrentDate()
+        }
+    }
+    
+    private func updateTrackersForCurrentDate(){
+        guard let currentDate = currentDate else {
+            print("Нет текущей даты")
+            return }
+        let weekday = DateFormatter.weekday(date: currentDate)
+        print(weekday)
+        trackersForCurrentDate = categories.compactMap({ category in
+            let trackers = category.trackersOfCategory.filter { tracker in
+                let weekdayMatch = tracker.schedule.contains { weekday in
+                    weekday == DateFormatter.weekday(date: currentDate)
                 }
-                print(trackers.count)
-                if trackers.isEmpty {
-                    return nil
-                }
-                return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
-            })
-            
-            if trackersForCurrentDate.isEmpty {
-                trackerCollectionView.isHidden = true
-                filterButton.isHidden = true
-            } else {
-                trackerCollectionView.isHidden = false
-                filterButton.isHidden = false
-                trackerCollectionView.reloadData()
+                return weekdayMatch
             }
-
+            print(trackers.count)
+            if trackers.isEmpty {
+                return nil
+            }
+            return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
+        })
+        trackerCollectionView.reloadData()
+        
+        if trackersForCurrentDate.isEmpty {
+            trackerCollectionView.isHidden = true
+            filterButton.isHidden = true
+        } else {
+            trackerCollectionView.isHidden = false
+            filterButton.isHidden = false
         }
     }
     
@@ -248,7 +251,6 @@ final class TrackerViewController: UIViewController{
 
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(trackersForCurrentDate.count)
         if trackersForCurrentDate.count == 0 {
             return 0
         } else {
@@ -375,8 +377,6 @@ extension TrackerViewController: HabbitCreateViewControllerProtocol {
         } else {
             categories.append(TrackerCategory(categoryName: category, trackersOfCategory: [tracker]))
         }
-        trackerCollectionView.isHidden = false
-        filterButton.isHidden = false
-        trackerCollectionView.reloadData()
+        updateTrackersForCurrentDate()
     }
 }
