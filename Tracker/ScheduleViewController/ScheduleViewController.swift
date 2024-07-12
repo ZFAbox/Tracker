@@ -33,7 +33,7 @@ final class ScheduleViewController: UIViewController {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
         table.layer.cornerRadius = 16
-        table.backgroundColor = .ypWhite
+        table.backgroundColor = .trackerWhite
         table.dataSource = self
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -52,14 +52,14 @@ final class ScheduleViewController: UIViewController {
         button.setTitle("Готово", for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.backgroundColor = .trackerBlack
-        button.tintColor = .ypWhite
+        button.tintColor = .trackerWhite
         button.addTarget(self, action: #selector(confirmedButtonTapped), for: .touchUpInside)
         return button
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhite
+        view.backgroundColor = .trackerWhite
         addSubviews()
         setConstraints()
     }

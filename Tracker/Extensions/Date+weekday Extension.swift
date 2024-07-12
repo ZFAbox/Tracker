@@ -9,33 +9,6 @@ import Foundation
 
 extension DateFormatter {
     
-//    static let dateFormatter = DateFormatter()
-//
-//    static func weekday(date: Date) -> String {
-//
-//        dateFormatter.dateFormat = "EEEE"
-//        let weekday = dateFormatter.string(from: date).capitalized
-//        print(weekday)
-//        switch weekday {
-//        case "Sunday":
-//            return Weekdays.Sunday.rawValue
-//        case "Monday":
-//            return Weekdays.Monday.rawValue
-//        case "Tuesday":
-//            return Weekdays.Tuesday.rawValue
-//        case "Wednesday":
-//            return Weekdays.Wednesday.rawValue
-//        case "Thursday":
-//            return Weekdays.Thursday.rawValue
-//        case "Friday":
-//            return Weekdays.Friday.rawValue
-//        case "Saturday":
-//            return Weekdays.Saturday.rawValue
-//        default:
-//            return ""
-//        }
-//    }
-    
     static func weekday(date: Date) -> String {
         let weekdayNumber = Calendar.current.dateComponents([.weekday], from: date).weekday
         var weekday = "Нет такого дня недели"

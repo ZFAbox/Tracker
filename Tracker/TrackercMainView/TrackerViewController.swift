@@ -20,46 +20,11 @@ final class TrackerViewController: UIViewController{
     var completerTrackerId: Set<UUID> = []
     var completedTrackers: [TrackerRecord] = []
     private var trackersForCurrentDate: [TrackerCategory] = []
-    
     var currentDate: Date? {
         didSet {
             updateTrackersForCurrentDate(searchedText: nil)
         }
     }
-    
-    private func updateTrackersForCurrentDate(searchedText: String?){
-        guard let currentDate = currentDate else {
-            print("Нет текущей даты")
-            return }
-        let weekday = DateFormatter.weekday(date: currentDate)
-        let searchText = (searchedText ?? "").lowercased()
-        print(weekday)
-        trackersForCurrentDate = categories.compactMap({ category in
-            let trackers = category.trackersOfCategory.filter { tracker in
-                
-                let weekdayMatch = tracker.schedule.contains { weekday in
-                    weekday == DateFormatter.weekday(date: currentDate)
-                } == true
-                let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
-                return weekdayMatch && searchMatch
-            }
-            print(trackers.count)
-            if trackers.isEmpty {
-                return nil
-            }
-            return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
-        })
-        trackerCollectionView.reloadData()
-        
-        if trackersForCurrentDate.isEmpty {
-            trackerCollectionView.isHidden = true
-            filterButton.isHidden = true
-        } else {
-            trackerCollectionView.isHidden = false
-            filterButton.isHidden = false
-        }
-    }
-    
     
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
@@ -128,7 +93,7 @@ final class TrackerViewController: UIViewController{
         let filterButtonText = "Фильтры"
         filterButton.setTitle(filterButtonText, for: .normal)
         filterButton.titleLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 16)
-        filterButton.titleLabel?.tintColor = .ypWhite
+        filterButton.titleLabel?.tintColor = .trackerWhite
         filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
         return filterButton
     }()
@@ -140,25 +105,43 @@ final class TrackerViewController: UIViewController{
         setSublayer()
         setConstrains()
         
-        //        guard let currentDate = currentDate else {
-        //            print("Нет текущей даты")
-        //            return }
-        //        let weekday = DateFormatter.weekday(date: currentDate)
-        //        for tracker in trackers {
-        //            if tracker.schedule.contains(weekday) {
-        //                trackersForCurrentDate.append(tracker)
-        //            }
-        //        }
-        //        if trackersForCurrentDate.isEmpty {
-        //            trackerCollectionView.isHidden = true
-        //        } else {
-        //            trackerCollectionView.isHidden = false
-        //        }
-        
     }
     
     @objc func filterButtonTapped(){
         //TODO: - add filter button action
+    }
+    
+    private func updateTrackersForCurrentDate(searchedText: String?){
+        guard let currentDate = currentDate else {
+            print("Нет текущей даты")
+            return }
+        let weekday = DateFormatter.weekday(date: currentDate)
+        let searchText = (searchedText ?? "").lowercased()
+        print(weekday)
+        trackersForCurrentDate = categories.compactMap({ category in
+            let trackers = category.trackersOfCategory.filter { tracker in
+                
+                let weekdayMatch = tracker.schedule.contains { weekday in
+                    weekday == DateFormatter.weekday(date: currentDate)
+                } == true
+                let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
+                return weekdayMatch && searchMatch
+            }
+            print(trackers.count)
+            if trackers.isEmpty {
+                return nil
+            }
+            return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
+        })
+        trackerCollectionView.reloadData()
+        
+        if trackersForCurrentDate.isEmpty {
+            trackerCollectionView.isHidden = true
+            filterButton.isHidden = true
+        } else {
+            trackerCollectionView.isHidden = false
+            filterButton.isHidden = false
+        }
     }
     
     func fontNames(){
@@ -250,7 +233,6 @@ final class TrackerViewController: UIViewController{
             filterButton.widthAnchor.constraint(equalToConstant: 114)
         ])
     }
-    
 }
 
 extension TrackerViewController: UICollectionViewDataSource {
@@ -308,7 +290,6 @@ extension TrackerViewController: UICollectionViewDataSource {
         return headerView
     }
 }
-
 
 extension TrackerViewController: TrackerCollectionViewCellProtocol {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
@@ -375,7 +356,6 @@ extension TrackerViewController: HabbitCreateViewControllerProtocol {
                         trackerCategory.categoryName == category
                     }
                     categories.append(TrackerCategory(categoryName: category, trackersOfCategory: trackers))
-
                 }
             }
         } else {

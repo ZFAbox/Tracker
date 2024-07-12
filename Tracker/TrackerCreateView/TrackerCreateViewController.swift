@@ -95,7 +95,7 @@ class TrackerCreateViewController: UIViewController {
         let categoryAndSchedule = UITableView()
         categoryAndSchedule.translatesAutoresizingMaskIntoConstraints = false
         categoryAndSchedule.layer.cornerRadius = 16
-        categoryAndSchedule.backgroundColor = .ypWhite
+        categoryAndSchedule.backgroundColor = .trackerWhite
         categoryAndSchedule.dataSource = self
         categoryAndSchedule.delegate = self
         categoryAndSchedule.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -135,7 +135,7 @@ class TrackerCreateViewController: UIViewController {
         button.clipsToBounds = true
         button.setTitle("Создать", for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        button.tintColor = .ypWhite
+        button.tintColor = .trackerWhite
         button.backgroundColor = .trackerDarkGray
         button.addTarget(self, action: #selector(createTracker), for: .touchUpInside)
         return button
@@ -149,7 +149,7 @@ class TrackerCreateViewController: UIViewController {
         button.setTitle("Отменить", for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.tintColor = .trackerPink
-        button.backgroundColor = .ypWhite
+        button.backgroundColor = .trackerWhite
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.trackerPink.cgColor
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
@@ -159,7 +159,7 @@ class TrackerCreateViewController: UIViewController {
     
     override func viewDidLoad(){
         super.viewDidLoad()
-        view.backgroundColor = .ypWhite
+        view.backgroundColor = .trackerWhite
         buttonStack.addArrangedSubview(cancelButton)
         buttonStack.addArrangedSubview(createButton)
         addSubviews()

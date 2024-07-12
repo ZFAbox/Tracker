@@ -21,6 +21,6 @@ extension UIColor {
     static var trackerOrnage = UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1)
     static var trackerDarkGray = UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 1)
     static var trackerPink = UIColor.rgbColors(red: 245, green: 107, blue: 108, alpha: 1)
-    static var ypWhite = UIColor.rgbColors(red: 245, green: 245, blue: 245, alpha: 1)
+    static var trackerWhite = UIColor.rgbColors(red: 245, green: 245, blue: 245, alpha: 1)
     static var trackerBackgroundOpacityGray =  UIColor.rgbColors(red: 230, green: 232, blue: 235, alpha: 0.3)
 }
