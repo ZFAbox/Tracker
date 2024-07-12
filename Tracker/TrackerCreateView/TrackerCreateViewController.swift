@@ -167,10 +167,10 @@ class TrackerCreateViewController: UIViewController {
     }
     
     @objc func createTracker(){
-        let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .lunchScreeBlue, schedule: ["Понедельник", "Четверг"])
+        let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .trackerBlue, schedule: ["Понедельник", "Четверг"])
         delegate?.createTracker(category: "Повседневное", tracker: tracker)
         self.dismiss(animated: false)
-        trackerTypeSelectViewController.dismiss(animated: false)
+        trackerTypeSelectViewController.dismiss(animated: true)
     }
     
     @objc func cancel(){

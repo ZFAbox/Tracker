@@ -122,6 +122,7 @@ extension ScheduleViewController: UITableViewDataSource {
         switcher.setOn(false, animated: true)
         switcher.tag = indexPath.row
         switcher.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
+        switcher.onTintColor = .trackerBlue
         cell.accessoryView = switcher
         cell.backgroundColor = .trackerBackgroundOpacityGray
     }

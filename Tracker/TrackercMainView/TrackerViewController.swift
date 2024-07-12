@@ -23,22 +23,25 @@ final class TrackerViewController: UIViewController{
     
     var currentDate: Date? {
         didSet {
-            updateTrackersForCurrentDate()
+            updateTrackersForCurrentDate(searchedText: nil)
         }
     }
     
-    private func updateTrackersForCurrentDate(){
+    private func updateTrackersForCurrentDate(searchedText: String?){
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
         let weekday = DateFormatter.weekday(date: currentDate)
+        let searchText = (searchedText ?? "").lowercased()
         print(weekday)
         trackersForCurrentDate = categories.compactMap({ category in
             let trackers = category.trackersOfCategory.filter { tracker in
+                
                 let weekdayMatch = tracker.schedule.contains { weekday in
                     weekday == DateFormatter.weekday(date: currentDate)
-                }
-                return weekdayMatch
+                } == true
+                let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
+                return weekdayMatch && searchMatch
             }
             print(trackers.count)
             if trackers.isEmpty {
@@ -78,6 +81,7 @@ final class TrackerViewController: UIViewController{
         searchField.searchTextField.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         searchField.layer.borderWidth = 1
         searchField.layer.borderColor = UIColor.white.cgColor
+        searchField.delegate = self
         return searchField
     }()
     
@@ -119,7 +123,7 @@ final class TrackerViewController: UIViewController{
     private lazy var filterButton: UIButton = {
         let filterButton = UIButton(type: .system)
         filterButton.translatesAutoresizingMaskIntoConstraints = false
-        filterButton.backgroundColor = .lunchScreeBlue
+        filterButton.backgroundColor = .trackerBlue
         filterButton.layer.cornerRadius = 17
         let filterButtonText = "Фильтры"
         filterButton.setTitle(filterButtonText, for: .normal)
@@ -377,6 +381,13 @@ extension TrackerViewController: HabbitCreateViewControllerProtocol {
         } else {
             categories.append(TrackerCategory(categoryName: category, trackersOfCategory: [tracker]))
         }
-        updateTrackersForCurrentDate()
+        updateTrackersForCurrentDate(searchedText: nil)
+    }
+}
+
+extension TrackerViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        updateTrackersForCurrentDate(searchedText: searchBar.text)
     }
 }
