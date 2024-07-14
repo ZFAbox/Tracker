@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol HabbitCreateViewControllerProtocol {
+protocol HabbitCreateViewControllerProtocol{
     func createTracker(category: String, tracker: Tracker)
 }
 class TrackerCreateViewController: UIViewController {
@@ -17,6 +17,9 @@ class TrackerCreateViewController: UIViewController {
     var category: String?
     var regular: Bool
     var trackerTypeSelectViewController: TrackerTypeSelectViewController
+    var trackerSchedule: [String] = []
+    var trackerName = ""
+    var scheduleSubtitle = ""
     
     init(regular: Bool, trackerTypeSelectViewController: TrackerTypeSelectViewController) {
         self.regular = regular
@@ -77,10 +80,9 @@ class TrackerCreateViewController: UIViewController {
         return layerTextFieldView
     }()
     
-    private lazy var trackerName: UITextField = {
+    private lazy var trackerNameTextField: UITextField = {
         let trackerName = UITextField()
         trackerName.translatesAutoresizingMaskIntoConstraints = false
-//        trackerName.placeholder = "Введите название трекера"
         let attributes = [
             NSAttributedString.Key.foregroundColor: UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 1),
             NSAttributedString.Key.font : UIFont(name: "SFProDisplay-Regular", size: 17)!
@@ -88,6 +90,7 @@ class TrackerCreateViewController: UIViewController {
         trackerName.attributedPlaceholder = NSAttributedString(string: "Введите название трекера", attributes:attributes)
         trackerName.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         trackerName.backgroundColor = .none
+        trackerName.delegate = self
         return trackerName
     }()
     
@@ -167,20 +170,27 @@ class TrackerCreateViewController: UIViewController {
     }
     
     @objc func createTracker(){
-        let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .trackerBlue, schedule: ["Понедельник", "Четверг"])
+        let schedule = trackerSchedule
+        let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .trackerBlue, schedule: schedule)
         delegate?.createTracker(category: "Повседневное", tracker: tracker)
         self.dismiss(animated: false)
         trackerTypeSelectViewController.dismiss(animated: true)
+        trackerSchedule = []
+        scheduleSubtitle = ""
     }
     
     @objc func cancel(){
         self.dismiss(animated: true)
     }
     
+    func reloadTable(){
+        categoryAndScheduleTableView.reloadData()
+    }
+    
     private func addSubviews(){
         view.addSubview(layerTextFieldView)
         view.addSubview(titleLable)
-        view.addSubview(trackerName)
+        view.addSubview(trackerNameTextField)
         view.addSubview(categoryAndScheduleTableView)
         view.addSubview(buttonStack)
     }
@@ -212,16 +222,16 @@ class TrackerCreateViewController: UIViewController {
     
     private func setTrackerNameConstraints(){
         NSLayoutConstraint.activate([
-            trackerName.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
-            trackerName.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
-            trackerName.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            trackerName.heightAnchor.constraint(equalToConstant: 75)
+            trackerNameTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
+            trackerNameTextField.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
+            trackerNameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            trackerNameTextField.heightAnchor.constraint(equalToConstant: 75)
         ])
     }
     
     private func setCategoryAndScheduleTableViewConstraints(){
         NSLayoutConstraint.activate([
-            categoryAndScheduleTableView.topAnchor.constraint(equalTo: trackerName.bottomAnchor, constant: 24),
+            categoryAndScheduleTableView.topAnchor.constraint(equalTo: trackerNameTextField.bottomAnchor, constant: 24),
             categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categoryAndScheduleArray.count - 1))
@@ -255,6 +265,7 @@ extension TrackerCreateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = categoryAndScheduleArray[indexPath.row]
+        cell.detailTextLabel?.text = "День недели"
         cell.backgroundColor = .trackerBackgroundOpacityGray
         cell.accessoryType = .disclosureIndicator
         return cell
@@ -268,6 +279,7 @@ extension TrackerCreateViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 1 {
             let viewController = ScheduleViewController()
+            viewController.delegate = self
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
         }
@@ -330,4 +342,13 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
     }
     
+}
+
+extension TrackerCreateViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        trackerName = textField.text ?? ""
+        print(trackerName)
+        return true
+    }
 }

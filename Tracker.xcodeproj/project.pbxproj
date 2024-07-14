@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9027594F2C3C8D3800AC8F0D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027594E2C3C8D3800AC8F0D /* Constants.swift */; };
 		902759512C3C933E00AC8F0D /* Date+weekday Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902759502C3C933E00AC8F0D /* Date+weekday Extension.swift */; };
+		902CA9932C43484A00DBF52C /* Array+Reoder Extendion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902CA9922C43484A00DBF52C /* Array+Reoder Extendion.swift */; };
 		903B3EED2C27757B00B79BD3 /* TrackerCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903B3EEC2C27757B00B79BD3 /* TrackerCreateViewController.swift */; };
 		904FC6022C0C439700A6E2DB /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC6002C0C435800A6E2DB /* SF-Pro-Display-Bold.otf */; };
 		904FC6032C0C439700A6E2DB /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC6012C0C435D00A6E2DB /* SF-Pro-Display-Medium.otf */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		9027594E2C3C8D3800AC8F0D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		902759502C3C933E00AC8F0D /* Date+weekday Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+weekday Extension.swift"; sourceTree = "<group>"; };
+		902CA9922C43484A00DBF52C /* Array+Reoder Extendion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Reoder Extendion.swift"; sourceTree = "<group>"; };
 		903B3EEC2C27757B00B79BD3 /* TrackerCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCreateViewController.swift; sourceTree = "<group>"; };
 		904FC5FF2C0C435500A6E2DB /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
 		904FC6002C0C435800A6E2DB /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 			children = (
 				9FE74DBE2C219BF5007ACB54 /* Int+Days Extension.swift */,
 				902759502C3C933E00AC8F0D /* Date+weekday Extension.swift */,
+				902CA9922C43484A00DBF52C /* Array+Reoder Extendion.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 				90DE58632C0A655400351750 /* TrackerViewController.swift in Sources */,
 				9027594F2C3C8D3800AC8F0D /* Constants.swift in Sources */,
 				9061D3792C20E9D2008C84D5 /* TrackerSupplementaryViewCell.swift in Sources */,
+				902CA9932C43484A00DBF52C /* Array+Reoder Extendion.swift in Sources */,
 				90D8EC312C0A70F60050C398 /* Colors.swift in Sources */,
 				9F6CEA332C13122A007BA364 /* TrackerCategory.swift in Sources */,
 				906E48A02C3A0633008035EC /* EmojiAndColorsSupplementaryViewCell.swift in Sources */,

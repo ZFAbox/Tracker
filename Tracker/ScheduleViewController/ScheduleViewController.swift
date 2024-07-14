@@ -10,7 +10,7 @@ import UIKit
 
 final class ScheduleViewController: UIViewController {
     
-    let schedule = [
+    private let schedule = [
         Weekdays.Monday.rawValue,
         Weekdays.Tuesday.rawValue,
         Weekdays.Wednesday.rawValue,
@@ -19,6 +19,12 @@ final class ScheduleViewController: UIViewController {
         Weekdays.Saturday.rawValue,
         Weekdays.Sunday.rawValue
     ]
+    
+    private let scheduleSubtitlesArray = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+    
+    private var trackerSchedule: [String] = []
+    private var scheduleSubtitle: [String] = []
+    var delegate: TrackerCreateViewController?
     
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
@@ -65,7 +71,12 @@ final class ScheduleViewController: UIViewController {
     }
     
     @objc func confirmedButtonTapped(){
-        //TODO: save schedule
+        if let delegate = self.delegate {
+            delegate.trackerSchedule = trackerSchedule
+            delegate.scheduleSubtitle = scheduleSubtitle.joined(separator: ",")
+            delegate.reloadTable()
+            self.dismiss(animated: true)
+        }
     }
     
     private func addSubviews(){
@@ -128,10 +139,26 @@ extension ScheduleViewController: UITableViewDataSource {
     }
     
     @objc func switchChanged(_ sender: UISwitch){
-    //TODO: - slide switch
+        if sender.isOn {
+            trackerSchedule.append(schedule[sender.tag])
+            print("Добален день недели \(schedule[sender.tag])")
+            scheduleSubtitle.append(scheduleSubtitlesArray[sender.tag])
+            scheduleSubtitle = scheduleSubtitle.reorder(by: scheduleSubtitlesArray)
+            print(scheduleSubtitle)
+        } else {
+            trackerSchedule.removeAll { weekday in
+                weekday == schedule[sender.tag]
+            }
+            scheduleSubtitle.removeAll { subtitle in
+                subtitle == scheduleSubtitle[sender.tag]
+            }
+            print("Удален день недели \(schedule[sender.tag])")
+        }
+        print(trackerSchedule)
     }
 }
 
 extension ScheduleViewController: UITableViewDelegate {
     
 }
+
