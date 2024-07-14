@@ -73,8 +73,8 @@ final class ScheduleViewController: UIViewController {
     @objc func confirmedButtonTapped(){
         if let delegate = self.delegate {
             delegate.trackerSchedule = trackerSchedule
-            delegate.scheduleSubtitle = scheduleSubtitle.joined(separator: ",")
-            delegate.reloadTable()
+            delegate.scheduleSubtitle = scheduleSubtitle.joined(separator: ", ")
+            delegate.categoryAndScheduleTableView.reloadData()
             self.dismiss(animated: true)
         }
     }

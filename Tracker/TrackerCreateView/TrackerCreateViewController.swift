@@ -14,12 +14,12 @@ protocol HabbitCreateViewControllerProtocol{
 class TrackerCreateViewController: UIViewController {
     
     var delegate: HabbitCreateViewControllerProtocol?
-    var category: String?
+    var category: String?// = "Повседневное"
     var regular: Bool
     var trackerTypeSelectViewController: TrackerTypeSelectViewController
     var trackerSchedule: [String] = []
     var trackerName = ""
-    var scheduleSubtitle = ""
+    var scheduleSubtitle: String?
     
     init(regular: Bool, trackerTypeSelectViewController: TrackerTypeSelectViewController) {
         self.regular = regular
@@ -94,14 +94,14 @@ class TrackerCreateViewController: UIViewController {
         return trackerName
     }()
     
-    private lazy var categoryAndScheduleTableView: UITableView = {
+    lazy var categoryAndScheduleTableView: UITableView = {
         let categoryAndSchedule = UITableView()
         categoryAndSchedule.translatesAutoresizingMaskIntoConstraints = false
         categoryAndSchedule.layer.cornerRadius = 16
         categoryAndSchedule.backgroundColor = .trackerWhite
         categoryAndSchedule.dataSource = self
         categoryAndSchedule.delegate = self
-        categoryAndSchedule.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        categoryAndSchedule.register(TrackerCreateViewCell.self, forCellReuseIdentifier: "cell")
         categoryAndSchedule.rowHeight = 75
         categoryAndSchedule.separatorStyle = .singleLine
         categoryAndSchedule.separatorInset.left = 16
@@ -171,7 +171,9 @@ class TrackerCreateViewController: UIViewController {
     
     @objc func createTracker(){
         let schedule = trackerSchedule
+//        guard let category = self.category else { return }
         let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .trackerBlue, schedule: schedule)
+        
         delegate?.createTracker(category: "Повседневное", tracker: tracker)
         self.dismiss(animated: false)
         trackerTypeSelectViewController.dismiss(animated: true)
@@ -263,9 +265,20 @@ extension TrackerCreateViewController: UITableViewDataSource {
 //    }()
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = categoryAndScheduleArray[indexPath.row]
-        cell.detailTextLabel?.text = "День недели"
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? TrackerCreateViewCell
+        guard let cell = cell else { return UITableViewCell() }
+        cell.mainTitle.text = categoryAndScheduleArray[indexPath.row]
+        if indexPath.row == 1 {
+            if scheduleSubtitle != nil {
+                cell.lableStackView.addArrangedSubview(cell.additionalTitle)
+                cell.additionalTitle.text = scheduleSubtitle
+            }
+        } else {
+            if category != nil {
+                cell.lableStackView.addArrangedSubview(cell.additionalTitle)
+                cell.additionalTitle.text = category
+            }
+        }
         cell.backgroundColor = .trackerBackgroundOpacityGray
         cell.accessoryType = .disclosureIndicator
         return cell

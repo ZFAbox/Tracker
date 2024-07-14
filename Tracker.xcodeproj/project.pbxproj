@@ -20,6 +20,7 @@
 		906E48A02C3A0633008035EC /* EmojiAndColorsSupplementaryViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906E489F2C3A0633008035EC /* EmojiAndColorsSupplementaryViewCell.swift */; };
 		90704A442C0BBE2100C7CC57 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704A432C0BBE2100C7CC57 /* TabBarViewController.swift */; };
 		90704A462C0BBF6C00C7CC57 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */; };
+		90B557672C444EA900DF01B7 /* TrackerCreateViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */; };
 		90D8EC312C0A70F60050C398 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D8EC302C0A70F60050C398 /* Colors.swift */; };
 		90DE585F2C0A655400351750 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DE585E2C0A655400351750 /* AppDelegate.swift */; };
 		90DE58612C0A655400351750 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DE58602C0A655400351750 /* SceneDelegate.swift */; };
@@ -50,6 +51,7 @@
 		906E489F2C3A0633008035EC /* EmojiAndColorsSupplementaryViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColorsSupplementaryViewCell.swift; sourceTree = "<group>"; };
 		90704A432C0BBE2100C7CC57 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
+		90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCreateViewCell.swift; sourceTree = "<group>"; };
 		90D8EC302C0A70F60050C398 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		90DE585B2C0A655400351750 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		90DE585E2C0A655400351750 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				903B3EEC2C27757B00B79BD3 /* TrackerCreateViewController.swift */,
 				906E489D2C3A061B008035EC /* EmojiAndColorCollectionViewCell.swift */,
 				906E489F2C3A0633008035EC /* EmojiAndColorsSupplementaryViewCell.swift */,
+				90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */,
 			);
 			path = TrackerCreateView;
 			sourceTree = "<group>";
@@ -283,6 +286,7 @@
 				90D8EC312C0A70F60050C398 /* Colors.swift in Sources */,
 				9F6CEA332C13122A007BA364 /* TrackerCategory.swift in Sources */,
 				906E48A02C3A0633008035EC /* EmojiAndColorsSupplementaryViewCell.swift in Sources */,
+				90B557672C444EA900DF01B7 /* TrackerCreateViewCell.swift in Sources */,
 				90DE585F2C0A655400351750 /* AppDelegate.swift in Sources */,
 				90704A462C0BBF6C00C7CC57 /* StatisticViewController.swift in Sources */,
 				9F6CEA352C13123D007BA364 /* TrackerRecord.swift in Sources */,
