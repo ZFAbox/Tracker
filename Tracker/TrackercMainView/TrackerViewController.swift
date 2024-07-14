@@ -13,7 +13,8 @@ final class TrackerViewController: UIViewController{
         TrackerCategory(categoryName: "Повседневное", trackersOfCategory: [
             Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue]),
             Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", color: UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Wednesday.rawValue, Weekdays.Friday.rawValue]),
-            Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", color: UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1), schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue])
+            Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", color: UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1), schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue]),
+            Tracker(trackerId: UUID(), name: "Лыжи", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue])
         ])
     ]
     
@@ -23,6 +24,7 @@ final class TrackerViewController: UIViewController{
     var currentDate: Date? {
         didSet {
             updateTrackersForCurrentDate(searchedText: nil)
+            print(trackersForCurrentDate)
         }
     }
     
@@ -240,9 +242,12 @@ extension TrackerViewController: UICollectionViewDataSource {
         if trackersForCurrentDate.count == 0 {
             return 0
         } else {
-            let trackers = trackersForCurrentDate[section].trackersOfCategory
-            return trackers.count
+            return trackersForCurrentDate[section].trackersOfCategory.count
         }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        trackersForCurrentDate.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -253,7 +258,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         let completedDays = completedTrackers.filter { trackerRecord in
             trackerRecord.trackerId == tracker.trackerId
         }.count
-        cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays)
+        cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays, currentDate: currentDate)
         cell.delegate = self
         return cell
     }
@@ -283,7 +288,8 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerSupplementaryViewCell
         if id == "header" {
-            headerView.titleLable.text = categories[indexPath.section].categoryName
+            headerView.titleLable.text = trackersForCurrentDate[indexPath.section].categoryName
+            print(trackersForCurrentDate[indexPath.section].categoryName)
         } else {
             headerView.titleLable.text = ""
         }

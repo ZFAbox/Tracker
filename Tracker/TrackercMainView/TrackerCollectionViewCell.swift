@@ -98,7 +98,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int, currentDate: Date?) {
         
         self.isCompletedToday = isCompletedToday
         self.trackerId = tracker.trackerId
@@ -116,6 +116,13 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             trackerDone()
         } else {
             trackerUndone()
+        }
+        if let date = currentDate {
+            if date > Date(){
+                dayMarkButton.isEnabled = false
+            } else {
+                dayMarkButton.isEnabled = true
+            }
         }
     }
     

@@ -14,7 +14,7 @@ protocol HabbitCreateViewControllerProtocol{
 class TrackerCreateViewController: UIViewController {
     
     var delegate: HabbitCreateViewControllerProtocol?
-    var category: String?// = "Повседневное"
+    var category: String? = "Спорт"
     var regular: Bool
     var trackerTypeSelectViewController: TrackerTypeSelectViewController
     var trackerSchedule: [String] = []
@@ -90,6 +90,7 @@ class TrackerCreateViewController: UIViewController {
         trackerName.attributedPlaceholder = NSAttributedString(string: "Введите название трекера", attributes:attributes)
         trackerName.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         trackerName.backgroundColor = .none
+        trackerName.addTarget(self, action: #selector(inputText(_ :)), for: .allEditingEvents)
         trackerName.delegate = self
         return trackerName
     }()
@@ -169,16 +170,23 @@ class TrackerCreateViewController: UIViewController {
         setConstraints()
     }
     
+    
+    @objc func inputText(_ sender: UITextField){
+        let text = sender.text ?? ""
+        trackerName = text
+        print(text)
+    }
+    
     @objc func createTracker(){
         let schedule = trackerSchedule
-//        guard let category = self.category else { return }
-        let tracker = Tracker(trackerId: UUID(), name: "Тестовое управжнение", emoji: "🥵", color: .trackerBlue, schedule: schedule)
+        guard let category = self.category else { return }
+        let tracker = Tracker(trackerId: UUID(), name: trackerName, emoji: "🥵", color: .trackerBlue, schedule: schedule)
         
-        delegate?.createTracker(category: "Повседневное", tracker: tracker)
+        delegate?.createTracker(category: category, tracker: tracker)
         self.dismiss(animated: false)
         trackerTypeSelectViewController.dismiss(animated: true)
         trackerSchedule = []
-        scheduleSubtitle = ""
+        scheduleSubtitle = nil
     }
     
     @objc func cancel(){
@@ -364,4 +372,5 @@ extension TrackerCreateViewController: UITextFieldDelegate {
         print(trackerName)
         return true
     }
+    
 }
