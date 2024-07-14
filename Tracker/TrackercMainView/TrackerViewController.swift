@@ -137,13 +137,10 @@ final class TrackerViewController: UIViewController{
         })
         trackerCollectionView.reloadData()
         
-        if trackersForCurrentDate.isEmpty {
-            trackerCollectionView.isHidden = true
-            filterButton.isHidden = true
-        } else {
-            trackerCollectionView.isHidden = false
-            filterButton.isHidden = false
-        }
+        
+        trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
+        filterButton.isHidden = trackersForCurrentDate.isEmpty
+        
     }
     
     func fontNames(){
@@ -304,7 +301,7 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             return}
         let trackerRecord = TrackerRecord(trackerId: id, tackerDate: date)
         completedTrackers.append(trackerRecord)
-//        trackerCollectionView.reloadItems(at: [indexPath])
+        //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
@@ -315,7 +312,7 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             trackerRecord.trackerId == id &&
             trackerRecord.tackerDate == date
         }
-//        trackerCollectionView.reloadItems(at: [indexPath])
+        //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     
