@@ -41,6 +41,8 @@ class TrackerCreateViewController: UIViewController {
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
+    private var emojiAndColorsCellParameters = TrackerCellPrameters(numberOfCellsInRow: 5, height: 52, horizontalSpacing: 	0, verticalSpacing: 0)
+    
     private let colors: [UIColor] = [
         UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1),
         UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1),
@@ -202,6 +204,7 @@ class TrackerCreateViewController: UIViewController {
         view.addSubview(titleLable)
         view.addSubview(trackerNameTextField)
         view.addSubview(categoryAndScheduleTableView)
+        view.addSubview(emojiAndColors)
         view.addSubview(buttonStack)
     }
     
@@ -210,10 +213,12 @@ class TrackerCreateViewController: UIViewController {
         setLayerTextFieldViewConstrains()
         setTrackerNameConstraints()
         setCategoryAndScheduleTableViewConstraints()
-        setButtonStackConstraints()
+        if regular {
+            setButtonStackConstraintsForTecker()
+        } else {
+            setButtonStackConstraintsForSingle()
+        }
     }
-    
-
     
     private func setTitleConstraints(){
         NSLayoutConstraint.activate([
@@ -248,7 +253,27 @@ class TrackerCreateViewController: UIViewController {
         ])
     }
     
-    private func setButtonStackConstraints(){
+
+    private func setEmojiAndColors(){
+        NSLayoutConstraint.activate([
+            emojiAndColors.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 16),
+            emojiAndColors.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            emojiAndColors.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+//            emojiAndColors.heightAnchor.constraint(equalToConstant: CGFloat(222 * sectionHeader.count))
+        ])
+        
+    }
+    
+    private func setButtonStackConstraintsForTecker(){
+        NSLayoutConstraint.activate([
+            buttonStack.topAnchor.constraint(equalTo: emojiAndColors.bottomAnchor,constant: 16),
+            buttonStack.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonStack.heightAnchor.constraint(equalToConstant: 60)
+        ])
+    }
+    
+    private func setButtonStackConstraintsForSingle(){
         NSLayoutConstraint.activate([
             buttonStack.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
             buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
@@ -264,13 +289,6 @@ extension TrackerCreateViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categoryAndScheduleArray.count
     }
-    
-//    private lazy var cell: UITableViewCell = {
-//        let cell = UITableViewCell()
-//        cell.accessibilityIdentifier = "cell"
-//        cell.textLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-//        return cell
-//    }()
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? TrackerCreateViewCell
@@ -291,8 +309,6 @@ extension TrackerCreateViewController: UITableViewDataSource {
         cell.accessoryType = .disclosureIndicator
         return cell
     }
-    
-    
 }
 
 extension TrackerCreateViewController: UITableViewDelegate {
@@ -308,8 +324,17 @@ extension TrackerCreateViewController: UITableViewDelegate {
 }
 
 extension TrackerCreateViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        2
+        switch section {
+        case 1: return emoji.count
+        case 2: return colors.count
+        default: return 0
+        }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        sectionHeader.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -352,7 +377,8 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.frame.width / 6
         let height = width
-        return CGSize(width: width, height: height)
+        let size = CGSize(width: width, height: height)
+        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
