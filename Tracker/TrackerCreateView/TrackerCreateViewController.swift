@@ -69,7 +69,6 @@ class TrackerCreateViewController: UIViewController {
     private lazy var scrollView: UIView = {
         let scrollView = UIView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.frame = self.view.bounds
         return scrollView
     }()
     
@@ -142,6 +141,7 @@ class TrackerCreateViewController: UIViewController {
         emojiAndColors.register(EmojiAndColorsSupplementaryViewCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         emojiAndColors.dataSource = self
         emojiAndColors.delegate = self
+        emojiAndColors.allowsMultipleSelection = false
         return emojiAndColors
     }()
     
@@ -221,9 +221,6 @@ class TrackerCreateViewController: UIViewController {
         view.addSubview(emojiAndColors)
         view.addSubview(buttonStack)
     }
-    
-    
-    
     
     private func setConstraints(){
         setScrollViewConstraints()
@@ -428,6 +425,20 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
         let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
+        if indexPath.section == 0 {
+            cell?.layer.cornerRadius = 16
+            cell?.clipsToBounds = true
+            cell?.backgroundColor = .trackerBackgroundOpacityGray
+        } else {
+            cell?.layer.cornerRadius = 8
+            cell?.layer.borderWidth = 3
+            cell?.layer.borderColor = colors[indexPath.row].cgColor
+            cell?.layer.opacity = 0.3
+        }
     }
     
 }
