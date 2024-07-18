@@ -478,11 +478,13 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
         } else {
             cell?.layer.cornerRadius = 8
             cell?.layer.borderWidth = 3
-            cell?.layer.borderColor = colors[indexPath.row].cgColor
-            cell?.layer.opacity = 0.3
+            cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
         }
     }
     
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        <#code#>
+    }
 }
 
 extension TrackerCreateViewController: UITextFieldDelegate {
