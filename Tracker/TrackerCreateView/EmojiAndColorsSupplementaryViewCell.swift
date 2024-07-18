@@ -23,9 +23,9 @@ class EmojiAndColorsSupplementaryViewCell: UICollectionReusableView {
         addSubview(titleLable)
         
         NSLayoutConstraint.activate([
-            titleLable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            titleLable.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            titleLable.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+            titleLable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            titleLable.topAnchor.constraint(equalTo: topAnchor, constant: 24),
+            titleLable.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24)
         ])
     }
     

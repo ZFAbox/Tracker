@@ -66,10 +66,19 @@ class TrackerCreateViewController: UIViewController {
         UIColor.rgbColors(red: 47, green: 208, blue: 88, alpha: 1)
     ]
    
-    private lazy var scrollView: UIView = {
-        let scrollView = UIView()
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.isScrollEnabled = true
+        scrollView.scrollsToTop = true
         return scrollView
+    }()
+    
+    private lazy var scrollViewContent: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private lazy var titleLable: UILabel = {
@@ -142,6 +151,7 @@ class TrackerCreateViewController: UIViewController {
         emojiAndColors.dataSource = self
         emojiAndColors.delegate = self
         emojiAndColors.allowsMultipleSelection = false
+        emojiAndColors.isScrollEnabled = false
         return emojiAndColors
     }()
     
@@ -181,7 +191,6 @@ class TrackerCreateViewController: UIViewController {
         buttonStack.addArrangedSubview(createButton)
         addSubviews()
         setConstraints()
-        scrollView.backgroundColor = .brown
     }
     
     
@@ -213,62 +222,80 @@ class TrackerCreateViewController: UIViewController {
     
     private func addSubviews(){
         view.addSubview(scrollView)
-        view.addSubview(titleLable)
-        view.addSubview(layerTextFieldView)
-        view.addSubview(titleLable)
-        view.addSubview(trackerNameTextField)
-        view.addSubview(categoryAndScheduleTableView)
-        view.addSubview(emojiAndColors)
-        view.addSubview(buttonStack)
+        scrollView.addSubview(scrollViewContent)
+        scrollViewContent.addSubview(titleLable)
+        scrollViewContent.addSubview(layerTextFieldView)
+        scrollViewContent.addSubview(trackerNameTextField)
+        scrollViewContent.addSubview(categoryAndScheduleTableView)
+        scrollViewContent.addSubview(emojiAndColors)
+        scrollViewContent.addSubview(buttonStack)
+
+
     }
     
     private func setConstraints(){
         setScrollViewConstraints()
+        setScrollViewContentConstraints()
+
         setTitleConstraints()
         setLayerTextFieldViewConstrains()
         setTrackerNameConstraints()
         setCategoryAndScheduleTableViewConstraints()
         setEmojiAndColors()
-        setButtonStackConstraintsForSingle()
-//        setButtonStackConstraintsForTecker()
+//        setButtonStackConstraintsForSingle()
+        setButtonStackConstraintsForTecker()
 //        if regular {
 //            setButtonStackConstraintsForTecker()
 //        } else {
 //            setButtonStackConstraintsForSingle()
 //        }
+//        scrollViewContent.heightAnchor.constraint(equalTo: scrollView.heightAnchor).isActive = true
+//        scrollViewContent.heightAnchor.constraint(equalTo: scrollView.heightAnchor).priority = .fittingSizeLevel
+        
     }
     
     
     private func setScrollViewConstraints(){
         NSLayoutConstraint.activate([
-            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.heightAnchor.constraint(equalToConstant: 300),
-            scrollView.widthAnchor.constraint(equalToConstant: 300)]
-                        
-        )
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+    }
+    
+    private func setScrollViewContentConstraints(){
+        NSLayoutConstraint.activate([
+            scrollViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            scrollViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            scrollViewContent.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            scrollViewContent.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            scrollViewContent.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            scrollViewContent.heightAnchor.constraint(equalToConstant: 904)
+
+        ])
+
     }
     private func setTitleConstraints(){
         NSLayoutConstraint.activate([
-            titleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
-            titleLable.centerXAnchor.constraint(equalTo: view.centerXAnchor)])
+            titleLable.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: 27),
+            titleLable.centerXAnchor.constraint(equalTo: scrollViewContent.centerXAnchor)])
     }
     
     private func setLayerTextFieldViewConstrains(){
         NSLayoutConstraint.activate([
-            layerTextFieldView.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
-            layerTextFieldView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            layerTextFieldView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            layerTextFieldView.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: 87),
+            layerTextFieldView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            layerTextFieldView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             layerTextFieldView.heightAnchor.constraint(equalToConstant: 75)
         ])
     }
     
     private func setTrackerNameConstraints(){
         NSLayoutConstraint.activate([
-            trackerNameTextField.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
+            trackerNameTextField.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: 87),
             trackerNameTextField.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
-            trackerNameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            trackerNameTextField.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             trackerNameTextField.heightAnchor.constraint(equalToConstant: 75)
         ])
     }
@@ -276,8 +303,8 @@ class TrackerCreateViewController: UIViewController {
     private func setCategoryAndScheduleTableViewConstraints(){
         NSLayoutConstraint.activate([
             categoryAndScheduleTableView.topAnchor.constraint(equalTo: trackerNameTextField.bottomAnchor, constant: 24),
-            categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categoryAndScheduleArray.count - 1))
         ])
     }
@@ -285,10 +312,10 @@ class TrackerCreateViewController: UIViewController {
 
     private func setEmojiAndColors(){
         NSLayoutConstraint.activate([
-            emojiAndColors.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 16),
-            emojiAndColors.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            emojiAndColors.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            emojiAndColors.bottomAnchor.constraint(equalTo: buttonStack.topAnchor, constant: -16)
+            emojiAndColors.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 8),
+            emojiAndColors.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            emojiAndColors.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            emojiAndColors.heightAnchor.constraint(equalToConstant: 484)
         ])
         
     }
@@ -296,18 +323,18 @@ class TrackerCreateViewController: UIViewController {
     private func setButtonStackConstraintsForTecker(){
         NSLayoutConstraint.activate([
             buttonStack.topAnchor.constraint(equalTo: emojiAndColors.bottomAnchor,constant: 16),
-            buttonStack.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
-            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonStack.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             buttonStack.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
     private func setButtonStackConstraintsForSingle(){
         NSLayoutConstraint.activate([
-            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            buttonStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            buttonStack.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
             buttonStack.heightAnchor.constraint(equalToConstant: 60),
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            buttonStack.bottomAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
