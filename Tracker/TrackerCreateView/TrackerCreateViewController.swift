@@ -471,19 +471,31 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
-        if indexPath.section == 0 {
-            cell?.layer.cornerRadius = 16
-            cell?.clipsToBounds = true
-            cell?.backgroundColor = .trackerBackgroundOpacityGray
-        } else {
-            cell?.layer.cornerRadius = 8
-            cell?.layer.borderWidth = 3
-            cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
-        }
+
+            UIView.animate(withDuration: 0.3) {
+                if indexPath.section == 0 {
+                    cell?.layer.cornerRadius = 16
+                    cell?.clipsToBounds = true
+                    cell?.backgroundColor = .trackerBackgroundOpacityGray
+                } else {
+                    cell?.layer.cornerRadius = 8
+                    cell?.layer.borderWidth = 3
+                    cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
+                }
+            }
+
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        <#code#>
+        let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
+        UIView.animate(withDuration: 0.3) {
+            if indexPath.section == 0 {
+                cell?.backgroundColor = .trackerWhite //.trackerWhite
+            } else {
+                cell?.layer.cornerRadius = 0
+                cell?.layer.borderWidth = 0
+            }
+        }
     }
 }
 
