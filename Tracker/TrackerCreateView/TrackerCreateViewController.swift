@@ -462,8 +462,8 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        let indexPath = IndexPath(row: 0, section: section)
         
+        let indexPath = IndexPath(row: 0, section: section)
         let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
@@ -471,8 +471,8 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
-
-            UIView.animate(withDuration: 0.3) {
+            
+        UIView.animate(withDuration: 0.3) {
                 if indexPath.section == 0 {
                     cell?.layer.cornerRadius = 16
                     cell?.clipsToBounds = true
@@ -483,7 +483,6 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
                     cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
                 }
             }
-
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
