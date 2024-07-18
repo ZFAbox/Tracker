@@ -39,10 +39,25 @@ class TrackerCreateViewController: UIViewController {
          return ["Категория"]
         }
     }()
+    
+
+    
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
-    private var emojiAndColorsCellParameters = TrackerCellPrameters(numberOfCellsInRow: 5, height: 52, horizontalSpacing: 	0, verticalSpacing: 0)
+    private lazy var collectionViewCellSize: Int = {
+        if (view.frame.width - 32) / 6 >= 52 {
+            return 52
+        } else {
+            return 48
+        }
+    }()
+    
+    private lazy var supplementaryViewCellSize: Int = 34
+    private lazy var safeZoneCollectioView: Int = 58
+    private lazy var collectionViewHeight: Int = {
+        return sectionHeader.count * (supplementaryViewCellSize + safeZoneCollectioView) + emoji.count / 6 * collectionViewCellSize + colors.count / 6 * collectionViewCellSize
+    }()
     
     
     private let colors: [UIColor] = [
@@ -75,7 +90,7 @@ class TrackerCreateViewController: UIViewController {
         return scrollView
     }()
     
-    private lazy var scrollViewContent: UIView = {
+    private lazy var contentView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -222,13 +237,13 @@ class TrackerCreateViewController: UIViewController {
     
     private func addSubviews(){
         view.addSubview(scrollView)
-        scrollView.addSubview(scrollViewContent)
-        scrollViewContent.addSubview(titleLable)
-        scrollViewContent.addSubview(layerTextFieldView)
-        scrollViewContent.addSubview(trackerNameTextField)
-        scrollViewContent.addSubview(categoryAndScheduleTableView)
-        scrollViewContent.addSubview(emojiAndColors)
-        scrollViewContent.addSubview(buttonStack)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(titleLable)
+        contentView.addSubview(layerTextFieldView)
+        contentView.addSubview(trackerNameTextField)
+        contentView.addSubview(categoryAndScheduleTableView)
+        contentView.addSubview(emojiAndColors)
+        contentView.addSubview(buttonStack)
 
 
     }
@@ -236,22 +251,21 @@ class TrackerCreateViewController: UIViewController {
     private func setConstraints(){
         setScrollViewConstraints()
         setScrollViewContentConstraints()
-
         setTitleConstraints()
         setLayerTextFieldViewConstrains()
         setTrackerNameConstraints()
         setCategoryAndScheduleTableViewConstraints()
         setEmojiAndColors()
 //        setButtonStackConstraintsForSingle()
-        setButtonStackConstraintsForTecker()
+//        setButtonStackConstraintsForTecker()
 //        if regular {
-//            setButtonStackConstraintsForTecker()
+            setButtonStackConstraintsForTecker()
 //        } else {
 //            setButtonStackConstraintsForSingle()
 //        }
 //        scrollViewContent.heightAnchor.constraint(equalTo: scrollView.heightAnchor).isActive = true
 //        scrollViewContent.heightAnchor.constraint(equalTo: scrollView.heightAnchor).priority = .fittingSizeLevel
-        
+        contentView.bottomAnchor.constraint(equalTo: buttonStack.bottomAnchor).isActive = true
     }
     
     
@@ -266,36 +280,34 @@ class TrackerCreateViewController: UIViewController {
     
     private func setScrollViewContentConstraints(){
         NSLayoutConstraint.activate([
-            scrollViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            scrollViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            scrollViewContent.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            scrollViewContent.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            scrollViewContent.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            scrollViewContent.heightAnchor.constraint(equalToConstant: 904)
-
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
 
     }
     private func setTitleConstraints(){
         NSLayoutConstraint.activate([
-            titleLable.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: 27),
-            titleLable.centerXAnchor.constraint(equalTo: scrollViewContent.centerXAnchor)])
+            titleLable.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 27),
+            titleLable.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)])
     }
     
     private func setLayerTextFieldViewConstrains(){
         NSLayoutConstraint.activate([
-            layerTextFieldView.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: 87),
-            layerTextFieldView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
-            layerTextFieldView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            layerTextFieldView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 87),
+            layerTextFieldView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            layerTextFieldView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             layerTextFieldView.heightAnchor.constraint(equalToConstant: 75)
         ])
     }
     
     private func setTrackerNameConstraints(){
         NSLayoutConstraint.activate([
-            trackerNameTextField.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: 87),
+            trackerNameTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 87),
             trackerNameTextField.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
-            trackerNameTextField.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            trackerNameTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             trackerNameTextField.heightAnchor.constraint(equalToConstant: 75)
         ])
     }
@@ -303,8 +315,8 @@ class TrackerCreateViewController: UIViewController {
     private func setCategoryAndScheduleTableViewConstraints(){
         NSLayoutConstraint.activate([
             categoryAndScheduleTableView.topAnchor.constraint(equalTo: trackerNameTextField.bottomAnchor, constant: 24),
-            categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
-            categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categoryAndScheduleArray.count - 1))
         ])
     }
@@ -313,26 +325,26 @@ class TrackerCreateViewController: UIViewController {
     private func setEmojiAndColors(){
         NSLayoutConstraint.activate([
             emojiAndColors.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 8),
-            emojiAndColors.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
-            emojiAndColors.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
-            emojiAndColors.heightAnchor.constraint(equalToConstant: 484)
+            emojiAndColors.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            emojiAndColors.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            emojiAndColors.heightAnchor.constraint(equalToConstant: CGFloat(collectionViewHeight))
         ])
         
     }
     
     private func setButtonStackConstraintsForTecker(){
         NSLayoutConstraint.activate([
-            buttonStack.topAnchor.constraint(equalTo: emojiAndColors.bottomAnchor,constant: 16),
-            buttonStack.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
-            buttonStack.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            buttonStack.topAnchor.constraint(equalTo: emojiAndColors.bottomAnchor),
+            buttonStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             buttonStack.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
     private func setButtonStackConstraintsForSingle(){
         NSLayoutConstraint.activate([
-            buttonStack.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 16),
-            buttonStack.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -16),
+            buttonStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             buttonStack.heightAnchor.constraint(equalToConstant: 60),
             buttonStack.bottomAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.bottomAnchor)
         ])
@@ -428,14 +440,17 @@ extension TrackerCreateViewController: UICollectionViewDataSource {
 extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let splitRatio = collectionView.bounds.width / 6
-        if splitRatio > 52 {
-            let size = CGSize(width: 52, height: 52)
-            return size
-        } else {
-            let size = CGSize(width: 48, height: 48)
-            return size
-        }
+//        let splitRatio = collectionView.bounds.width / 6
+//        if splitRatio > 52 {
+//            let size = CGSize(width: 52, height: 52)
+//            return size
+//        } else {
+//            let size = CGSize(width: 48, height: 48)
+//            return size
+//        }
+//
+        let size = CGSize(width: collectionViewCellSize, height: collectionViewCellSize)
+        return size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
