@@ -30,6 +30,8 @@
 		9F6CEA312C13120B007BA364 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA302C13120B007BA364 /* Tracker.swift */; };
 		9F6CEA332C13122A007BA364 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA322C13122A007BA364 /* TrackerCategory.swift */; };
 		9F6CEA352C13123D007BA364 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA342C13123D007BA364 /* TrackerRecord.swift */; };
+		9F8F58D12C4A49C700A2CA34 /* TrackerCoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F58CF2C4A49C700A2CA34 /* TrackerCoreData.xcdatamodeld */; };
+		9F8F58D32C4A4F6700A2CA34 /* DaysValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F8F58D22C4A4F6700A2CA34 /* DaysValueTransformer.swift */; };
 		9F9E7EC42C3FC8630032EA1D /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9E7EC32C3FC8630032EA1D /* ScheduleViewController.swift */; };
 		9F9ED0F12C1C545A0013D4D4 /* TrackerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */; };
 		9F9ED0F32C1C6EAF0013D4D4 /* TrackerCellParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9ED0F22C1C6EAF0013D4D4 /* TrackerCellParameters.swift */; };
@@ -63,6 +65,8 @@
 		9F6CEA302C13120B007BA364 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		9F6CEA322C13122A007BA364 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		9F6CEA342C13123D007BA364 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		9F8F58D02C4A49C700A2CA34 /* TrackerCoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackerCoreData.xcdatamodel; sourceTree = "<group>"; };
+		9F8F58D22C4A4F6700A2CA34 /* DaysValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysValueTransformer.swift; sourceTree = "<group>"; };
 		9F9E7EC32C3FC8630032EA1D /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCollectionViewCell.swift; sourceTree = "<group>"; };
 		9F9ED0F22C1C6EAF0013D4D4 /* TrackerCellParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellParameters.swift; sourceTree = "<group>"; };
@@ -115,6 +119,8 @@
 		90DE58522C0A655400351750 = {
 			isa = PBXGroup;
 			children = (
+				9F8F58CF2C4A49C700A2CA34 /* TrackerCoreData.xcdatamodeld */,
+				9F8F58D22C4A4F6700A2CA34 /* DaysValueTransformer.swift */,
 				90DE585D2C0A655400351750 /* Tracker */,
 				90DE585C2C0A655400351750 /* Products */,
 			);
@@ -281,9 +287,11 @@
 			files = (
 				90DE58632C0A655400351750 /* TrackerViewController.swift in Sources */,
 				9027594F2C3C8D3800AC8F0D /* Constants.swift in Sources */,
+				9F8F58D12C4A49C700A2CA34 /* TrackerCoreData.xcdatamodeld in Sources */,
 				9061D3792C20E9D2008C84D5 /* TrackerSupplementaryViewCell.swift in Sources */,
 				902CA9932C43484A00DBF52C /* Array+Reoder Extendion.swift in Sources */,
 				90D8EC312C0A70F60050C398 /* Colors.swift in Sources */,
+				9F8F58D32C4A4F6700A2CA34 /* DaysValueTransformer.swift in Sources */,
 				9F6CEA332C13122A007BA364 /* TrackerCategory.swift in Sources */,
 				906E48A02C3A0633008035EC /* EmojiAndColorsSupplementaryViewCell.swift in Sources */,
 				90B557672C444EA900DF01B7 /* TrackerCreateViewCell.swift in Sources */,
@@ -523,6 +531,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		9F8F58CF2C4A49C700A2CA34 /* TrackerCoreData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				9F8F58D02C4A49C700A2CA34 /* TrackerCoreData.xcdatamodel */,
+			);
+			currentVersion = 9F8F58D02C4A49C700A2CA34 /* TrackerCoreData.xcdatamodel */;
+			path = TrackerCoreData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 90DE58532C0A655400351750 /* Project object */;
 }

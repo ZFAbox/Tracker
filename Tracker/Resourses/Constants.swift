@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-enum Weekdays: String {
+enum Weekdays: String, Codable{
     case Sunday = "Воскресенье"
     case Monday = "Понедельник"
     case Tuesday = "Вторник"
