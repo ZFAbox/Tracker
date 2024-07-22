@@ -265,9 +265,9 @@ extension TrackerViewController: UICollectionViewDataSource {
             print("Нет даты")
             return false }
         let isTrackerCompleted =  completedTrackers.contains { trackerRecord in
-            let day = Calendar.current.isDate(trackerRecord.tackerDate, inSameDayAs: date)
+            let day = Calendar.current.isDate(trackerRecord.trackerDate, inSameDayAs: date)
             return trackerRecord.trackerId == id &&
-            trackerRecord.tackerDate == date
+            trackerRecord.trackerDate == date
         }
         print(isTrackerCompleted)
         return isTrackerCompleted
@@ -299,7 +299,7 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
         guard let date = currentDate else {
             assertionFailure("Нет даты")
             return}
-        let trackerRecord = TrackerRecord(trackerId: id, tackerDate: date)
+        let trackerRecord = TrackerRecord(trackerId: id, trackerDate: date)
         completedTrackers.append(trackerRecord)
         //        trackerCollectionView.reloadItems(at: [indexPath])
     }
@@ -310,7 +310,7 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             return}
         completedTrackers.removeAll { trackerRecord in
             trackerRecord.trackerId == id &&
-            trackerRecord.tackerDate == date
+            trackerRecord.trackerDate == date
         }
         //        trackerCollectionView.reloadItems(at: [indexPath])
     }
