@@ -13,53 +13,20 @@ final class TrackerViewController: UIViewController{
         TrackerCategory(categoryName: "Повседневное", trackersOfCategory: [
             Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue]),
             Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", color: UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Wednesday.rawValue, Weekdays.Friday.rawValue]),
-            Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", color: UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1), schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue])
+            Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", color: UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1), schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue]),
+            Tracker(trackerId: UUID(), name: "Лыжи", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue])
         ])
     ]
     
     var completerTrackerId: Set<UUID> = []
     var completedTrackers: [TrackerRecord] = []
     private var trackersForCurrentDate: [TrackerCategory] = []
-    
     var currentDate: Date? {
         didSet {
             updateTrackersForCurrentDate(searchedText: nil)
+            print(trackersForCurrentDate)
         }
     }
-    
-    private func updateTrackersForCurrentDate(searchedText: String?){
-        guard let currentDate = currentDate else {
-            print("Нет текущей даты")
-            return }
-        let weekday = DateFormatter.weekday(date: currentDate)
-        let searchText = (searchedText ?? "").lowercased()
-        print(weekday)
-        trackersForCurrentDate = categories.compactMap({ category in
-            let trackers = category.trackersOfCategory.filter { tracker in
-                
-                let weekdayMatch = tracker.schedule.contains { weekday in
-                    weekday == DateFormatter.weekday(date: currentDate)
-                } == true
-                let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
-                return weekdayMatch && searchMatch
-            }
-            print(trackers.count)
-            if trackers.isEmpty {
-                return nil
-            }
-            return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
-        })
-        trackerCollectionView.reloadData()
-        
-        if trackersForCurrentDate.isEmpty {
-            trackerCollectionView.isHidden = true
-            filterButton.isHidden = true
-        } else {
-            trackerCollectionView.isHidden = false
-            filterButton.isHidden = false
-        }
-    }
-    
     
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
@@ -128,7 +95,7 @@ final class TrackerViewController: UIViewController{
         let filterButtonText = "Фильтры"
         filterButton.setTitle(filterButtonText, for: .normal)
         filterButton.titleLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 16)
-        filterButton.titleLabel?.tintColor = .ypWhite
+        filterButton.titleLabel?.tintColor = .trackerWhite
         filterButton.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
         return filterButton
     }()
@@ -140,25 +107,40 @@ final class TrackerViewController: UIViewController{
         setSublayer()
         setConstrains()
         
-        //        guard let currentDate = currentDate else {
-        //            print("Нет текущей даты")
-        //            return }
-        //        let weekday = DateFormatter.weekday(date: currentDate)
-        //        for tracker in trackers {
-        //            if tracker.schedule.contains(weekday) {
-        //                trackersForCurrentDate.append(tracker)
-        //            }
-        //        }
-        //        if trackersForCurrentDate.isEmpty {
-        //            trackerCollectionView.isHidden = true
-        //        } else {
-        //            trackerCollectionView.isHidden = false
-        //        }
-        
     }
     
     @objc func filterButtonTapped(){
         //TODO: - add filter button action
+    }
+    
+    private func updateTrackersForCurrentDate(searchedText: String?){
+        guard let currentDate = currentDate else {
+            print("Нет текущей даты")
+            return }
+        let weekday = DateFormatter.weekday(date: currentDate)
+        let searchText = (searchedText ?? "").lowercased()
+        print(weekday)
+        trackersForCurrentDate = categories.compactMap({ category in
+            let trackers = category.trackersOfCategory.filter { tracker in
+                
+                let weekdayMatch = tracker.schedule.contains { weekday in
+                    weekday == DateFormatter.weekday(date: currentDate)
+                } == true
+                let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
+                return weekdayMatch && searchMatch
+            }
+            print(trackers.count)
+            if trackers.isEmpty {
+                return nil
+            }
+            return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
+        })
+        trackerCollectionView.reloadData()
+        
+        
+        trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
+        filterButton.isHidden = trackersForCurrentDate.isEmpty
+        
     }
     
     func fontNames(){
@@ -250,7 +232,6 @@ final class TrackerViewController: UIViewController{
             filterButton.widthAnchor.constraint(equalToConstant: 114)
         ])
     }
-    
 }
 
 extension TrackerViewController: UICollectionViewDataSource {
@@ -258,9 +239,12 @@ extension TrackerViewController: UICollectionViewDataSource {
         if trackersForCurrentDate.count == 0 {
             return 0
         } else {
-            let trackers = trackersForCurrentDate[section].trackersOfCategory
-            return trackers.count
+            return trackersForCurrentDate[section].trackersOfCategory.count
         }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        trackersForCurrentDate.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -271,7 +255,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         let completedDays = completedTrackers.filter { trackerRecord in
             trackerRecord.trackerId == tracker.trackerId
         }.count
-        cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays)
+        cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays, currentDate: currentDate)
         cell.delegate = self
         return cell
     }
@@ -281,9 +265,9 @@ extension TrackerViewController: UICollectionViewDataSource {
             print("Нет даты")
             return false }
         let isTrackerCompleted =  completedTrackers.contains { trackerRecord in
-            let day = Calendar.current.isDate(trackerRecord.tackerDate, inSameDayAs: date)
+            let day = Calendar.current.isDate(trackerRecord.trackerDate, inSameDayAs: date)
             return trackerRecord.trackerId == id &&
-            trackerRecord.tackerDate == date
+            trackerRecord.trackerDate == date
         }
         print(isTrackerCompleted)
         return isTrackerCompleted
@@ -301,7 +285,8 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerSupplementaryViewCell
         if id == "header" {
-            headerView.titleLable.text = categories[indexPath.section].categoryName
+            headerView.titleLable.text = trackersForCurrentDate[indexPath.section].categoryName
+            print(trackersForCurrentDate[indexPath.section].categoryName)
         } else {
             headerView.titleLable.text = ""
         }
@@ -309,15 +294,14 @@ extension TrackerViewController: UICollectionViewDataSource {
     }
 }
 
-
 extension TrackerViewController: TrackerCollectionViewCellProtocol {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         guard let date = currentDate else {
             assertionFailure("Нет даты")
             return}
-        let trackerRecord = TrackerRecord(trackerId: id, tackerDate: date)
+        let trackerRecord = TrackerRecord(trackerId: id, trackerDate: date)
         completedTrackers.append(trackerRecord)
-//        trackerCollectionView.reloadItems(at: [indexPath])
+        //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
@@ -326,9 +310,9 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             return}
         completedTrackers.removeAll { trackerRecord in
             trackerRecord.trackerId == id &&
-            trackerRecord.tackerDate == date
+            trackerRecord.trackerDate == date
         }
-//        trackerCollectionView.reloadItems(at: [indexPath])
+        //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     
@@ -375,7 +359,6 @@ extension TrackerViewController: HabbitCreateViewControllerProtocol {
                         trackerCategory.categoryName == category
                     }
                     categories.append(TrackerCategory(categoryName: category, trackersOfCategory: trackers))
-
                 }
             }
         } else {

@@ -33,7 +33,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         habbitButton.setTitle("Привычка", for: .normal)
         habbitButton.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         habbitButton.backgroundColor = .trackerBlack
-        habbitButton.tintColor = .ypWhite
+        habbitButton.tintColor = .trackerWhite
         habbitButton.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         return habbitButton
     }()
@@ -46,7 +46,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         notRegularButton.setTitle("Нерегулярное событие", for: .normal)
         notRegularButton.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         notRegularButton.backgroundColor = .trackerBlack
-        notRegularButton.tintColor = .ypWhite
+        notRegularButton.tintColor = .trackerWhite
         notRegularButton.addTarget(self, action: #selector(notRegularButtonTapped), for: .touchUpInside)
         return notRegularButton
     }()
@@ -54,7 +54,7 @@ final class TrackerTypeSelectViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhite
+        view.backgroundColor = .trackerWhite
         addSubviews()
         setConstrains()
     }

@@ -42,7 +42,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         let emojiView = UIView()
         emojiView.translatesAutoresizingMaskIntoConstraints = false
         emojiView.layer.cornerRadius = 12
-        emojiView.backgroundColor = .ypWhite
+        emojiView.backgroundColor = .trackerWhite
         emojiView.layer.opacity = 0.7
         return emojiView
     }()
@@ -60,7 +60,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         trackerNameLable.translatesAutoresizingMaskIntoConstraints = false
         trackerNameLable.text = "Бегать по утрам"
         trackerNameLable.font = UIFont(name: "SFProDisplay-Medium", size: 12)
-        trackerNameLable.textColor = .ypWhite
+        trackerNameLable.textColor = .trackerWhite
         return trackerNameLable
     }()
     
@@ -81,7 +81,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         dayMarkButton.layer.cornerRadius = 17
         let buttonImage = UIImage(named: "Tracker Plus")
         dayMarkButton.setImage(buttonImage, for: .normal)
-        dayMarkButton.tintColor = .ypWhite
+        dayMarkButton.tintColor = .trackerWhite
         dayMarkButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         return dayMarkButton
     }()
@@ -98,7 +98,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int) {
+    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int, currentDate: Date?) {
         
         self.isCompletedToday = isCompletedToday
         self.trackerId = tracker.trackerId
@@ -116,6 +116,13 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             trackerDone()
         } else {
             trackerUndone()
+        }
+        if let date = currentDate {
+            if date > Date(){
+                dayMarkButton.isEnabled = false
+            } else {
+                dayMarkButton.isEnabled = true
+            }
         }
     }
     

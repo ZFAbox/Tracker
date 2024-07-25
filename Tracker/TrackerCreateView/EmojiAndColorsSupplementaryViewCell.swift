@@ -16,14 +16,15 @@ class EmojiAndColorsSupplementaryViewCell: UICollectionReusableView {
         titleLable.font = UIFont(name: "SFProDisplay-Bold", size: 19)
         return titleLable
     }()
+    
     override init(frame: CGRect) {
         super .init(frame: frame)
         
         addSubview(titleLable)
         
         NSLayoutConstraint.activate([
-            titleLable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
-            titleLable.topAnchor.constraint(equalTo: topAnchor, constant: 32),
+            titleLable.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            titleLable.topAnchor.constraint(equalTo: topAnchor, constant: 24),
             titleLable.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24)
         ])
     }

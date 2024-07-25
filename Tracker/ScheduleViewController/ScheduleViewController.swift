@@ -10,7 +10,7 @@ import UIKit
 
 final class ScheduleViewController: UIViewController {
     
-    let schedule = [
+    private let schedule = [
         Weekdays.Monday.rawValue,
         Weekdays.Tuesday.rawValue,
         Weekdays.Wednesday.rawValue,
@@ -19,6 +19,12 @@ final class ScheduleViewController: UIViewController {
         Weekdays.Saturday.rawValue,
         Weekdays.Sunday.rawValue
     ]
+    
+    private let scheduleSubtitlesArray = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+    
+    private var trackerSchedule: [String] = []
+    private var scheduleSubtitle: [String] = []
+    var delegate: TrackerCreateViewController?
     
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
@@ -33,7 +39,7 @@ final class ScheduleViewController: UIViewController {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
         table.layer.cornerRadius = 16
-        table.backgroundColor = .ypWhite
+        table.backgroundColor = .trackerWhite
         table.dataSource = self
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -52,20 +58,25 @@ final class ScheduleViewController: UIViewController {
         button.setTitle("Готово", for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.backgroundColor = .trackerBlack
-        button.tintColor = .ypWhite
+        button.tintColor = .trackerWhite
         button.addTarget(self, action: #selector(confirmedButtonTapped), for: .touchUpInside)
         return button
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypWhite
+        view.backgroundColor = .trackerWhite
         addSubviews()
         setConstraints()
     }
     
     @objc func confirmedButtonTapped(){
-        //TODO: save schedule
+        if let delegate = self.delegate {
+            delegate.trackerSchedule = trackerSchedule
+            delegate.scheduleSubtitle = scheduleSubtitle.joined(separator: ", ")
+            delegate.categoryAndScheduleTableView.reloadData()
+            self.dismiss(animated: true)
+        }
     }
     
     private func addSubviews(){
@@ -128,10 +139,26 @@ extension ScheduleViewController: UITableViewDataSource {
     }
     
     @objc func switchChanged(_ sender: UISwitch){
-    //TODO: - slide switch
+        if sender.isOn {
+            trackerSchedule.append(schedule[sender.tag])
+            print("Добален день недели \(schedule[sender.tag])")
+            scheduleSubtitle.append(scheduleSubtitlesArray[sender.tag])
+            scheduleSubtitle = scheduleSubtitle.reorder(by: scheduleSubtitlesArray)
+            print(scheduleSubtitle)
+        } else {
+            trackerSchedule.removeAll { weekday in
+                weekday == schedule[sender.tag]
+            }
+            scheduleSubtitle.removeAll { subtitle in
+                subtitle == scheduleSubtitle[sender.tag]
+            }
+            print("Удален день недели \(schedule[sender.tag])")
+        }
+        print(trackerSchedule)
     }
 }
 
 extension ScheduleViewController: UITableViewDelegate {
     
 }
+

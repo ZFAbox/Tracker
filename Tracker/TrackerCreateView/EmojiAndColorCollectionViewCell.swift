@@ -19,11 +19,10 @@ class EmojiAndColorCollectionViewCell:UICollectionViewCell {
     }()
     
     lazy var color: UIView = {
-        let color = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        let color = UIView()
         color.translatesAutoresizingMaskIntoConstraints = false
         color.layer.cornerRadius = 8
         color.clipsToBounds = true
-        color.backgroundColor = .red
         return color
     }()
     
@@ -35,14 +34,17 @@ class EmojiAndColorCollectionViewCell:UICollectionViewCell {
     
     func addSubViews(){
         self.addSubview(emoji)
+        self.addSubview(color)
     }
     
     func setConstrains(){
         NSLayoutConstraint.activate([
             emoji.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             emoji.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            color.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             color.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            color.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+            color.heightAnchor.constraint(equalToConstant: 40),
+            color.widthAnchor.constraint(equalToConstant: 40)
         ])
     }
     
