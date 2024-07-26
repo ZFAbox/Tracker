@@ -17,7 +17,7 @@ final class TrackerViewController: UIViewController{
             Tracker(trackerId: UUID(), name: "Лыжи", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue])
         ])
     ]
-    
+    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self)
     var completerTrackerId: Set<UUID> = []
     var completedTrackers: [TrackerRecord] = []
     private var trackersForCurrentDate: [TrackerCategory] = []
@@ -345,6 +345,11 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackerViewController: HabbitCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
+        
+        trackerCategoryStore.addRecord(categoryName: category, tracker: tracker)
+        
+//        print(trackerCategoryStore.loadData())
+        print(trackerCategoryStore.object(IndexPath(item: 0, section: 0)))
         let isCategoryExist = categories.contains { trackerCategory in
             trackerCategory.categoryName == category
         }

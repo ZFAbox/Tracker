@@ -12,13 +12,15 @@ import UIKit
 final class TrackerStore: NSObject{
     
     var context: NSManagedObjectContext
+    var delegate: TrackerViewController
     
-    init(context: NSManagedObjectContext) {
+    init(context: NSManagedObjectContext, delegate: TrackerViewController) {
         self.context = context
+        self.delegate = delegate
     }
     
-    convenience override init() {
-        self.init(context: (DataStore().persistentContainer.viewContext))
+    convenience init(delegate: TrackerViewController) {
+        self.init(context: (DataStore().persistentContainer.viewContext), delegate: delegate)
     }
     
     private lazy var fetchResultController: NSFetchedResultsController<TrackerCoreData> = {

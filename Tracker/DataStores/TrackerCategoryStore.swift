@@ -12,7 +12,16 @@ import UIKit
 final class TrackerCategoryStore: NSObject {
     
     var context: NSManagedObjectContext
+    var delegate: TrackerViewController
     
+    init(context: NSManagedObjectContext, delegate: TrackerViewController) {
+        self.context = context
+        self.delegate = delegate
+    }
+    
+    convenience init(delegate: TrackerViewController) {
+        self.init(context: (DataStore().persistentContainer.viewContext), delegate: delegate)
+    }
     
     private lazy var fetchedResultController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
@@ -27,15 +36,6 @@ final class TrackerCategoryStore: NSObject {
         try? fetchedResultController.performFetch()
         return fetchedResultController
     }()
-    
-    
-    init(context: NSManagedObjectContext) {
-        self.context = context
-    }
-    
-    convenience override init() {
-        self.init(context: (DataStore().persistentContainer.viewContext))
-    }
     
     func saveTrackerCategory(categoryName: String, tracker: Tracker) {
         let trackerRecordData = TrackerCategoryCoreData(context: context)
@@ -89,6 +89,36 @@ final class TrackerCategoryStore: NSObject {
         } catch {
             print("Ошибка сохранения")
         }
+    }
+    
+    func loadData() -> [TrackerCategory] {
+        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let trackerCategoriesData = try? context.fetch(request)
+        var trackerCategories:[TrackerCategory] = []
+        guard let trackerCategoriesData = trackerCategoriesData else { return []}
+        trackerCategoriesData.forEach({ trackerCategoryData in
+            guard let categoryNameData = trackerCategoryData.categoryName, let trackersData = trackerCategoryData.trackersOfCategory else {
+                print("Нет данных")
+                return }
+            let trackersOfCategory = trackersData.map({$0}) as? [TrackerCoreData]
+            var trackers: [Tracker] = []
+            if let trackersOfCategory = trackersOfCategory {
+                for trackerCoreData in trackersOfCategory {
+                    let tracker = Tracker(
+                        trackerId: trackerCoreData.trackerId ?? UUID(),
+                        name: trackerCoreData.name ?? "",
+                        emoji: trackerCoreData.emoji ?? "🤬",
+                        color: UIColor.getUIColor(from: trackerCoreData.color ?? "#FFFFFF"),
+                        schedule: trackerCoreData.schedule?.split(separator: ",") as? [String] ?? ["Воскресенье"])
+                    trackers.append(tracker)
+                }
+            }
+            let trackerCategory = TrackerCategory(
+                categoryName: categoryNameData,
+                trackersOfCategory: trackers)
+            trackerCategories.append(trackerCategory)
+        })
+        return trackerCategories
     }
 }
 
