@@ -139,9 +139,7 @@ extension ScheduleViewController: UITableViewDataSource {
     }
     
     @objc func switchChanged(_ sender: UISwitch){
-        sender.isEnabled = false
         if sender.isOn {
-            
             trackerSchedule.append(schedule[sender.tag])
             print(sender.tag)
             print("Добален день недели \(schedule[sender.tag])")
@@ -154,7 +152,7 @@ extension ScheduleViewController: UITableViewDataSource {
                 weekday == schedule[sender.tag]
             }
             scheduleSubtitle.removeAll { subtitle in
-                subtitle == scheduleSubtitle[sender.tag]
+                subtitle == scheduleSubtitlesArray[sender.tag]
             }
             print("Удален день недели \(schedule[sender.tag])")
         }

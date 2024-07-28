@@ -13,6 +13,7 @@ final class TrackerCategoryStore: NSObject {
     
     var context: NSManagedObjectContext
     var delegate: TrackerViewController
+    private var categoryAndIdList:[String : ObjectIdentifier] = [:]
     
     init(context: NSManagedObjectContext, delegate: TrackerViewController) {
         self.context = context
@@ -38,17 +39,34 @@ final class TrackerCategoryStore: NSObject {
     }()
     
     func saveTrackerCategory(categoryName: String, tracker: Tracker) {
-        let trackerRecordData = TrackerCategoryCoreData(context: context)
         let trackerData = TrackerCoreData(context: context)
-        trackerData.trackerId = tracker.trackerId
-        trackerData.name = tracker.name
-        trackerData.emoji = tracker.emoji
-        trackerData.color = UIColor.getHexColor(from: tracker.color)
-        trackerData.schedule = tracker.schedule.joined(separator: ",")
-        trackerRecordData.categoryName = categoryName
-        trackerRecordData.addToTrackersOfCategory(trackerData)
-        saveTrackerCategory()
+        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        //        request.returnsObjectsAsFaults = false
+        request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
+        guard let category = try? context.fetch(request) else { return }
+        
+        if category.isEmpty {
+            trackerData.trackerId = tracker.trackerId
+            trackerData.name = tracker.name
+            trackerData.emoji = tracker.emoji
+            trackerData.color = UIColor.getHexColor(from: tracker.color)
+            trackerData.schedule = tracker.schedule.joined(separator: ",")
+            let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+            trackerCategoryCoreData.categoryName = categoryName
+            trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
+            saveTrackerCategory()
+        } else {
+            print(category)
+            trackerData.trackerId = tracker.trackerId
+            trackerData.name = tracker.name
+            trackerData.emoji = tracker.emoji
+            trackerData.color = UIColor.getHexColor(from: tracker.color)
+            trackerData.schedule = tracker.schedule.joined(separator: ",")
+            trackerData.category?.categoryName = categoryName
+            saveTrackerCategory()
+        }
     }
+    
     
     var numberOfSections: Int {
         fetchedResultController.sections?.count ?? 0
@@ -73,9 +91,9 @@ final class TrackerCategoryStore: NSObject {
                 trackers.append(tracker)
             }
         }
-            let trackerCategory = TrackerCategory(
-                categoryName: trackerCategoryDataCore.categoryName ?? "None",
-                trackersOfCategory: trackers)
+        let trackerCategory = TrackerCategory(
+            categoryName: trackerCategoryDataCore.categoryName ?? "None",
+            trackersOfCategory: trackers)
         return trackerCategory
     }
     
@@ -104,12 +122,13 @@ final class TrackerCategoryStore: NSObject {
             var trackers: [Tracker] = []
             if let trackersOfCategory = trackersOfCategory {
                 for trackerCoreData in trackersOfCategory {
+                    print(trackerCoreData.schedule?.split(separator: ",") ?? ["Воскресенье"])
                     let tracker = Tracker(
                         trackerId: trackerCoreData.trackerId ?? UUID(),
                         name: trackerCoreData.name ?? "",
                         emoji: trackerCoreData.emoji ?? "🤬",
                         color: UIColor.getUIColor(from: trackerCoreData.color ?? "#FFFFFF"),
-                        schedule: trackerCoreData.schedule?.split(separator: ",") as? [String] ?? ["Воскресенье"])
+                        schedule: trackerCoreData.schedule?.components(separatedBy: ",") ?? ["Воскресенье"])
                     trackers.append(tracker)
                 }
             }

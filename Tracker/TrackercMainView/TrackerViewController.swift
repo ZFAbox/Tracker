@@ -10,12 +10,12 @@ import UIKit
 final class TrackerViewController: UIViewController{
     
     private var categories: [TrackerCategory] = [
-        TrackerCategory(categoryName: "Повседневное", trackersOfCategory: [
-            Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue]),
-            Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", color: UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Wednesday.rawValue, Weekdays.Friday.rawValue]),
-            Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", color: UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1), schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue]),
-            Tracker(trackerId: UUID(), name: "Лыжи", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue])
-        ])
+//        TrackerCategory(categoryName: "Повседневное", trackersOfCategory: [
+//            Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue]),
+//            Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", color: UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Wednesday.rawValue, Weekdays.Friday.rawValue]),
+//            Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", color: UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1), schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue]),
+//            Tracker(trackerId: UUID(), name: "Лыжи", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue])
+//        ])
     ]
     private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self)
     var completerTrackerId: Set<UUID> = []
@@ -103,7 +103,6 @@ final class TrackerViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
         setSublayer()
         setConstrains()
         
@@ -114,6 +113,8 @@ final class TrackerViewController: UIViewController{
     }
     
     private func updateTrackersForCurrentDate(searchedText: String?){
+        categories = trackerCategoryStore.loadData()
+//        print(categories)
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
@@ -121,6 +122,7 @@ final class TrackerViewController: UIViewController{
         let searchText = (searchedText ?? "").lowercased()
         print(weekday)
         trackersForCurrentDate = categories.compactMap({ category in
+            print(category)
             let trackers = category.trackersOfCategory.filter { tracker in
                 
                 let weekdayMatch = tracker.schedule.contains { weekday in
@@ -135,6 +137,7 @@ final class TrackerViewController: UIViewController{
             }
             return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
         })
+        print(trackersForCurrentDate)
         trackerCollectionView.reloadData()
         
         
@@ -347,28 +350,29 @@ extension TrackerViewController: HabbitCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
         
         trackerCategoryStore.addRecord(categoryName: category, tracker: tracker)
-        
+        categories = trackerCategoryStore.loadData()
+        print(categories)
 //        print(trackerCategoryStore.loadData())
-        print(trackerCategoryStore.object(IndexPath(item: 0, section: 0)))
-        let isCategoryExist = categories.contains { trackerCategory in
-            trackerCategory.categoryName == category
-        }
-        
-        var trackers: [Tracker] = []
-        if isCategoryExist {
-            for eachCategory in categories {
-                if eachCategory.categoryName == category {
-                    trackers = eachCategory.trackersOfCategory
-                    trackers.append(tracker)
-                    categories.removeAll { trackerCategory in
-                        trackerCategory.categoryName == category
-                    }
-                    categories.append(TrackerCategory(categoryName: category, trackersOfCategory: trackers))
-                }
-            }
-        } else {
-            categories.append(TrackerCategory(categoryName: category, trackersOfCategory: [tracker]))
-        }
+//        print(trackerCategoryStore.object(IndexPath(item: 0, section: 0)))
+//        let isCategoryExist = categories.contains { trackerCategory in
+//            trackerCategory.categoryName == category
+//        }
+//        
+//        var trackers: [Tracker] = []
+//        if isCategoryExist {
+//            for eachCategory in categories {
+//                if eachCategory.categoryName == category {
+//                    trackers = eachCategory.trackersOfCategory
+//                    trackers.append(tracker)
+//                    categories.removeAll { trackerCategory in
+//                        trackerCategory.categoryName == category
+//                    }
+//                    categories.append(TrackerCategory(categoryName: category, trackersOfCategory: trackers))
+//                }
+//            }
+//        } else {
+//            categories.append(TrackerCategory(categoryName: category, trackersOfCategory: [tracker]))
+//        }
         updateTrackersForCurrentDate(searchedText: nil)
     }
 }
