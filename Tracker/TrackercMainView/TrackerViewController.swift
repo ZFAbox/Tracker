@@ -270,8 +270,7 @@ extension TrackerViewController: UICollectionViewDataSource {
             return false }
         let isTrackerCompleted =  completedTrackers.contains { trackerRecord in
             let day = Calendar.current.isDate(trackerRecord.trackerDate, inSameDayAs: date)
-            return trackerRecord.trackerId == id &&
-            trackerRecord.trackerDate == date
+            return trackerRecord.trackerId == id && trackerRecord.trackerDate == date
         }
         print(isTrackerCompleted)
         return isTrackerCompleted

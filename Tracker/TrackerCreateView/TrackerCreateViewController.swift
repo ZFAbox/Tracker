@@ -476,8 +476,9 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        collectionView.indexPathsForSelectedItems?.filter({ $0.section == indexPath.section}).forEach({collectionView.deselectItem(at: $0, animated: true)})
         if let trackerEmoji = self.trackerEmoji {
             let index = self.emoji.firstIndex { emoji in
                 emoji == trackerEmoji
@@ -499,6 +500,9 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
                 selectedCell?.layer.borderWidth = 0
             }
         }
+        return true
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
             

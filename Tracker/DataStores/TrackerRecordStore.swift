@@ -28,6 +28,17 @@ final class TrackerRecordStore{
         saveTrackerRecord()
     }
     
+    
+    func deleteTrackerTrcord(trackerRecord: TrackerRecord) {
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        request.predicate = NSPredicate(format: "%K == $@", #keyPath(TrackerRecordCoreData.trackerId), trackerRecord.trackerId as NSUUID)
+        if let objects = try? context.fetch(request) {
+            for object in objects {
+                context.delete(object)
+            }
+        }
+    }
+    
     private func saveTrackerRecord(){
         do{
             try context.save()
