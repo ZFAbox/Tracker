@@ -24,7 +24,7 @@ final class TrackerViewController: UIViewController{
     var currentDate: Date? {
         didSet {
             updateTrackersForCurrentDate(searchedText: nil)
-            print(trackersForCurrentDate)
+//            print(trackersForCurrentDate)
         }
     }
     
@@ -103,6 +103,10 @@ final class TrackerViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+//        let data = try? DataStore().persistentContainer.viewContext.fetch(TrackerCategoryCoreData.fetchRequest())
+//        let data2 = try? DataStore().persistentContainer.viewContext.fetch(TrackerCoreData.fetchRequest())
+////        print("data1 \(data)")
+//        print("data2 \(data2)")
         setSublayer()
         setConstrains()
         
@@ -114,7 +118,6 @@ final class TrackerViewController: UIViewController{
     
     private func updateTrackersForCurrentDate(searchedText: String?){
         categories = trackerCategoryStore.loadData()
-//        print(categories)
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
@@ -122,16 +125,14 @@ final class TrackerViewController: UIViewController{
         let searchText = (searchedText ?? "").lowercased()
         print(weekday)
         trackersForCurrentDate = categories.compactMap({ category in
-            print(category)
             let trackers = category.trackersOfCategory.filter { tracker in
-                
                 let weekdayMatch = tracker.schedule.contains { weekday in
                     weekday == DateFormatter.weekday(date: currentDate)
                 } == true
                 let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
                 return weekdayMatch && searchMatch
             }
-            print(trackers.count)
+//            print(trackers.count)
             if trackers.isEmpty {
                 return nil
             }
@@ -350,8 +351,8 @@ extension TrackerViewController: HabbitCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
         
         trackerCategoryStore.addRecord(categoryName: category, tracker: tracker)
-        categories = trackerCategoryStore.loadData()
-        print(categories)
+//        categories = trackerCategoryStore.loadData()
+//        print(categories)
 //        print(trackerCategoryStore.loadData())
 //        print(trackerCategoryStore.object(IndexPath(item: 0, section: 0)))
 //        let isCategoryExist = categories.contains { trackerCategory in

@@ -40,31 +40,29 @@ final class TrackerCategoryStore: NSObject {
     
     func saveTrackerCategory(categoryName: String, tracker: Tracker) {
         let trackerData = TrackerCoreData(context: context)
+        trackerData.trackerId = tracker.trackerId
+        trackerData.name = tracker.name
+        trackerData.emoji = tracker.emoji
+        trackerData.color = UIColor.getHexColor(from: tracker.color)
+        trackerData.schedule = tracker.schedule.joined(separator: ",")
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        //        request.returnsObjectsAsFaults = false
         request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
         guard let category = try? context.fetch(request) else { return }
         
         if category.isEmpty {
-            trackerData.trackerId = tracker.trackerId
-            trackerData.name = tracker.name
-            trackerData.emoji = tracker.emoji
-            trackerData.color = UIColor.getHexColor(from: tracker.color)
-            trackerData.schedule = tracker.schedule.joined(separator: ",")
             let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
             trackerCategoryCoreData.categoryName = categoryName
             trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
-            saveTrackerCategory()
         } else {
-            print(category)
-            trackerData.trackerId = tracker.trackerId
-            trackerData.name = tracker.name
-            trackerData.emoji = tracker.emoji
-            trackerData.color = UIColor.getHexColor(from: tracker.color)
-            trackerData.schedule = tracker.schedule.joined(separator: ",")
-            trackerData.category?.categoryName = categoryName
-            saveTrackerCategory()
+            let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+            trackerCategoryCoreData.categoryName = categoryName
+            trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
+//            trackerData.category?.categoryName = categoryName
+//            trackerData.category?.addToTrackersOfCategory(trackerData)
         }
+        saveContext()
+//        let data2 = try? DataStore().persistentContainer.viewContext.fetch(TrackerCategoryCoreData.fetchRequest())
+//        print("data2 \(data2)")
     }
     
     
@@ -101,23 +99,24 @@ final class TrackerCategoryStore: NSObject {
         saveTrackerCategory(categoryName: categoryName, tracker: tracker)
     }
     
-    private func saveTrackerCategory(){
+    private func saveContext(){
         do{
             try context.save()
         } catch {
-            print("Ошибка сохранения")
+            let error = NSError()
+            print("Ошибка сохранения \(error.localizedDescription)")
         }
     }
     
-    func loadData() -> [TrackerCategory] {
-        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        let trackerCategoriesData = try? context.fetch(request)
+    func loadData1() -> [TrackerCategory] {
         var trackerCategories:[TrackerCategory] = []
-        guard let trackerCategoriesData = trackerCategoriesData else { return []}
+        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        guard let trackerCategoriesData = try? context.fetch(request) else { return []}
         trackerCategoriesData.forEach({ trackerCategoryData in
             guard let categoryNameData = trackerCategoryData.categoryName, let trackersData = trackerCategoryData.trackersOfCategory else {
                 print("Нет данных")
                 return }
+            print(trackersData.count)
             let trackersOfCategory = trackersData.map({$0}) as? [TrackerCoreData]
             var trackers: [Tracker] = []
             if let trackersOfCategory = trackersOfCategory {
@@ -136,6 +135,49 @@ final class TrackerCategoryStore: NSObject {
                 categoryName: categoryNameData,
                 trackersOfCategory: trackers)
             trackerCategories.append(trackerCategory)
+        })
+        return trackerCategories
+    }
+    
+    
+    func loadData() -> [TrackerCategory] {
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let trackerCoreData = try? context.fetch(request)
+        var trackerCategories:[TrackerCategory] = []
+        guard let trackerCoreData = trackerCoreData else { return [] }
+        print(trackerCoreData.count)
+        trackerCoreData.forEach({ tracker in
+            let categoryName = tracker.category?.categoryName ?? "Пусто"
+            print(categoryName)
+            let tracker = Tracker(
+                trackerId: tracker.trackerId ?? UUID(),
+                name: tracker.name ?? "",
+                emoji: tracker.emoji ?? "🤬",
+                color: UIColor.getUIColor(from: tracker.color ?? "#FFFFFF"),
+                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"])
+            print(tracker)
+
+            if trackerCategories.contains(where: { trackerCategory in
+                trackerCategory.categoryName == categoryName
+            }) {
+                var newTrackerArray:[Tracker] = []
+                trackerCategories.forEach ({
+                    if $0.categoryName == categoryName {
+                        newTrackerArray = $0.trackersOfCategory
+                        newTrackerArray.append(tracker)
+                    }
+                })
+                trackerCategories.removeAll { trackerCategory in
+                    trackerCategory.categoryName == categoryName
+                }
+                trackerCategories.append(TrackerCategory(categoryName: categoryName, trackersOfCategory: newTrackerArray))
+
+            } else {
+                let trackerCategory = TrackerCategory(
+                    categoryName: categoryName,
+                    trackersOfCategory: [tracker])
+                trackerCategories.append(trackerCategory)
+            }
         })
         return trackerCategories
     }
