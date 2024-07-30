@@ -18,6 +18,7 @@ final class TrackerViewController: UIViewController{
 //        ])
     ]
     private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self)
+    private lazy var trackerRecordStore = TrackerRecordStore()
     var completerTrackerId: Set<UUID> = []
     var completedTrackers: [TrackerRecord] = []
     private var trackersForCurrentDate: [TrackerCategory] = []
@@ -256,9 +257,10 @@ extension TrackerViewController: UICollectionViewDataSource {
         guard let cell = cell else { return UICollectionViewCell() }
         let tracker = trackersForCurrentDate[indexPath.section].trackersOfCategory[indexPath.row]
         let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerId)
-        let completedDays = completedTrackers.filter { trackerRecord in
-            trackerRecord.trackerId == tracker.trackerId
-        }.count
+//        let completedDays = completedTrackers.filter { trackerRecord in
+//            trackerRecord.trackerId == tracker.trackerId
+//        }.count
+        let completedDays = trackerRecordStore.completedTrackersCount(id: tracker.trackerId)
         cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays, currentDate: currentDate)
         cell.delegate = self
         return cell
@@ -268,10 +270,11 @@ extension TrackerViewController: UICollectionViewDataSource {
         guard let date = currentDate else {
             print("Нет даты")
             return false }
-        let isTrackerCompleted =  completedTrackers.contains { trackerRecord in
-            let day = Calendar.current.isDate(trackerRecord.trackerDate, inSameDayAs: date)
-            return trackerRecord.trackerId == id && trackerRecord.trackerDate == date
-        }
+//        let isTrackerCompleted =  completedTrackers.contains { trackerRecord in
+//            let day = Calendar.current.isDate(trackerRecord.trackerDate, inSameDayAs: date)
+//            return trackerRecord.trackerId == id && trackerRecord.trackerDate == date
+//        }
+        let isTrackerCompleted = trackerRecordStore.isLoadedTrackerRecords(id: id, date: date)
         print(isTrackerCompleted)
         return isTrackerCompleted
     }
@@ -303,7 +306,8 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             assertionFailure("Нет даты")
             return}
         let trackerRecord = TrackerRecord(trackerId: id, trackerDate: date)
-        completedTrackers.append(trackerRecord)
+        trackerRecordStore.saveTrackerRecord(trackerRecord: trackerRecord)
+//        completedTrackers.append(trackerRecord)
         //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     
@@ -311,10 +315,11 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
         guard let date = currentDate else {
             assertionFailure("Нет даты")
             return}
-        completedTrackers.removeAll { trackerRecord in
-            trackerRecord.trackerId == id &&
-            trackerRecord.trackerDate == date
-        }
+        trackerRecordStore.deleteTrackerRecord(id: id, currentDate: date)
+//        completedTrackers.removeAll { trackerRecord in
+//            trackerRecord.trackerId == id &&
+//            trackerRecord.trackerDate == date
+//        }
         //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     

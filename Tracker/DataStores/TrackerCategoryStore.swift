@@ -47,22 +47,14 @@ final class TrackerCategoryStore: NSObject {
         trackerData.schedule = tracker.schedule.joined(separator: ",")
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
-        guard let category = try? context.fetch(request) else { return }
-        
-        if category.isEmpty {
-            let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
-            trackerCategoryCoreData.categoryName = categoryName
-            trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
+        if let category = try? context.fetch(request).first {
+            trackerData.category = category
         } else {
             let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
             trackerCategoryCoreData.categoryName = categoryName
             trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
-//            trackerData.category?.categoryName = categoryName
-//            trackerData.category?.addToTrackersOfCategory(trackerData)
         }
         saveContext()
-//        let data2 = try? DataStore().persistentContainer.viewContext.fetch(TrackerCategoryCoreData.fetchRequest())
-//        print("data2 \(data2)")
     }
     
     

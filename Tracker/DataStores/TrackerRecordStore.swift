@@ -29,14 +29,62 @@ final class TrackerRecordStore{
     }
     
     
-    func deleteTrackerTrcord(trackerRecord: TrackerRecord) {
+//    func deleteTrackerRecord(id: UUID, currentDate: Date) {
+//        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+//        request.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), currentDate as NSDate)
+//        if let object = try? context.fetch(request).first {
+//            context.delete(object)
+//            saveTrackerRecord()
+//        }
+//    }
+    
+    func deleteTrackerRecord(id: UUID, currentDate: Date) {
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-        request.predicate = NSPredicate(format: "%K == $@", #keyPath(TrackerRecordCoreData.trackerId), trackerRecord.trackerId as NSUUID)
-        if let objects = try? context.fetch(request) {
-            for object in objects {
-                context.delete(object)
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID)
+        if let recordsData = try? context.fetch(request) {
+            recordsData.forEach { record in
+                if let trackerRecordDate = record.trackerDate {
+                    let isTheSameDay = Calendar.current.isDate(trackerRecordDate, inSameDayAs: currentDate)
+                    if isTheSameDay {
+                        context.delete(record)
+                    }
+                }
             }
         }
+        saveTrackerRecord()
+    }
+    
+    func loadTrackerRecords() -> [TrackerRecord]{
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        guard let trackerRecordsData = try? context.fetch(request) else { return [] }
+        var trackerRecords: [TrackerRecord] = []
+        trackerRecordsData.forEach { trackerRecordData in
+            let trackerRecord = TrackerRecord(trackerId: trackerRecordData.trackerId ?? UUID(), trackerDate: trackerRecordData.trackerDate ?? Date())
+            trackerRecords.append(trackerRecord)
+        }
+        return trackerRecords
+    }
+    
+    func isLoadedTrackerRecords(id: UUID, date: Date) -> Bool{
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        var trackerRecordFound = false
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID)
+        if let recordsData = try? context.fetch(request) {
+            trackerRecordFound = recordsData.contains { trackerRecord in
+                guard let trackerRecordDate = trackerRecord.trackerDate else{ return false }
+                return Calendar.current.isDate(trackerRecordDate, inSameDayAs: date)
+            }
+        }
+        return trackerRecordFound
+    }
+    
+    func completedTrackersCount(id:UUID) -> Int {
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        request.resultType = .countResultType
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID)
+        if let count = try? context.execute(request) as? NSAsynchronousFetchResult<NSFetchRequestResult> {
+            return count.finalResult?.first as! Int
+        } else { return 0 }
     }
     
     private func saveTrackerRecord(){

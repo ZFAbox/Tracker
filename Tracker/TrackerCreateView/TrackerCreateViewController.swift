@@ -218,8 +218,18 @@ class TrackerCreateViewController: UIViewController {
     }
     
     @objc func createTracker(){
-        let schedule = trackerSchedule
-        guard let category = self.category else { return }
+        let schedule = regular ? trackerSchedule : [
+            Weekdays.Monday.rawValue,
+            Weekdays.Tuesday.rawValue,
+            Weekdays.Wednesday.rawValue,
+            Weekdays.Thursday.rawValue,
+            Weekdays.Friday.rawValue,
+            Weekdays.Saturday.rawValue,
+            Weekdays.Sunday.rawValue
+        ]
+        
+        let category = regular ? self.category ?? "Категория не выбрана" : (self.category ?? "Категория не выбрана") + " " + "🔥"
+        
         let tracker = Tracker(
             trackerId: UUID(),
             name: trackerName,
