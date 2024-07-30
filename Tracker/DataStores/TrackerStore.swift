@@ -48,8 +48,6 @@ final class TrackerStore: NSObject{
         saveTracker()
     }
     
-
-    
     private func saveTracker(){
         do{
             try context.save()

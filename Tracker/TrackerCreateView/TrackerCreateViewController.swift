@@ -11,6 +11,7 @@ import UIKit
 protocol HabbitCreateViewControllerProtocol{
     func createTracker(category: String, tracker: Tracker)
 }
+
 class TrackerCreateViewController: UIViewController {
     
     var delegate: HabbitCreateViewControllerProtocol?
@@ -42,8 +43,6 @@ class TrackerCreateViewController: UIViewController {
         }
     }()
     
-
-    
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
@@ -60,7 +59,6 @@ class TrackerCreateViewController: UIViewController {
     private lazy var collectionViewHeight: Int = {
         return sectionHeader.count * (supplementaryViewCellSize + safeZoneCollectioView) + emoji.count / 6 * collectionViewCellSize + colors.count / 6 * collectionViewCellSize
     }()
-    
     
     private let colors: [UIColor] = [
         UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1),
@@ -106,7 +104,6 @@ class TrackerCreateViewController: UIViewController {
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
-    
     
     private lazy var layerTextFieldView: UIView = {
         let layerTextFieldView = UIView()
@@ -236,7 +233,7 @@ class TrackerCreateViewController: UIViewController {
             emoji: trackerEmoji ?? "🤬",
             color: trackerColor ?? UIColor.trackerBlack,
             schedule: schedule)
-        
+    
         delegate?.createTracker(category: category, tracker: tracker)
         self.dismiss(animated: false)
         trackerTypeSelectViewController.dismiss(animated: true)
@@ -457,15 +454,7 @@ extension TrackerCreateViewController: UICollectionViewDataSource {
 extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let splitRatio = collectionView.bounds.width / 6
-//        if splitRatio > 52 {
-//            let size = CGSize(width: 52, height: 52)
-//            return size
-//        } else {
-//            let size = CGSize(width: 48, height: 48)
-//            return size
-//        }
-//
+
         let size = CGSize(width: collectionViewCellSize, height: collectionViewCellSize)
         return size
     }
@@ -512,6 +501,7 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
         }
         return true
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
@@ -531,18 +521,6 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
                 }
             }
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
-//        UIView.animate(withDuration: 0.3) {
-//            if indexPath.section == 0 {
-//                cell?.backgroundColor = .trackerWhite //.trackerWhite
-//            } else {
-//                cell?.layer.cornerRadius = 0
-//                cell?.layer.borderWidth = 0
-//            }
-//        }
-//    }
 }
 
 extension TrackerCreateViewController: UITextFieldDelegate {

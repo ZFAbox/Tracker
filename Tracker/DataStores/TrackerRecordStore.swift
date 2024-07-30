@@ -8,7 +8,6 @@
 import Foundation
 import CoreData
 
-
 final class TrackerRecordStore{
     
     var context: NSManagedObjectContext
@@ -27,16 +26,6 @@ final class TrackerRecordStore{
         trackerRecordData.trackerDate = trackerRecord.trackerDate
         saveTrackerRecord()
     }
-    
-    
-//    func deleteTrackerRecord(id: UUID, currentDate: Date) {
-//        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-//        request.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), currentDate as NSDate)
-//        if let object = try? context.fetch(request).first {
-//            context.delete(object)
-//            saveTrackerRecord()
-//        }
-//    }
     
     func deleteTrackerRecord(id: UUID, currentDate: Date) {
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
@@ -99,7 +88,6 @@ final class TrackerRecordStore{
         return trackerRecordFound
     }
 
-    
     private func saveTrackerRecord(){
         do{
             try context.save()

@@ -60,30 +60,18 @@ class TrackerCreateViewCell: UITableViewCell {
     
     func addSubiews(){
         contentView.addSubview(lableStackView)
-//        contentView.addSubview(accessoryImageView)
     }
     
     func setConstraints(){
         setLableStackViewConstraints()
-//        setAccessotyImageViewConstraints()
     }
     
     func setLableStackViewConstraints(){
         NSLayoutConstraint.activate([
             lableStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             lableStackView.heightAnchor.constraint(equalToConstant: 46),
-//            lableStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             lableStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
-    
-//    func setAccessotyImageViewConstraints(){
-//        NSLayoutConstraint.activate([
-//            accessoryImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor , constant: -24),
-//            accessoryImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-//            accessoryImageView.heightAnchor.constraint(equalToConstant: 12),
-//            accessoryImageView.widthAnchor.constraint(equalToConstant: 7)
-//        ])
-//    }
     
 }

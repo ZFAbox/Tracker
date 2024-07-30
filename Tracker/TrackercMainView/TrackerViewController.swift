@@ -9,14 +9,7 @@ import UIKit
 
 final class TrackerViewController: UIViewController{
     
-    private var categories: [TrackerCategory] = [
-//        TrackerCategory(categoryName: "Повседневное", trackersOfCategory: [
-//            Tracker(trackerId: UUID(), name: "Игра в теннис", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue]),
-//            Tracker(trackerId: UUID(), name: "Ходьба", emoji: "🚶‍♂️", color: UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Wednesday.rawValue, Weekdays.Friday.rawValue]),
-//            Tracker(trackerId: UUID(), name: "Рисование", emoji: "🎨", color: UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1), schedule: [Weekdays.Friday.rawValue, Weekdays.Saturday.rawValue]),
-//            Tracker(trackerId: UUID(), name: "Лыжи", emoji: "🏓", color: UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1), schedule: [Weekdays.Monday.rawValue, Weekdays.Tuesday.rawValue])
-//        ])
-    ]
+    private var categories: [TrackerCategory] = []
     private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self)
     private lazy var trackerRecordStore = TrackerRecordStore()
     var completerTrackerId: Set<UUID> = []
@@ -25,7 +18,6 @@ final class TrackerViewController: UIViewController{
     var currentDate: Date? {
         didSet {
             updateTrackersForCurrentDate(searchedText: nil)
-//            print(trackersForCurrentDate)
         }
     }
     
@@ -104,10 +96,6 @@ final class TrackerViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-//        let data = try? DataStore().persistentContainer.viewContext.fetch(TrackerCategoryCoreData.fetchRequest())
-//        let data2 = try? DataStore().persistentContainer.viewContext.fetch(TrackerCoreData.fetchRequest())
-////        print("data1 \(data)")
-//        print("data2 \(data2)")
         setSublayer()
         setConstrains()
         
@@ -133,43 +121,16 @@ final class TrackerViewController: UIViewController{
                     weekday == DateFormatter.weekday(date: currentDate)
                 } == true
                 let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
-                
-                var wasDone = false
-
-                let isNotRegular = category.categoryName.contains { charackter in
-                    charackter == "🔥"}
-                if isNotRegular {
-                    wasDone = trackerRecordStore.isEverCompleted(id: tracker.trackerId, currentDate: currentDate)
-                }
-                
-//                let isNotRegular = category.categoryName.contains { charackter in
-//                    charackter == "🔥"} == true
-//                let wasDone = trackerRecordStore.isEverCompleted(id: tracker.trackerId, currentDate: currentDate)
-                return weekdayMatch && searchMatch && !wasDone
+                return weekdayMatch && searchMatch
             }
-            
-//            print(trackers.count)
             if trackers.isEmpty {
                 return nil
             }
             return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
         })
-        
-//        trackersForCurrentDate.forEach({ trackerCategory in
-//            let isNotRegular = trackerCategory.categoryName.contains { charackter in
-//                charackter == "🔥"} == true
-//            if isNotRegular {
-//                trackerCategory.trackersOfCategory.removeAll { tracker in
-//                    trackerRecordStore.isEverCompleted(id: tracker.trackerId, currentDate: currentDate)
-//                }
-//            }
-//        })
-        
-        
-        print(trackersForCurrentDate)
+
         trackerCollectionView.reloadData()
-        
-        
+    
         trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
         filterButton.isHidden = trackersForCurrentDate.isEmpty
         
@@ -284,24 +245,16 @@ extension TrackerViewController: UICollectionViewDataSource {
         guard let cell = cell else { return UICollectionViewCell() }
         let tracker = trackersForCurrentDate[indexPath.section].trackersOfCategory[indexPath.row]
         let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerId)
-//        let completedDays = completedTrackers.filter { trackerRecord in
-//            trackerRecord.trackerId == tracker.trackerId
-//        }.count
         let completedDays = trackerRecordStore.completedTrackersCount(id: tracker.trackerId)
         cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays, currentDate: currentDate)
         cell.delegate = self
         return cell
     }
     
-    
     func isTrackerCompletedToday(id: UUID) -> Bool{
         guard let date = currentDate else {
             print("Нет даты")
             return false }
-//        let isTrackerCompleted =  completedTrackers.contains { trackerRecord in
-//            let day = Calendar.current.isDate(trackerRecord.trackerDate, inSameDayAs: date)
-//            return trackerRecord.trackerId == id && trackerRecord.trackerDate == date
-//        }
         let isTrackerCompleted = trackerRecordStore.isLoadedTrackerRecords(id: id, date: date)
         print(isTrackerCompleted)
         return isTrackerCompleted
@@ -335,8 +288,6 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             return}
         let trackerRecord = TrackerRecord(trackerId: id, trackerDate: date)
         trackerRecordStore.saveTrackerRecord(trackerRecord: trackerRecord)
-//        completedTrackers.append(trackerRecord)
-        //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
@@ -344,11 +295,6 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             assertionFailure("Нет даты")
             return}
         trackerRecordStore.deleteTrackerRecord(id: id, currentDate: date)
-//        completedTrackers.removeAll { trackerRecord in
-//            trackerRecord.trackerId == id &&
-//            trackerRecord.trackerDate == date
-//        }
-        //        trackerCollectionView.reloadItems(at: [indexPath])
     }
     
     
@@ -378,34 +324,9 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
 extension TrackerViewController: HabbitCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
-        
         trackerCategoryStore.addRecord(categoryName: category, tracker: tracker)
-//        categories = trackerCategoryStore.loadData()
-//        print(categories)
-//        print(trackerCategoryStore.loadData())
-//        print(trackerCategoryStore.object(IndexPath(item: 0, section: 0)))
-//        let isCategoryExist = categories.contains { trackerCategory in
-//            trackerCategory.categoryName == category
-//        }
-//        
-//        var trackers: [Tracker] = []
-//        if isCategoryExist {
-//            for eachCategory in categories {
-//                if eachCategory.categoryName == category {
-//                    trackers = eachCategory.trackersOfCategory
-//                    trackers.append(tracker)
-//                    categories.removeAll { trackerCategory in
-//                        trackerCategory.categoryName == category
-//                    }
-//                    categories.append(TrackerCategory(categoryName: category, trackersOfCategory: trackers))
-//                }
-//            }
-//        } else {
-//            categories.append(TrackerCategory(categoryName: category, trackersOfCategory: [tracker]))
-//        }
         updateTrackersForCurrentDate(searchedText: nil)
     }
 }
