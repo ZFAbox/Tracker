@@ -87,6 +87,19 @@ final class TrackerRecordStore{
         } else { return 0 }
     }
     
+    func isEverCompleted(id: UUID, currentDate: Date) -> Bool{
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        var trackerRecordFound = false
+        request.predicate = NSPredicate(format: "%K == %@ AND %K < %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), currentDate as NSDate)
+        if let recordsData = try? context.fetch(request).isEmpty {
+            trackerRecordFound = false
+        } else {
+            trackerRecordFound = true
+        }
+        return trackerRecordFound
+    }
+
+    
     private func saveTrackerRecord(){
         do{
             try context.save()

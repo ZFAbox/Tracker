@@ -122,6 +122,8 @@ final class TrackerViewController: UIViewController{
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
+     
+
         let weekday = DateFormatter.weekday(date: currentDate)
         let searchText = (searchedText ?? "").lowercased()
         print(weekday)
@@ -131,14 +133,39 @@ final class TrackerViewController: UIViewController{
                     weekday == DateFormatter.weekday(date: currentDate)
                 } == true
                 let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
-                return weekdayMatch && searchMatch
+                
+                var wasDone = false
+
+                let isNotRegular = category.categoryName.contains { charackter in
+                    charackter == "🔥"}
+                if isNotRegular {
+                    wasDone = trackerRecordStore.isEverCompleted(id: tracker.trackerId, currentDate: currentDate)
+                }
+                
+//                let isNotRegular = category.categoryName.contains { charackter in
+//                    charackter == "🔥"} == true
+//                let wasDone = trackerRecordStore.isEverCompleted(id: tracker.trackerId, currentDate: currentDate)
+                return weekdayMatch && searchMatch && !wasDone
             }
+            
 //            print(trackers.count)
             if trackers.isEmpty {
                 return nil
             }
             return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
         })
+        
+//        trackersForCurrentDate.forEach({ trackerCategory in
+//            let isNotRegular = trackerCategory.categoryName.contains { charackter in
+//                charackter == "🔥"} == true
+//            if isNotRegular {
+//                trackerCategory.trackersOfCategory.removeAll { tracker in
+//                    trackerRecordStore.isEverCompleted(id: tracker.trackerId, currentDate: currentDate)
+//                }
+//            }
+//        })
+        
+        
         print(trackersForCurrentDate)
         trackerCollectionView.reloadData()
         
@@ -265,6 +292,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         cell.delegate = self
         return cell
     }
+    
     
     func isTrackerCompletedToday(id: UUID) -> Bool{
         guard let date = currentDate else {
