@@ -42,7 +42,7 @@ final class TabBarViewController: UITabBarController {
     }
     
     func setupNavigationBar(){
-        let leftNavigationbuttonImage = UIImage(systemName: "plus")
+        let leftNavigationbuttonImage = UIImage(named: "Tracker Add Plus")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
         self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
 
