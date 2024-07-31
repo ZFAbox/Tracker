@@ -269,15 +269,7 @@ class TrackerCreateViewController: UIViewController {
         setTrackerNameConstraints()
         setCategoryAndScheduleTableViewConstraints()
         setEmojiAndColors()
-//        setButtonStackConstraintsForSingle()
-//        setButtonStackConstraintsForTecker()
-//        if regular {
-            setButtonStackConstraintsForTecker()
-//        } else {
-//            setButtonStackConstraintsForSingle()
-//        }
-//        scrollViewContent.heightAnchor.constraint(equalTo: scrollView.heightAnchor).isActive = true
-//        scrollViewContent.heightAnchor.constraint(equalTo: scrollView.heightAnchor).priority = .fittingSizeLevel
+        setButtonStackConstraintsForTecker()
         contentView.bottomAnchor.constraint(equalTo: buttonStack.bottomAnchor).isActive = true
     }
     
@@ -475,8 +467,9 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool { 
         collectionView.indexPathsForSelectedItems?.filter({ $0.section == indexPath.section}).forEach({collectionView.deselectItem(at: $0, animated: true)})
+        
         if let trackerEmoji = self.trackerEmoji {
             let index = self.emoji.firstIndex { emoji in
                 emoji == trackerEmoji
@@ -510,7 +503,7 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
                 if indexPath.section == 0 {
                     cell?.layer.cornerRadius = 16
                     cell?.clipsToBounds = true
-                    cell?.backgroundColor = .trackerBackgroundOpacityGray
+                    cell?.backgroundColor = .trackerEmojiSelectionGray
                     self.trackerEmoji = self.emoji[indexPath.row]
                 } else {
                     cell?.layer.cornerRadius = 8

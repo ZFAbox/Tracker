@@ -10,7 +10,7 @@ import UIKit
 final class TrackerViewController: UIViewController{
     
     private var categories: [TrackerCategory] = []
-    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self)
+    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
     private lazy var trackerRecordStore = TrackerRecordStore()
     var completerTrackerId: Set<UUID> = []
     var completedTrackers: [TrackerRecord] = []
@@ -20,6 +20,7 @@ final class TrackerViewController: UIViewController{
             updateTrackersForCurrentDate(searchedText: nil)
         }
     }
+    private var searchedText: String = ""
     
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
@@ -105,35 +106,52 @@ final class TrackerViewController: UIViewController{
         //TODO: - add filter button action
     }
     
+//    private func updateTrackersForCurrentDate(searchedText: String?){
+//        categories = trackerCategoryStore.loadData()
+//        guard let currentDate = currentDate else {
+//            print("Нет текущей даты")
+//            return }
+//
+//
+//        let weekday = DateFormatter.weekday(date: currentDate)
+//        let searchText = (searchedText ?? "").lowercased()
+//        print(weekday)
+//        trackersForCurrentDate = categories.compactMap({ category in
+//            let trackers = category.trackersOfCategory.filter { tracker in
+//                let weekdayMatch = tracker.schedule.contains { weekday in
+//                    weekday == DateFormatter.weekday(date: currentDate)
+//                } == true
+//                let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
+//                return weekdayMatch && searchMatch
+//            }
+//            if trackers.isEmpty {
+//                return nil
+//            }
+//            return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
+//        })
+//
+//        trackerCollectionView.reloadData()
+//
+//        trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
+//        filterButton.isHidden = trackersForCurrentDate.isEmpty
+//
+//    }
+    
     private func updateTrackersForCurrentDate(searchedText: String?){
-        categories = trackerCategoryStore.loadData()
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
-     
-
         let weekday = DateFormatter.weekday(date: currentDate)
         let searchText = (searchedText ?? "").lowercased()
         print(weekday)
-        trackersForCurrentDate = categories.compactMap({ category in
-            let trackers = category.trackersOfCategory.filter { tracker in
-                let weekdayMatch = tracker.schedule.contains { weekday in
-                    weekday == DateFormatter.weekday(date: currentDate)
-                } == true
-                let searchMatch = searchText.isEmpty || tracker.name.lowercased().contains(searchText)
-                return weekdayMatch && searchMatch
-            }
-            if trackers.isEmpty {
-                return nil
-            }
-            return TrackerCategory(categoryName: category.categoryName, trackersOfCategory: trackers)
-        })
-
+        print(currentDate)
+        let notRegularTrackersID:[UUID] = trackerCategoryStore.loadIdNotRegularTrackers(searchedText: searchText)
+        print(notRegularTrackersID)
+        trackersForCurrentDate = trackerCategoryStore.loadDataVisibleTrackers(weekDay: weekday, searchedText: searchText)
+        print(trackersForCurrentDate.count)
         trackerCollectionView.reloadData()
-    
         trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
         filterButton.isHidden = trackersForCurrentDate.isEmpty
-        
     }
     
     func fontNames(){
@@ -255,8 +273,8 @@ extension TrackerViewController: UICollectionViewDataSource {
         guard let date = currentDate else {
             print("Нет даты")
             return false }
-        let isTrackerCompleted = trackerRecordStore.isLoadedTrackerRecords(id: id, date: date)
-        print(isTrackerCompleted)
+        let isTrackerCompleted = trackerRecordStore.isCompletedTrackerRecords(id: id, date: date)
+//        print(isTrackerCompleted)
         return isTrackerCompleted
     }
     
@@ -336,4 +354,15 @@ extension TrackerViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         updateTrackersForCurrentDate(searchedText: searchBar.text)
     }
+}
+
+extension TrackerViewController: TrackerStoreUpdateDelegateProtocol {
+    
+    func addTracker(indexes: IndexSet) {
+        let indexPath = IndexPath(item: 0, section: 0)
+        trackerCollectionView.performBatchUpdates {
+            trackerCollectionView.insertItems(at: [indexPath])
+        }
+    }
+
 }

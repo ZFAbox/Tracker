@@ -21,7 +21,7 @@ final class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        trackerViewController.currentDate = Date()
+        trackerViewController.currentDate = Date().removeTimeInfo
         setupTabBar()
         setupNavigationBar()
     }
@@ -71,12 +71,12 @@ final class TabBarViewController: UITabBarController {
             datePicker.widthAnchor.constraint(equalToConstant: 80),
             datePicker.heightAnchor.constraint(equalToConstant: 34)])
 //        trackerViewController.currentDate = Date()
-        print(trackerViewController.currentDate!)
+//        print(trackerViewController.currentDate!)
     }
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){
         let selectedDate = sender.date
-        trackerViewController.currentDate = selectedDate
+        trackerViewController.currentDate = selectedDate.removeTimeInfo
     }
 }
 

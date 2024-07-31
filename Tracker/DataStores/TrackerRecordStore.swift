@@ -54,17 +54,25 @@ final class TrackerRecordStore{
         return trackerRecords
     }
     
-    func isLoadedTrackerRecords(id: UUID, date: Date) -> Bool{
+//    func isLoadedTrackerRecords(id: UUID, date: Date) -> Bool{
+//        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+//        var trackerRecordFound = false
+//        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID)
+//        if let recordsData = try? context.fetch(request) {
+//            trackerRecordFound = recordsData.contains { trackerRecord in
+//                guard let trackerRecordDate = trackerRecord.trackerDate else{ return false }
+//                return Calendar.current.isDate(trackerRecordDate, inSameDayAs: date)
+//            }
+//        }
+//        return trackerRecordFound
+//    }
+    
+    func isCompletedTrackerRecords(id: UUID, date: Date) -> Bool{
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-        var trackerRecordFound = false
-        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID)
-        if let recordsData = try? context.fetch(request) {
-            trackerRecordFound = recordsData.contains { trackerRecord in
-                guard let trackerRecordDate = trackerRecord.trackerDate else{ return false }
-                return Calendar.current.isDate(trackerRecordDate, inSameDayAs: date)
-            }
-        }
-        return trackerRecordFound
+        request.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), date as NSDate)
+        guard let recordsData = try? context.fetch(request) else { return false }
+            let trackerRecordFound = recordsData.isEmpty ? false : true
+            return trackerRecordFound
     }
     
     func completedTrackersCount(id:UUID) -> Int {
