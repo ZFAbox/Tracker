@@ -70,29 +70,19 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func numberOfItemsInSection(_ section: Int) -> Int{
-        fetchedResultController.object(at: IndexPath(item: <#T##Int#>, section: <#T##Int#>))
-        fetchedResultController.object(at: IndexPath(index: section)).trackersOfCategory?.count ?? 0
+        fetchedResultController.sections?[section].numberOfObjects ?? 0
     }
     
-    func object(_ indexPath: IndexPath) -> TrackerCategory {
-        let trackerataCore = fetchedResultController.object(at: indexPath)
-        let trackersOfCategory = trackerCategoryDataCore.trackersOfCategory?.map({$0}) as? [TrackerCoreData]
-        var trackers: [Tracker] = []
-        if let trackersOfCategory = trackersOfCategory {
-            for trackerCoreData in trackersOfCategory {
-                let tracker = Tracker(
-                    trackerId: trackerCoreData.trackerId ?? UUID(),
-                    name: trackerCoreData.name ?? "",
-                    emoji: trackerCoreData.emoji ?? "🤬",
-                    color: UIColor.getUIColor(from: trackerCoreData.color ?? "#FFFFFF"),
-                    schedule: trackerCoreData.schedule?.split(separator: ",") as? [String] ?? ["Воскресенье"])
-                trackers.append(tracker)
-            }
-        }
-        let trackerCategory = TrackerCategory(
-            categoryName: trackerCategoryDataCore.categoryName ?? "None",
-            trackersOfCategory: trackers)
-        return trackerCategory
+    func object(_ indexPath: IndexPath) -> Tracker? {
+        let trackerCoreData = fetchedResultController.object(at: indexPath)
+        let tracker = Tracker(
+            trackerId: trackerCoreData.trackerId ?? UUID(),
+            name: trackerCoreData.name ?? "",
+            emoji: trackerCoreData.emoji ?? "🤬",
+            color: UIColor.getUIColor(from: trackerCoreData.color ?? "#FFFFFF"),
+            schedule: trackerCoreData.schedule?.components(separatedBy: ",") ?? ["Воскресенье"]
+        )
+        return tracker
     }
     
     func addRecord(categoryName: String, tracker: Tracker) {
