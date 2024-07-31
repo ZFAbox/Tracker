@@ -31,14 +31,14 @@ final class TrackerCategoryStore: NSObject {
         self.init(context: DataStore.shared.viewContext, delegate: delegate, currentDate: currentDate, searchedText: searchedText)
     }
     
-    private lazy var fetchedResultController: NSFetchedResultsController<TrackerCategoryCoreData> = {
-        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-        let sortDescriptor = NSSortDescriptor(key: "categoryName", ascending: false)
+    private lazy var fetchedResultController: NSFetchedResultsController<TrackerCoreData> = {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         let fetchedResultController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
-            sectionNameKeyPath: #keyPath(TrackerCategoryCoreData.categoryName),
+            sectionNameKeyPath: #keyPath(TrackerCoreData.category.categoryName),
             cacheName: nil)
         fetchedResultController.delegate = self
         try? fetchedResultController.performFetch()
@@ -70,11 +70,12 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func numberOfItemsInSection(_ section: Int) -> Int{
+        fetchedResultController.object(at: IndexPath(item: <#T##Int#>, section: <#T##Int#>))
         fetchedResultController.object(at: IndexPath(index: section)).trackersOfCategory?.count ?? 0
     }
     
     func object(_ indexPath: IndexPath) -> TrackerCategory {
-        let trackerCategoryDataCore = fetchedResultController.object(at: indexPath)
+        let trackerataCore = fetchedResultController.object(at: indexPath)
         let trackersOfCategory = trackerCategoryDataCore.trackersOfCategory?.map({$0}) as? [TrackerCoreData]
         var trackers: [Tracker] = []
         if let trackersOfCategory = trackersOfCategory {
