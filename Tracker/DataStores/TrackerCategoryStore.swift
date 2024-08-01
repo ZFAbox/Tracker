@@ -10,15 +10,16 @@ import CoreData
 import UIKit
 
 protocol TrackerStoreUpdateDelegateProtocol {
-    func addTracker(indexes: IndexSet)
+    func addTracker(indexPath: IndexPath)
 }
 
 final class TrackerCategoryStore: NSObject {
     
     var context: NSManagedObjectContext
     private weak var delegate: TrackerViewController?
-    private var currentDate: Date?
-    private var searchedText: String
+    var currentDate: Date?
+    var searchedText: String
+    private var insertedIndexes: IndexPath?
     
     init(context: NSManagedObjectContext, delegate: TrackerViewController, currentDate: Date?, searchedText: String) {
         self.context = context
@@ -32,12 +33,20 @@ final class TrackerCategoryStore: NSObject {
     }
     
     private lazy var fetchedResultController: NSFetchedResultsController<TrackerCoreData> = {
+        let currentDate = self.currentDate ?? Date()
+        let weekday = DateFormatter.weekday(date: currentDate)
+        let searchedText = (self.searchedText).lowercased()
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        if searchedText == "" {
+            fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+        } else {
+            fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name), searchedText)
+        }
         let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         let fetchedResultController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
-            managedObjectContext: context,
+            managedObjectContext: self.context,
             sectionNameKeyPath: #keyPath(TrackerCoreData.category.categoryName),
             cacheName: nil)
         fetchedResultController.delegate = self
@@ -83,6 +92,12 @@ final class TrackerCategoryStore: NSObject {
             schedule: trackerCoreData.schedule?.components(separatedBy: ",") ?? ["Воскресенье"]
         )
         return tracker
+    }
+    
+    func header(_ indexPath: IndexPath) -> String {
+        let trackerCoreData = fetchedResultController.object(at: indexPath)
+        guard let trackerHeader = trackerCoreData.category?.categoryName else {return "Нет такой категории"}
+        return trackerHeader
     }
     
     func addRecord(categoryName: String, tracker: Tracker) {
@@ -216,6 +231,24 @@ final class TrackerCategoryStore: NSObject {
         return trackerCategories
     }
     
+    func isVisibalteTrackersEmpty() -> Bool {
+        let currentDate = self.currentDate ?? Date()
+        let weekday = DateFormatter.weekday(date: currentDate)
+        let searchedText = (self.searchedText).lowercased()
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        if searchedText == "" {
+            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+        } else {
+            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name), searchedText)
+        }
+        guard let trackerCoreData = try? context.fetch(request) else { return true}
+        if trackerCoreData.isEmpty{
+            return true
+        } else {
+            return false
+        }
+    }
+    
     func loadIdNotRegularTrackers(searchedText: String) -> [UUID] {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let allDays = [
@@ -249,5 +282,25 @@ final class TrackerCategoryStore: NSObject {
 }
 
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        insertedIndexes = IndexPath()
+    }
     
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        if let indexPath = insertedIndexes {
+            delegate?.addTracker(indexPath: indexPath)
+        }
+        insertedIndexes = nil
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        switch type {
+        case .insert:
+            if let indexPath = newIndexPath {
+                insertedIndexes = indexPath
+            }
+        default:
+            break
+        }
+    }
 }
