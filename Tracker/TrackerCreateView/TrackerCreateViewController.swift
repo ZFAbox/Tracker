@@ -206,7 +206,6 @@ class TrackerCreateViewController: UIViewController {
         setConstraints()
     }
     
-    
     @objc func inputText(_ sender: UITextField){
         let text = sender.text ?? ""
         trackerName = text

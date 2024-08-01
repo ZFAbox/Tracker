@@ -157,10 +157,10 @@ final class TrackerViewController: UIViewController{
 //        print(notRegularTrackersID)
 //        trackersForCurrentDate = trackerCategoryStore.loadDataVisibleTrackers(weekDay: weekday, searchedText: searchText)
 //        print(trackersForCurrentDate.count)
-        trackersForCurrentDate = trackerCategoryStore.loadDataVisibleTrackers(weekDay: weekday, searchedText: searchText)
-        print(trackersForCurrentDate.count)
-        print(trackerCategoryStore.currentDate!)
-        print(trackerCategoryStore.searchedText)
+//        trackersForCurrentDate = trackerCategoryStore.loadDataVisibleTrackers(weekDay: weekday, searchedText: searchText)
+//        print(trackersForCurrentDate.count)
+//        print(trackerCategoryStore.currentDate!)
+//        print(trackerCategoryStore.searchedText)
         trackerCollectionView.reloadData()
 //        trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
 //        filterButton.isHidden = trackersForCurrentDate.isEmpty
@@ -334,7 +334,6 @@ extension TrackerViewController: TrackerCollectionViewCellProtocol {
             return}
         trackerRecordStore.deleteTrackerRecord(id: id, currentDate: date)
     }
-    
     
 }
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {

@@ -15,23 +15,10 @@ protocol TrackerStoreUpdateDelegateProtocol {
 
 final class TrackerCategoryStore: NSObject {
     
-    var context: NSManagedObjectContext
+    private var context: NSManagedObjectContext
     private weak var delegate: TrackerViewController?
-    var currentDate: Date? {
-        didSet {
-            let currentDate = self.currentDate ?? Date()
-            let weekday = DateFormatter.weekday(date: currentDate)
-            let searchedText = (self.searchedText).lowercased()
-            let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-            if searchedText == "" {
-                fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
-            } else {
-                fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name), searchedText)
-            }
-            try? fetchedResultController.performFetch()
-        }
-    }
-    var searchedText: String
+    private var currentDate: Date?
+    private var searchedText: String
     private var insertedIndexes: IndexPath?
     
     init(context: NSManagedObjectContext, delegate: TrackerViewController, currentDate: Date?, searchedText: String) {
@@ -44,8 +31,6 @@ final class TrackerCategoryStore: NSObject {
     convenience init(delegate: TrackerViewController, currentDate: Date?, searchedText: String) {
         self.init(context: DataStore.shared.viewContext, delegate: delegate, currentDate: currentDate, searchedText: searchedText)
     }
-    
-    
     
     private lazy var fetchedResultController: NSFetchedResultsController<TrackerCoreData> = {
         let currentDate = self.currentDate ?? Date()
@@ -138,38 +123,6 @@ final class TrackerCategoryStore: NSObject {
         }
     }
     
-    //    func loadData1() -> [TrackerCategory] {
-    //        var trackerCategories:[TrackerCategory] = []
-    //        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-    //        guard let trackerCategoriesData = try? context.fetch(request) else { return []}
-    //        trackerCategoriesData.forEach({ trackerCategoryData in
-    //            guard let categoryNameData = trackerCategoryData.categoryName, let trackersData = trackerCategoryData.trackersOfCategory else {
-    //                print("Нет данных")
-    //                return }
-    //            print(trackersData.count)
-    //            let trackersOfCategory = trackersData.map({$0}) as? [TrackerCoreData]
-    //            var trackers: [Tracker] = []
-    //            if let trackersOfCategory = trackersOfCategory {
-    //                for trackerCoreData in trackersOfCategory {
-    //                    print(trackerCoreData.schedule?.split(separator: ",") ?? ["Воскресенье"])
-    //                    let tracker = Tracker(
-    //                        trackerId: trackerCoreData.trackerId ?? UUID(),
-    //                        name: trackerCoreData.name ?? "",
-    //                        emoji: trackerCoreData.emoji ?? "🤬",
-    //                        color: UIColor.getUIColor(from: trackerCoreData.color ?? "#FFFFFF"),
-    //                        schedule: trackerCoreData.schedule?.components(separatedBy: ",") ?? ["Воскресенье"])
-    //                    trackers.append(tracker)
-    //                }
-    //            }
-    //            let trackerCategory = TrackerCategory(
-    //                categoryName: categoryNameData,
-    //                trackersOfCategory: trackers)
-    //            trackerCategories.append(trackerCategory)
-    //        })
-    //        return trackerCategories
-    //    }
-    
-    
     func loadData() -> [TrackerCategory] {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let trackerCoreData = try? context.fetch(request)
@@ -212,12 +165,12 @@ final class TrackerCategoryStore: NSObject {
         return trackerCategories
     }
     
-    func loadDataVisibleTrackers(weekDay: String, searchedText: String) -> [TrackerCategory] {
+    func loadVisibleTrackers(weekday: String, searchedText: String) -> [TrackerCategory] {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         if searchedText == "" {
-            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekDay)
+            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
         } else {
-            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekDay, #keyPath(TrackerCoreData.name), searchedText)
+            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name), searchedText)
         }
         let trackerCoreData = try? context.fetch(request)
         var trackerCategories:[TrackerCategory] = []
