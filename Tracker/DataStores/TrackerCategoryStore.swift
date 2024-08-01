@@ -17,7 +17,20 @@ final class TrackerCategoryStore: NSObject {
     
     var context: NSManagedObjectContext
     private weak var delegate: TrackerViewController?
-    var currentDate: Date?
+    var currentDate: Date? {
+        didSet {
+            let currentDate = self.currentDate ?? Date()
+            let weekday = DateFormatter.weekday(date: currentDate)
+            let searchedText = (self.searchedText).lowercased()
+            let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+            if searchedText == "" {
+                fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+            } else {
+                fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name), searchedText)
+            }
+            try? fetchedResultController.performFetch()
+        }
+    }
     var searchedText: String
     private var insertedIndexes: IndexPath?
     
@@ -31,6 +44,8 @@ final class TrackerCategoryStore: NSObject {
     convenience init(delegate: TrackerViewController, currentDate: Date?, searchedText: String) {
         self.init(context: DataStore.shared.viewContext, delegate: delegate, currentDate: currentDate, searchedText: searchedText)
     }
+    
+    
     
     private lazy var fetchedResultController: NSFetchedResultsController<TrackerCoreData> = {
         let currentDate = self.currentDate ?? Date()
@@ -71,6 +86,16 @@ final class TrackerCategoryStore: NSObject {
             trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
         }
         saveContext()
+    }
+    
+    func updateDateAndText(weekday: String, searchedText: String ) {
+        if searchedText == "" {
+            fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+            try? fetchedResultController.performFetch()
+        } else {
+            fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name), searchedText)
+            try? fetchedResultController.performFetch()
+        }
     }
     
     

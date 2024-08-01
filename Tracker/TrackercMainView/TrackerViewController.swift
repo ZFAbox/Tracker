@@ -148,6 +148,9 @@ final class TrackerViewController: UIViewController{
 //            return }
         let weekday = DateFormatter.weekday(date: currentDate)
         let searchText = (searchedText ?? "").lowercased()
+        
+        trackerCategoryStore.updateDateAndText(weekday: weekday, searchedText: searchText)
+        
 //        print(weekday)
 //        print(currentDate)
 //        let notRegularTrackersID:[UUID] = trackerCategoryStore.loadIdNotRegularTrackers(searchedText: searchText)
@@ -159,8 +162,10 @@ final class TrackerViewController: UIViewController{
         print(trackerCategoryStore.currentDate!)
         print(trackerCategoryStore.searchedText)
         trackerCollectionView.reloadData()
-        trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
-        filterButton.isHidden = trackersForCurrentDate.isEmpty
+//        trackerCollectionView.isHidden = trackersForCurrentDate.isEmpty
+//        filterButton.isHidden = trackersForCurrentDate.isEmpty
+        trackerCollectionView.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()
+        filterButton.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()
     }
     
     func fontNames(){
@@ -374,8 +379,9 @@ extension TrackerViewController: UISearchBarDelegate {
 extension TrackerViewController: TrackerStoreUpdateDelegateProtocol {
     
     func addTracker(indexPath: IndexPath) {
-        trackerCollectionView.performBatchUpdates {
-            trackerCollectionView.insertItems(at: [indexPath])
-        }
+//        trackerCollectionView.performBatchUpdates {
+//            trackerCollectionView.insertItems(at: [IndexPath(row: 1, section: 0)])
+//        }
+        trackerCollectionView.reloadData()
     }
 }
