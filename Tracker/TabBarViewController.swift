@@ -21,7 +21,7 @@ final class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        trackerViewController.currentDate = Date()
+        trackerViewController.currentDate = Date().removeTimeInfo
         setupTabBar()
         setupNavigationBar()
     }
@@ -42,7 +42,7 @@ final class TabBarViewController: UITabBarController {
     }
     
     func setupNavigationBar(){
-        let leftNavigationbuttonImage = UIImage(systemName: "plus")
+        let leftNavigationbuttonImage = UIImage(named: "Tracker Add Plus")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
         self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
 
@@ -70,13 +70,11 @@ final class TabBarViewController: UITabBarController {
         NSLayoutConstraint.activate([
             datePicker.widthAnchor.constraint(equalToConstant: 80),
             datePicker.heightAnchor.constraint(equalToConstant: 34)])
-//        trackerViewController.currentDate = Date()
-        print(trackerViewController.currentDate!)
     }
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){
         let selectedDate = sender.date
-        trackerViewController.currentDate = selectedDate
+        trackerViewController.currentDate = selectedDate.removeTimeInfo
     }
 }
 
