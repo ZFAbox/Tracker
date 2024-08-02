@@ -10,6 +10,8 @@ import CoreData
 
 final class DataStore{
     
+    static var shared = DataStore().persistentContainer
+    
     lazy var persistentContainer: NSPersistentContainer = {
         let persistentContainers = NSPersistentContainer(name: "TrackerCoreData")
         persistentContainers.loadPersistentStores { storeDescription, error in

@@ -86,17 +86,13 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return dayMarkButton
     }()
     
-    
-    
     var isCompletedToday: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubviews()
         setConstrains()
-        
     }
-    
     
     func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int, currentDate: Date?) {
         
@@ -125,63 +121,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             }
         }
     }
-    
-//    func isButtonStateOn() -> Bool {
-//        guard let delegate = self.delegate, let trackerId = self.trackerId, let date = delegate.currentDate else { return false }
-//        if delegate.completerTrackerId.contains(trackerId) {
-//            var records: [TrackerRecord] = []
-//            for trackerRecord in delegate.completedTrackers {
-//                if trackerRecord.tackerDate == date {
-//                    records.append(trackerRecord)
-//                }
-//            }
-//            if records.isEmpty {
-//                return false
-//            } else {
-//                return true
-//            }
-//        } else {
-//            return false
-//        }
-//    }
-    
-//    func trackerButtonState(){
-//        guard let delegate = self.delegate, let trackerId = self.trackerId else { return }
-//        var records: [TrackerRecord] = []
-//        isTrackerTapped = isButtonStateOn()
-//        if isTrackerTapped {
-//            for record in delegate.completedTrackers {
-//                if record.trackerId == trackerId {
-//                    records.append(record)
-//                }
-//            }
-//            let buttonImage = UIImage(named: "Tracker Done")
-//            self.dayMarkButton.layer.opacity = 0.7
-//            self.dayMarkButton.setImage(buttonImage, for: .normal)
-//            self.count = records.count
-//        } else {
-//            let buttonImage = UIImage(named: "Tracker Plus")
-//            self.dayMarkButton.layer.opacity = 1
-//            self.dayMarkButton.setImage(buttonImage, for: .normal)
-//            self.count = records.count
-//        }
-//    }
-
-//        for tracker in delegate.complitedTrackers {
-//            if tracker.trackerId == trackerId, tracker.tackerDates.contains(date) {
-//                isTrackerTapped = true
-//                let buttonImage = UIImage(named: "Tracker Done")
-//                self.dayMarkButton.layer.opacity = 0.7
-//                self.dayMarkButton.setImage(buttonImage, for: .normal)
-//                self.count = tracker.tackerDates.count
-//            } else {
-//                isTrackerTapped = false
-//                let buttonImage = UIImage(named: "Tracker Plus")
-//                self.dayMarkButton.layer.opacity = 1
-//                self.dayMarkButton.setImage(buttonImage, for: .normal)
-//                self.count = tracker.tackerDates.count
-//            }
-//        }
     
     @objc func buttonTapped(){
         if isCompletedToday {
@@ -295,7 +234,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         ])
 
     }
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
