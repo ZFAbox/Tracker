@@ -70,8 +70,6 @@ final class TabBarViewController: UITabBarController {
         NSLayoutConstraint.activate([
             datePicker.widthAnchor.constraint(equalToConstant: 80),
             datePicker.heightAnchor.constraint(equalToConstant: 34)])
-//        trackerViewController.currentDate = Date()
-//        print(trackerViewController.currentDate!)
     }
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){

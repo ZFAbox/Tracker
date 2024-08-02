@@ -15,13 +15,13 @@ protocol HabbitCreateViewControllerProtocol{
 class TrackerCreateViewController: UIViewController {
     
     var delegate: HabbitCreateViewControllerProtocol?
-    var category: String? = "Спорт"
-    var regular: Bool
-    var trackerTypeSelectViewController: TrackerTypeSelectViewController
+    private var category: String? = "Спорт"
+    private var regular: Bool
+    private var trackerTypeSelectViewController: TrackerTypeSelectViewController
     var trackerSchedule: [String] = []
-    var trackerName = ""
-    var trackerColor: UIColor?
-    var trackerEmoji: String?
+    private var trackerName = ""
+    private var trackerColor: UIColor?
+    private var trackerEmoji: String?
     var scheduleSubtitle: String?
     
     init(regular: Bool, trackerTypeSelectViewController: TrackerTypeSelectViewController) {
