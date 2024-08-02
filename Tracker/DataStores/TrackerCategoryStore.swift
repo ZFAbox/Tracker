@@ -227,7 +227,7 @@ final class TrackerCategoryStore: NSObject {
         }
     }
     
-    func loadIdNotRegularTrackers(searchedText: String) -> [UUID] {
+    func loadIdNotRegularTrackers() -> [UUID] {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let allDays = [
             Weekdays.Monday.rawValue,
@@ -240,11 +240,7 @@ final class TrackerCategoryStore: NSObject {
         ]
         let allDaysString = allDays.joined(separator: ",")
         var uuids: [UUID] = []
-        if searchedText == "" {
-            request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCoreData.schedule), allDaysString)
-        } else {
-            request.predicate = NSPredicate(format: "%K == %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), allDaysString, #keyPath(TrackerCoreData.name), searchedText)
-        }
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCoreData.schedule), allDaysString)
         let trackerCoreData = try? context.fetch(request)
         guard let trackerCoreData = trackerCoreData else { return [] }
         trackerCoreData.forEach({ tracker in

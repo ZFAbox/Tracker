@@ -112,6 +112,7 @@ final class TrackerViewController: UIViewController{
             return }
         let weekday = DateFormatter.weekday(date: currentDate)
         let searchText = (searchedText ?? "").lowercased()
+        let notRegularTrackers = trackerCategoryStore.loadIdNotRegularTrackers()
         trackerCategoryStore.updateDateAndText(weekday: weekday, searchedText: searchText)
         trackerCollectionView.reloadData()
         trackerCollectionView.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()

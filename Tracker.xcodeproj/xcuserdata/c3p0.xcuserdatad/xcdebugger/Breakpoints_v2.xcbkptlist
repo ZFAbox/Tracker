@@ -14,8 +14,8 @@
             filePath = "Tracker/TrackercMainView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
             landmarkName = "setLableConstrains()"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "Tracker/TrackercMainView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "dummyViewConstrains()"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +174,8 @@
             filePath = "Tracker/TrackercMainView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
             landmarkName = "completeTracker(id:at:)"
             landmarkType = "7">
          </BreakpointContent>
