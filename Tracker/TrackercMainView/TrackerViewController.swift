@@ -309,7 +309,6 @@ extension TrackerViewController: HabbitCreateViewControllerProtocol {
 }
 
 extension TrackerViewController: UISearchBarDelegate {
-    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         updateTrackersForCurrentDate(searchedText: searchBar.text)
     }
@@ -318,9 +317,9 @@ extension TrackerViewController: UISearchBarDelegate {
 extension TrackerViewController: TrackerStoreUpdateDelegateProtocol {
     
     func addTracker(indexPath: IndexPath) {
-        trackerCollectionView.performBatchUpdates {
-            trackerCollectionView.insertItems(at: [IndexPath(row: indexPath.row, section: indexPath.section )])
-        }
+//        trackerCollectionView.performBatchUpdates {
+//            trackerCollectionView.insertItems(at: [IndexPath(row: indexPath.row, section: indexPath.section )])
+//        }
         trackerCollectionView.reloadData()
     }
 }
