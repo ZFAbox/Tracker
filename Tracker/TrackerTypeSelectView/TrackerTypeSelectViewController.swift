@@ -10,7 +10,7 @@ import UIKit
 
 final class TrackerTypeSelectViewController: UIViewController {
     
-    var trackerViewController: TrackerViewController?
+    weak var trackerViewController: TrackerViewController?
     
     private var buttonsView: UIView = {
         let buttonsView = UIView()
@@ -75,21 +75,21 @@ final class TrackerTypeSelectViewController: UIViewController {
         self.present(viewController, animated: true)
     }
     
-    func addSubviews(){
+    private func addSubviews(){
         view.addSubview(titleLable)
         view.addSubview(buttonsView)
         buttonsView.addSubview(habbitButton)
         buttonsView.addSubview(notRegularButton)
     }
     
-    func setConstrains(){
+    private func setConstrains(){
         setButtonViewConstarins()
         setHabbitButtonConstrains()
         setNotRegularButtonConstrains()
         setTitleConstrains()
     }
     
-    func setButtonViewConstarins(){
+    private func setButtonViewConstarins(){
         NSLayoutConstraint.activate([
             buttonsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             buttonsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -98,7 +98,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         ])
     }
     
-    func setHabbitButtonConstrains(){
+    private func setHabbitButtonConstrains(){
         NSLayoutConstraint.activate([
             habbitButton.topAnchor.constraint(equalTo: buttonsView.topAnchor),
             habbitButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
@@ -106,7 +106,7 @@ final class TrackerTypeSelectViewController: UIViewController {
             habbitButton.heightAnchor.constraint(equalToConstant: 60)])
     }
     
-    func setNotRegularButtonConstrains(){
+    private func setNotRegularButtonConstrains(){
         NSLayoutConstraint.activate([
             notRegularButton.topAnchor.constraint(equalTo: habbitButton.bottomAnchor, constant: 16),
             notRegularButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
@@ -114,7 +114,7 @@ final class TrackerTypeSelectViewController: UIViewController {
             notRegularButton.heightAnchor.constraint(equalToConstant: 60)])
     }
     
-    func setTitleConstrains(){
+    private func setTitleConstrains(){
         NSLayoutConstraint.activate([
             titleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             titleLable.centerXAnchor.constraint(equalTo: view.centerXAnchor)])
