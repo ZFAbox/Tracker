@@ -10,7 +10,7 @@ import CoreData
 import UIKit
 
 protocol TrackerStoreUpdateDelegateProtocol {
-    func addTracker(indexPath: IndexPath)
+    func addTracker(indexPath: IndexPath, insetedSections: Int?)
 }
 
 final class TrackerCategoryStore: NSObject {
@@ -20,6 +20,8 @@ final class TrackerCategoryStore: NSObject {
     private var currentDate: Date?
     private var searchedText: String
     private var insertedIndexes: IndexPath?
+    private var oldNumberOfSection: Int = 0
+    private var insertedSections: Int?
     
     init(context: NSManagedObjectContext, delegate: TrackerViewController, currentDate: Date?, searchedText: String) {
         self.context = context
@@ -258,13 +260,15 @@ final class TrackerCategoryStore: NSObject {
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         insertedIndexes = IndexPath()
+        oldNumberOfSection = fetchedResultController.sections?.count ?? 0
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let indexPath = insertedIndexes {
-            delegate?.addTracker(indexPath: indexPath)
+            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
         }
         insertedIndexes = nil
+        insertedSections = nil
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -272,7 +276,12 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
         case .insert:
             if let indexPath = newIndexPath {
                 insertedIndexes = indexPath
+                if oldNumberOfSection < (fetchedResultController.sections?.count ?? 0) {
+                    oldNumberOfSection = (fetchedResultController.sections?.count ?? 0)
+                    insertedSections = indexPath.section
+                }
             }
+
         default:
             break
         }

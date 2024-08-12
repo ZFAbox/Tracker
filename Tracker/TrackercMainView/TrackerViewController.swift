@@ -317,10 +317,14 @@ extension TrackerViewController: UISearchBarDelegate {
 
 extension TrackerViewController: TrackerStoreUpdateDelegateProtocol {
     
-    func addTracker(indexPath: IndexPath) {
-//        trackerCollectionView.performBatchUpdates {
-//            trackerCollectionView.insertItems(at: [IndexPath(row: indexPath.row, section: indexPath.section )])
-//        }
-        trackerCollectionView.reloadData()
+    func addTracker(indexPath: IndexPath, insetedSections: Int?) {
+        trackerCollectionView.performBatchUpdates {
+            
+            if let insetedSections = insetedSections {
+                trackerCollectionView.insertSections([insetedSections])
+            }
+            trackerCollectionView.insertItems(at: [indexPath])
+        }
+//        trackerCollectionView.reloadData()
     }
 }
