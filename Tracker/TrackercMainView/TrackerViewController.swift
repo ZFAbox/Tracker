@@ -10,7 +10,7 @@ import UIKit
 final class TrackerViewController: UIViewController{
     
     private var categories: [TrackerCategory] = []
-    let viewModel = TrackerViewModel()
+    lazy var viewModel = TrackerViewModel()
     private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: viewModel, currentDate: currentDate, searchedText: searchedText)
     private lazy var trackerRecordStore = TrackerRecordStore()
     var completerTrackerId: Set<UUID> = []
@@ -106,6 +106,12 @@ final class TrackerViewController: UIViewController{
             self?.addTracker(indexPath: indexPathAndSection.indexPath, insetedSections: indexPathAndSection.section)
         }
         
+        viewModel.searchedTextBinding = { [weak self] _ in
+            self?.updateTrackerCollectionView()
+        }
+        viewModel.currentDateBinding = { [weak self] _ in
+            self?.updateTrackerCollectionView()
+        }
     }
     
     @objc func filterButtonTapped(){
@@ -120,6 +126,12 @@ final class TrackerViewController: UIViewController{
         let searchText = (searchedText ?? "").lowercased()
 //        let notRegularTrackers = trackerCategoryStore.loadIdNotRegularTrackers()
         trackerCategoryStore.updateDateAndText(weekday: weekday, searchedText: searchText)
+        trackerCollectionView.reloadData()
+        trackerCollectionView.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()
+        filterButton.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()
+    }
+    
+    func updateTrackerCollectionView() {
         trackerCollectionView.reloadData()
         trackerCollectionView.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()
         filterButton.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()
@@ -218,17 +230,17 @@ final class TrackerViewController: UIViewController{
 
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        trackerCategoryStore.numberOfItemsInSection(section)
+        viewModel.numberOfItemsIn(section)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        trackerCategoryStore.numberOfSections
+        viewModel.numberOfSections()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
         guard let cell = cell else { return UICollectionViewCell() }
-        guard let tracker = trackerCategoryStore.object(indexPath) else { return UICollectionViewCell() }
+        guard let tracker = viewModel.getTracker(for: indexPath) else { return UICollectionViewCell() }
         let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerId)
         let completedDays = trackerRecordStore.completedTrackersCount(id: tracker.trackerId)
         cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays, currentDate: currentDate)
@@ -240,7 +252,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         guard let date = currentDate else {
             print("Нет даты")
             return false }
-        let isTrackerCompleted = trackerRecordStore.isCompletedTrackerRecords(id: id, date: date)
+        let isTrackerCompleted = viewModel.isCompletedTracker(for: id, and: date)
         return isTrackerCompleted
     }
     
@@ -256,7 +268,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerSupplementaryViewCell
         if id == "header" {
-            let headerTitleText = trackerCategoryStore.header(indexPath)
+            let headerTitleText = viewModel.headerTitle(for: indexPath)
             headerView.titleLable.text = headerTitleText
             print(headerTitleText)
         } else {
@@ -310,14 +322,18 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackerViewController: HabbitCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
-        trackerCategoryStore.addRecord(categoryName: category, tracker: tracker)
-        updateTrackersForCurrentDate(searchedText: nil)
+        viewModel.addTracker(categoryName: category, tracker: tracker)
+//        trackerCategoryStore.addRecord(categoryName: category, tracker: tracker)
+//        updateTrackersForCurrentDate(searchedText: nil)
+        updateTrackerCollectionView()
     }
 }
 
 extension TrackerViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        updateTrackersForCurrentDate(searchedText: searchBar.text)
+        guard let searchText = searchBar.text else { return }
+        viewModel.searchedText = searchText
+//        updateTrackersForCurrentDate(searchedText: searchBar.text)
     }
 }
 
