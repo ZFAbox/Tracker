@@ -10,7 +10,8 @@ import UIKit
 final class TrackerViewController: UIViewController{
     
     private var categories: [TrackerCategory] = []
-    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
+    let viewModel = TrackerViewModel()
+    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: viewModel, currentDate: currentDate, searchedText: searchedText)
     private lazy var trackerRecordStore = TrackerRecordStore()
     var completerTrackerId: Set<UUID> = []
     var completedTrackers: [TrackerRecord] = []
@@ -100,6 +101,11 @@ final class TrackerViewController: UIViewController{
         setSublayer()
         setConstrains()
         
+
+        viewModel.indexPathAndSectionBinding = { [weak self] indexPathAndSection in
+            self?.addTracker(indexPath: indexPathAndSection.indexPath, insetedSections: indexPathAndSection.section)
+        }
+        
     }
     
     @objc func filterButtonTapped(){
@@ -112,7 +118,7 @@ final class TrackerViewController: UIViewController{
             return }
         let weekday = DateFormatter.weekday(date: currentDate)
         let searchText = (searchedText ?? "").lowercased()
-        let notRegularTrackers = trackerCategoryStore.loadIdNotRegularTrackers()
+//        let notRegularTrackers = trackerCategoryStore.loadIdNotRegularTrackers()
         trackerCategoryStore.updateDateAndText(weekday: weekday, searchedText: searchText)
         trackerCollectionView.reloadData()
         trackerCollectionView.isHidden = trackerCategoryStore.isVisibalteTrackersEmpty()
@@ -315,7 +321,7 @@ extension TrackerViewController: UISearchBarDelegate {
     }
 }
 
-extension TrackerViewController: TrackerStoreUpdateDelegateProtocol {
+extension TrackerViewController {
     
     func addTracker(indexPath: IndexPath, insetedSections: Int?) {
         trackerCollectionView.performBatchUpdates {

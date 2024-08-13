@@ -43,6 +43,8 @@
 		9F9ED0F12C1C545A0013D4D4 /* TrackerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */; };
 		9F9ED0F32C1C6EAF0013D4D4 /* TrackerCellParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9ED0F22C1C6EAF0013D4D4 /* TrackerCellParameters.swift */; };
 		9FA21B352C5A5311008D9D1A /* Date+Remove Time Day Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA21B342C5A5311008D9D1A /* Date+Remove Time Day Extension.swift */; };
+		9FA950EC2C6B9E3800414C6F /* TrackerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA950EB2C6B9E3800414C6F /* TrackerViewModel.swift */; };
+		9FA950EE2C6BA18000414C6F /* TrackerBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA950ED2C6BA18000414C6F /* TrackerBinding.swift */; };
 		9FE74DBF2C219BF5007ACB54 /* Int+Days Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE74DBE2C219BF5007ACB54 /* Int+Days Extension.swift */; };
 		9FE74DC12C21C1EA007ACB54 /* TrackerTypeSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FE74DC02C21C1EA007ACB54 /* TrackerTypeSelectViewController.swift */; };
 /* End PBXBuildFile section */
@@ -86,6 +88,8 @@
 		9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCollectionViewCell.swift; sourceTree = "<group>"; };
 		9F9ED0F22C1C6EAF0013D4D4 /* TrackerCellParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellParameters.swift; sourceTree = "<group>"; };
 		9FA21B342C5A5311008D9D1A /* Date+Remove Time Day Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Remove Time Day Extension.swift"; sourceTree = "<group>"; };
+		9FA950EB2C6B9E3800414C6F /* TrackerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerViewModel.swift; sourceTree = "<group>"; };
+		9FA950ED2C6BA18000414C6F /* TrackerBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerBinding.swift; sourceTree = "<group>"; };
 		9FE74DBE2C219BF5007ACB54 /* Int+Days Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Days Extension.swift"; sourceTree = "<group>"; };
 		9FE74DC02C21C1EA007ACB54 /* TrackerTypeSelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTypeSelectViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -218,8 +222,10 @@
 			isa = PBXGroup;
 			children = (
 				90DE58622C0A655400351750 /* TrackerViewController.swift */,
+				9FA950EB2C6B9E3800414C6F /* TrackerViewModel.swift */,
 				9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */,
 				9061D3782C20E9D2008C84D5 /* TrackerSupplementaryViewCell.swift */,
+				9FA950ED2C6BA18000414C6F /* TrackerBinding.swift */,
 			);
 			path = TrackercMainView;
 			sourceTree = "<group>";
@@ -346,6 +352,7 @@
 				906E489E2C3A061B008035EC /* EmojiAndColorCollectionViewCell.swift in Sources */,
 				9F6D97382C4E55ED000A57A4 /* TrackerStore.swift in Sources */,
 				90704A442C0BBE2100C7CC57 /* TabBarViewController.swift in Sources */,
+				9FA950EC2C6B9E3800414C6F /* TrackerViewModel.swift in Sources */,
 				9F9E7EC42C3FC8630032EA1D /* ScheduleViewController.swift in Sources */,
 				90DE58612C0A655400351750 /* SceneDelegate.swift in Sources */,
 				9FE74DC12C21C1EA007ACB54 /* TrackerTypeSelectViewController.swift in Sources */,
@@ -353,6 +360,7 @@
 				9F6D973E2C4E568D000A57A4 /* DataStore.swift in Sources */,
 				902759512C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift in Sources */,
 				9F6D973C2C4E561E000A57A4 /* TrackerRecordStore.swift in Sources */,
+				9FA950EE2C6BA18000414C6F /* TrackerBinding.swift in Sources */,
 				903B3EED2C27757B00B79BD3 /* TrackerCreateViewController.swift in Sources */,
 				9F9ED0F32C1C6EAF0013D4D4 /* TrackerCellParameters.swift in Sources */,
 				9F6CEA312C13120B007BA364 /* Tracker.swift in Sources */,

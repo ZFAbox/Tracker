@@ -10,27 +10,33 @@ import CoreData
 import UIKit
 
 protocol TrackerStoreUpdateDelegateProtocol {
-    func addTracker(indexPath: IndexPath, insetedSections: Int?)
+//    func addTracker(indexPath: IndexPath, insetedSections: Int?)
+    func updateTrackers(with indexPathAndSection: IndexPathAndSection)
+}
+
+struct IndexPathAndSection {
+    let indexPath: IndexPath
+    let section: Int?
 }
 
 final class TrackerCategoryStore: NSObject {
     
     private var context: NSManagedObjectContext
-    private weak var delegate: TrackerViewController?
+    private var delegate: TrackerStoreUpdateDelegateProtocol?
     private var currentDate: Date?
     private var searchedText: String
     private var insertedIndexes: IndexPath?
     private var oldNumberOfSection: Int = 0
     private var insertedSections: Int?
     
-    init(context: NSManagedObjectContext, delegate: TrackerViewController, currentDate: Date?, searchedText: String) {
+    init(context: NSManagedObjectContext, delegate: TrackerStoreUpdateDelegateProtocol, currentDate: Date?, searchedText: String) {
         self.context = context
         self.delegate = delegate
         self.currentDate = currentDate
         self.searchedText = searchedText
     }
     
-    convenience init(delegate: TrackerViewController, currentDate: Date?, searchedText: String) {
+    convenience init(delegate: TrackerStoreUpdateDelegateProtocol, currentDate: Date?, searchedText: String) {
         self.init(context: DataStore.shared.viewContext, delegate: delegate, currentDate: currentDate, searchedText: searchedText)
     }
     
@@ -265,7 +271,9 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let indexPath = insertedIndexes {
-            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
+//            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
+            let indexPathAndSection = IndexPathAndSection(indexPath: indexPath, section: insertedSections)
+            delegate?.updateTrackers(with: indexPathAndSection)
         }
         insertedIndexes = nil
         insertedSections = nil
