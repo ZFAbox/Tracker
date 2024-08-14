@@ -10,7 +10,8 @@ import UIKit
 
 final class TrackerTypeSelectViewController: UIViewController {
     
-    weak var trackerViewController: TrackerViewController?
+//    weak var trackerViewController: TrackerViewController?
+    weak var viewModel: TrackerViewModel?
     
     private var buttonsView: UIView = {
         let buttonsView = UIView()
@@ -62,7 +63,7 @@ final class TrackerTypeSelectViewController: UIViewController {
     @objc func habbitButtonTapped(){
         //TODO: - move to habbit screen
         let viewController = TrackerCreateViewController(regular: true, trackerTypeSelectViewController: self)
-        viewController.delegate = trackerViewController
+        viewController.delegate = viewModel
         viewController.modalPresentationStyle = .popover
         self.present(viewController, animated: true)
     }
@@ -70,7 +71,7 @@ final class TrackerTypeSelectViewController: UIViewController {
     @objc func notRegularButtonTapped(){
         //TODO: - move to notRegular screen
         let viewController = TrackerCreateViewController(regular: false, trackerTypeSelectViewController: self)
-        viewController.delegate = trackerViewController
+        viewController.delegate = viewModel
         viewController.modalPresentationStyle = .popover
         self.present(viewController, animated: true)
     }

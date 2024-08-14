@@ -9,25 +9,20 @@ import Foundation
 
 final class TrackerViewModel {
     
-//    private var categories: [TrackerCategory] = []
-//    private var trackersForCurrentDate: [TrackerCategory] = []
     var currentDate: Date? {
         didSet {
             updateTrackersForCurrentDate(searchedText: "")
             currentDateBinding?(currentDate ?? Date())
         }
     }
+    
     var searchedText: String = "" {
         didSet{
             updateTrackersForCurrentDate(searchedText: searchedText)
             searchedTextBinding?(searchedText)
         }
     }
-    
-    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
-    private lazy var trackerRecordStore = TrackerRecordStore()
-//    var completerTrackerId: Set<UUID> = []
-//    var completedTrackers: [TrackerRecord] = []
+
     private(set) var indexPathAndSection: IndexPathAndSection? {
         didSet{
             guard let indexPathAndSection = indexPathAndSection else { return }
@@ -35,14 +30,16 @@ final class TrackerViewModel {
         }
     }
     
+    //MARK: - CoreData
+    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
+    private lazy var trackerRecordStore = TrackerRecordStore()
+    
+    //MARK: - Bindings
     var indexPathAndSectionBinding: Binding<IndexPathAndSection>?
     var currentDateBinding: Binding<Date>?
     var searchedTextBinding: Binding<String>?
 
-//
-//    private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
-    
-    
+    //MARK: - Collection View Update Methods
     private func updateTrackersForCurrentDate(searchedText: String){
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
@@ -56,7 +53,6 @@ final class TrackerViewModel {
         trackerCategoryStore.addRecord(categoryName: categoryName, tracker: tracker)
     }
     
-    
     func numberOfItemsIn(_ section: Int) -> Int {
         trackerCategoryStore.numberOfItemsInSection(section)
     }
@@ -69,8 +65,24 @@ final class TrackerViewModel {
         trackerCategoryStore.object(indexPath)
     }
     
-    func isCompletedTracker(for id: UUID, and date: Date) -> Bool {
-        trackerRecordStore.isCompletedTrackerRecords(id: id, date: date)
+    func isCompletedTracker(for id: UUID) -> Bool {
+        guard let date = currentDate else {
+            print("Нет даты")
+            return false }
+        return trackerRecordStore.isCompletedTrackerRecords(id: id, date: date)
+    }
+    
+    func isVisibalteTrackersEmpty() -> Bool {
+        trackerCategoryStore.isVisibalteTrackersEmpty()
+    }
+    
+    func completedTrackersCount(id:UUID) -> Int {
+        trackerRecordStore.completedTrackersCount(id: id)
+    }
+    
+    func isTrackerCompletedToday(id: UUID) -> Bool{
+        let isTrackerCompleted = isCompletedTracker(for: id)
+        return isTrackerCompleted
     }
     
     func headerTitle(for indexPath: IndexPath) -> String {
@@ -78,15 +90,33 @@ final class TrackerViewModel {
     }
 }
 
+//MARK: - Protocols extensinons
 extension TrackerViewModel: TrackerStoreUpdateDelegateProtocol {
-//    func addTracker(indexPath: IndexPath, insetedSections: Int?) {
-//        <#code#>
-//    }
-    
     func updateTrackers(with indexPathAndSection: IndexPathAndSection) {
         self.indexPathAndSection = indexPathAndSection
     }
-    
+}
 
+extension TrackerViewModel: TrackerCollectionViewCellProtocol {
+    func completeTracker(id: UUID, at indexPath: IndexPath) {
+        guard let date = currentDate else {
+            assertionFailure("Нет даты")
+            return}
+        let trackerRecord = TrackerRecord(trackerId: id, trackerDate: date)
+        trackerRecordStore.saveTrackerRecord(trackerRecord: trackerRecord)
+    }
+    
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
+        guard let date = currentDate else {
+            assertionFailure("Нет даты")
+            return}
+        trackerRecordStore.deleteTrackerRecord(id: id, currentDate: date)
+    }
+}
+
+extension TrackerViewModel: HabbitCreateViewControllerProtocol {
+    func createTracker(category: String, tracker: Tracker) {
+        addTracker(categoryName: category, tracker: tracker)
+    }
 }
 

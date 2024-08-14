@@ -55,7 +55,8 @@ final class TabBarViewController: UITabBarController {
     @objc func addTarget(){
         print("Добавить цель")
         let viewController = TrackerTypeSelectViewController()
-        viewController.trackerViewController = trackerViewController
+//        viewController.trackerViewController = trackerViewController
+        viewController.viewModel = trackerViewController.viewModel
         viewController.modalPresentationStyle = .popover
         self.present(viewController, animated: true)
     }
