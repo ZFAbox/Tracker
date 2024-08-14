@@ -14,9 +14,9 @@
             filePath = "Tracker/TrackercMainView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
-            landmarkName = "setLableConstrains()"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
+            landmarkName = "dummyViewConstrains()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -62,9 +62,9 @@
             filePath = "Tracker/TrackercMainView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "180"
-            endingLineNumber = "180"
-            landmarkName = "setSearchFieldConstrains()"
+            startingLineNumber = "181"
+            endingLineNumber = "181"
+            landmarkName = "emptyTrackerListImageConstrains()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -80,8 +80,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "92"
             endingLineNumber = "92"
-            landmarkName = "updateDateAndText(weekday:searchedText:)"
-            landmarkType = "7">
+            landmarkName = "TrackerCategoryStore"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -144,8 +144,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "120"
             endingLineNumber = "120"
-            landmarkName = "TrackerCategoryStore"
-            landmarkType = "3">
+            landmarkName = "addRecord(categoryName:tracker:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -160,8 +160,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "132"
             endingLineNumber = "132"
-            landmarkName = "saveContext()"
-            landmarkType = "7">
+            landmarkName = "TrackerCategoryStore"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -174,10 +174,10 @@
             filePath = "Tracker/TrackercMainView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "282"
-            endingLineNumber = "282"
-            landmarkName = "completeTracker(id:at:)"
-            landmarkType = "7">
+            startingLineNumber = "283"
+            endingLineNumber = "283"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
