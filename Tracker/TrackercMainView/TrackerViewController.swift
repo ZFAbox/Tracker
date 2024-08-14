@@ -10,6 +10,7 @@ import UIKit
 final class TrackerViewController: UIViewController{
 
 //MARK: - Constants
+    
     lazy var viewModel = TrackerViewModel()
     
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
@@ -95,6 +96,7 @@ final class TrackerViewController: UIViewController{
     }
     
 //MARK: - Bindings
+    
     func bindWithTrackerViewModel(){
         viewModel.indexPathAndSectionBinding = { [weak self] indexPathAndSection in
             self?.addTracker(indexPath: indexPathAndSection.indexPath, insetedSections: indexPathAndSection.section)
@@ -125,6 +127,7 @@ final class TrackerViewController: UIViewController{
     }
     
 //MARK: - Add subview and constraints
+    
     func setSublayer(){
         view.addSubview(trackerLabel)
         view.addSubview(searchField)
@@ -209,6 +212,7 @@ final class TrackerViewController: UIViewController{
     }
 }
 
+//MARK: - Delegate and Data Source
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.numberOfItemsIn(section)

@@ -30,16 +30,19 @@ final class TrackerViewModel {
         }
     }
     
-    //MARK: - CoreData
+    //MARK: - CoreData Constants
+    
     private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
     private lazy var trackerRecordStore = TrackerRecordStore()
     
     //MARK: - Bindings
+    
     var indexPathAndSectionBinding: Binding<IndexPathAndSection>?
     var currentDateBinding: Binding<Date>?
     var searchedTextBinding: Binding<String>?
 
     //MARK: - Collection View Update Methods
+    
     private func updateTrackersForCurrentDate(searchedText: String){
         guard let currentDate = currentDate else {
             print("Нет текущей даты")

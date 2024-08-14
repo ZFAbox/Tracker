@@ -10,7 +10,6 @@ import CoreData
 import UIKit
 
 protocol TrackerStoreUpdateDelegateProtocol {
-//    func addTracker(indexPath: IndexPath, insetedSections: Int?)
     func updateTrackers(with indexPathAndSection: IndexPathAndSection)
 }
 
