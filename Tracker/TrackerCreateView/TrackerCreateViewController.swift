@@ -391,6 +391,11 @@ extension TrackerCreateViewController: UITableViewDelegate {
             viewController.delegate = self
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
+        } else {
+            let viewController = TrackerCategoriesList()
+//            viewController.delegate = self
+            viewController.modalPresentationStyle = .popover
+            self.present(viewController, animated: true)
         }
     }
 }
