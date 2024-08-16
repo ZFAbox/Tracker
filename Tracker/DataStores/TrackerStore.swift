@@ -12,21 +12,21 @@ import UIKit
 final class TrackerStore: NSObject{
     
     private var context: NSManagedObjectContext
-    private weak var delegate: TrackerViewController?
+    private weak var delegate: TrackerTableViewController?
     
-    init(context: NSManagedObjectContext, delegate: TrackerViewController) {
+    init(context: NSManagedObjectContext, delegate: TrackerTableViewController) {
         self.context = context
         self.delegate = delegate
     }
     
-    convenience init(delegate: TrackerViewController) {
+    
+    convenience init(delegate: TrackerTableViewController) {
         self.init(context: DataStore.shared.viewContext, delegate: delegate)
     }
     
-    private lazy var fetchResultController: NSFetchedResultsController<TrackerCoreData> = {
-    
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        let sortDescriptors = NSSortDescriptor(key: "name", ascending: false)
+    private lazy var fetchResultController: NSFetchedResultsController<TrackerCategoryCoreData> = {
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let sortDescriptors = NSSortDescriptor(key: "categoryName", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptors]
         let fetchResultedController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
@@ -38,24 +38,27 @@ final class TrackerStore: NSObject{
         return fetchResultedController
     }()
     
-    func saveTracker(_ tracker: Tracker) {
-        let trackerData = TrackerCoreData(context: context)
-        trackerData.trackerId = tracker.trackerId
-        trackerData.name = tracker.name
-        trackerData.emoji = tracker.emoji
-        trackerData.color = UIColor.getHexColor(from: tracker.color)
-        trackerData.schedule = tracker.schedule.joined(separator: ",")
-        saveTracker()
+    func saveCategory(_ category: String) {
+        let request = fetchResultController.fetchRequest
+        let predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryName), category)
+        request.predicate = predicate
+        if let categoryName = try? context.fetch(request).first?.categoryName {
+            if categoryName.isEmpty {
+                let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+                trackerCategoryCoreData.categoryName = categoryName
+                saveContext()
+            }
+        }
+        return
     }
     
-    private func saveTracker(){
+    private func saveContext(){
         do{
             try context.save()
         } catch {
             print("Ошибка сохранения")
         }
     }
-    
     
     var numberOfSections: Int {
         fetchResultController.sections?.count ?? 0
@@ -65,22 +68,34 @@ final class TrackerStore: NSObject{
         fetchResultController.sections?[section].numberOfObjects ?? 0
     }
     
-    func object(at indexPath: IndexPath) -> Tracker {
-        let trackerCoreData = fetchResultController.object(at: indexPath)
-        let tracker = Tracker(
-            trackerId: trackerCoreData.trackerId ?? UUID(),
-            name: trackerCoreData.name ?? "",
-            emoji: trackerCoreData.emoji ?? "🤬",
-            color: UIColor.getUIColor(from: trackerCoreData.color ?? "#FFFFFF"),
-            schedule: trackerCoreData.schedule?.split(separator: ",") as? [String] ?? ["Воскресенье"])
-        return tracker
+    func object(at indexPath: IndexPath) -> String? {
+        let categoryCoreData = fetchResultController.object(at: indexPath)
+        let categoryName = categoryCoreData.categoryName
+        return categoryName
     }
     
-    func addRecord( _ tracker: Tracker) {
-        try? saveTracker(tracker)
+    func addRecord( _ category: String) {
+        saveCategory(category)
+    }
+    
+    func isEmpty() -> Bool {
+        let fetchRequest = fetchResultController.fetchRequest
+        guard let categoryCoreData = try? context.fetch(fetchRequest) else { return true }
+        return categoryCoreData.isEmpty ? true : false
+    }
+    
+    func count() -> Int {
+        let fetchRequest = fetchResultController.fetchRequest
+        fetchRequest.resultType = .countResultType
+        let categories = try! context.execute(fetchRequest) as! NSAsynchronousFetchResult<NSFetchRequestResult>
+        guard let count = categories.finalResult?.first else { return 0}
+        return count as! Int
     }
 }
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.updateCategoryTableList()
+    }
 }

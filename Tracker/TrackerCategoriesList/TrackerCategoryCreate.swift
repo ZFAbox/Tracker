@@ -10,6 +10,7 @@ import UIKit
 protocol UpdateCategoryListProtocol {
     
     func updateCategoryList(with category: String)
+    func updateCategoryTableList()
 }
 
 final class TrackerCategoryCreate: UIViewController {
