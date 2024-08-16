@@ -15,7 +15,7 @@ protocol HabbitCreateViewControllerProtocol{
 class TrackerCreateViewController: UIViewController {
     
     var delegate: HabbitCreateViewControllerProtocol?
-    private var category: String? = "Спорт"
+    private var category: String?
     private var regular: Bool
     private var trackerTypeSelectViewController: TrackerTypeSelectViewController
     var trackerSchedule: [String] = []
@@ -29,16 +29,16 @@ class TrackerCreateViewController: UIViewController {
         self.trackerTypeSelectViewController = trackerTypeSelectViewController
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private lazy var categoryAndScheduleArray:[String] = {
         if regular {
-         return ["Категория", "Расписание"]
+            return ["Категория", "Расписание"]
         } else {
-         return ["Категория"]
+            return ["Категория"]
         }
     }()
     
@@ -79,7 +79,7 @@ class TrackerCreateViewController: UIViewController {
         UIColor.rgbColors(red: 141, green: 214, blue: 230, alpha: 1),
         UIColor.rgbColors(red: 47, green: 208, blue: 88, alpha: 1)
     ]
-   
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -209,7 +209,7 @@ class TrackerCreateViewController: UIViewController {
     @objc func inputText(_ sender: UITextField){
         let text = sender.text ?? ""
         trackerName = text
-        print(text)
+        //        print(text)
     }
     
     @objc func createTracker(){
@@ -231,7 +231,7 @@ class TrackerCreateViewController: UIViewController {
             emoji: trackerEmoji ?? "🤬",
             color: trackerColor ?? UIColor.trackerBlack,
             schedule: schedule)
-    
+        
         delegate?.createTracker(category: category, tracker: tracker)
         self.dismiss(animated: false)
         trackerTypeSelectViewController.dismiss(animated: true)
@@ -256,8 +256,8 @@ class TrackerCreateViewController: UIViewController {
         contentView.addSubview(categoryAndScheduleTableView)
         contentView.addSubview(emojiAndColors)
         contentView.addSubview(buttonStack)
-
-
+        
+        
     }
     
     private func setConstraints(){
@@ -279,7 +279,7 @@ class TrackerCreateViewController: UIViewController {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
+        ])
     }
     
     private func setScrollViewContentConstraints(){
@@ -290,7 +290,7 @@ class TrackerCreateViewController: UIViewController {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
-
+        
     }
     private func setTitleConstraints(){
         NSLayoutConstraint.activate([
@@ -325,7 +325,7 @@ class TrackerCreateViewController: UIViewController {
         ])
     }
     
-
+    
     private func setEmojiAndColors(){
         NSLayoutConstraint.activate([
             emojiAndColors.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 8),
@@ -392,8 +392,8 @@ extension TrackerCreateViewController: UITableViewDelegate {
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
         } else {
-            let viewController = TrackerCategoriesList()
-//            viewController.delegate = self
+            let viewController = TrackerCategoriesList(delegate: self)
+            //            viewController.delegate = self
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
         }
@@ -449,7 +449,7 @@ extension TrackerCreateViewController: UICollectionViewDataSource {
 extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-
+        
         let size = CGSize(width: collectionViewCellSize, height: collectionViewCellSize)
         return size
     }
@@ -471,7 +471,7 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     }
     
     
-    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool { 
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         collectionView.indexPathsForSelectedItems?.filter({ $0.section == indexPath.section}).forEach({collectionView.deselectItem(at: $0, animated: true)})
         
         if let trackerEmoji = self.trackerEmoji {
@@ -501,21 +501,21 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let cell = collectionView.cellForItem(at: indexPath) as? EmojiAndColorCollectionViewCell
-            
+        
         UIView.animate(withDuration: 0.3) { [weak self] in
             guard let self = self else { return }
-                if indexPath.section == 0 {
-                    cell?.layer.cornerRadius = 16
-                    cell?.clipsToBounds = true
-                    cell?.backgroundColor = .trackerEmojiSelectionGray
-                    self.trackerEmoji = self.emoji[indexPath.row]
-                } else {
-                    cell?.layer.cornerRadius = 8
-                    cell?.layer.borderWidth = 3
-                    cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
-                    self.trackerColor = self.colors[indexPath.row]
-                }
+            if indexPath.section == 0 {
+                cell?.layer.cornerRadius = 16
+                cell?.clipsToBounds = true
+                cell?.backgroundColor = .trackerEmojiSelectionGray
+                self.trackerEmoji = self.emoji[indexPath.row]
+            } else {
+                cell?.layer.cornerRadius = 8
+                cell?.layer.borderWidth = 3
+                cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
+                self.trackerColor = self.colors[indexPath.row]
             }
+        }
     }
 }
 
@@ -526,5 +526,13 @@ extension TrackerCreateViewController: UITextFieldDelegate {
         print(trackerName)
         return true
     }
-    
 }
+
+extension TrackerCreateViewController: SelectCategoryForTrackerProtocl {
+    func setSelectedCategory(_ category: String) {
+        self.category = category
+        categoryAndScheduleTableView.reloadData()
+    }
+}
+
+

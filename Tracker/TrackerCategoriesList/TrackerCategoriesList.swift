@@ -8,11 +8,19 @@
 import Foundation
 import UIKit
 
+protocol SelectCategoryForTrackerProtocl {
+    func setSelectedCategory(_ category: String)
+}
+
 final class TrackerCategoriesList: UIViewController {
+    
+    private var delegate: SelectCategoryForTrackerProtocl?
     
     private var isCategorySelected: Bool = false
     
     private var selectedCategory: String?
+    
+    private var trackerTableViewController: TrackerTableViewController?
     
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
@@ -33,10 +41,14 @@ final class TrackerCategoriesList: UIViewController {
         button.addTarget(self, action: #selector(createCategory), for: .touchUpInside)
         return button
     }()
-
-    @objc func createCategory(){
-        
-       //TODO: - Действие добавления категории
+    
+    init(delegate: SelectCategoryForTrackerProtocl?) {
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -47,6 +59,22 @@ final class TrackerCategoriesList: UIViewController {
         setTableView()
     }
     
+    @objc func createCategory(){
+        //TODO: - Действие добавления категории
+        if isCategorySelected {
+            if let selectedCategory = self.selectedCategory {
+                delegate?.setSelectedCategory(selectedCategory)
+                print(selectedCategory)
+                self.dismiss(animated: true)
+            }
+        } else {
+            guard let trackerTableViewController = trackerTableViewController else { return }
+            let vc = TrackerCategoryCreate(delegate: trackerTableViewController)
+            vc.modalPresentationStyle = .popover
+            self.present(vc, animated: true)
+        }
+    }
+        
     private func addSubviews(){
         view.addSubview(titleLable)
         view.addSubview(createCategoryButton)
@@ -73,8 +101,8 @@ final class TrackerCategoriesList: UIViewController {
     }
     
     private func setTableView(){
-        let trackerTableViewController = TrackerTableViewController(delegate: self)
-        
+        trackerTableViewController = TrackerTableViewController(delegate: self )
+        guard let trackerTableViewController = trackerTableViewController else { return }
         guard let trackerTableView = trackerTableViewController.view else { return }
         trackerTableView.translatesAutoresizingMaskIntoConstraints = false
         addChild(trackerTableViewController)
@@ -97,8 +125,12 @@ extension TrackerCategoriesList: TrackerCategoryIsSelectedProtocol {
         self.selectedCategory = selectedCategory
     }
     
-    
+    func updateLayout(){
+        trackerTableViewController?.updateViewConstraints()
+    }
 }
+
+
 
 
 

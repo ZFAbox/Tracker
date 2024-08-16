@@ -10,11 +10,12 @@ import UIKit
 
 protocol TrackerCategoryIsSelectedProtocol{
     func isCategorySelected(_ isCategorySelected: Bool, selectedCategory: String?)
+    func updateLayout()
 }
 
 final class TrackerTableViewController: UIViewController {
     
-    private var categoryList: [String] = []
+    private var categoryList: [String] = ["Спорт", "Домашние дела", "Учеба"]
     
     private var isSelected = false
     
@@ -81,7 +82,6 @@ final class TrackerTableViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.addSubview(placeholderView)
         view.addSubview(categoriesListTableView)
         placeholderView.addSubview(emptyCategoryListImage)
@@ -152,6 +152,7 @@ extension TrackerTableViewController: UITableViewDelegate {
             cell.accessoryType = .none
             isSelected = false
             selectedCategory = nil
+            delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
         } else {
             cell.accessoryType = .checkmark
             isSelected = true
@@ -164,6 +165,17 @@ extension TrackerTableViewController: UITableViewDelegate {
                 }
             }
         }
+    }
+}
+
+extension TrackerTableViewController: UpdateCategoryListProtocol {
+    func updateCategoryList(with category: String) {
+        categoryList.append(category)
+        categoriesListTableView.updateConstraints()
+        categoriesListTableView.reloadData()
+        print(categoryList)
+        categoriesListTableView.layoutIfNeeded()
+
     }
 }
 
