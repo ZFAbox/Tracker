@@ -25,7 +25,7 @@ final class TrackerStore: NSObject{
     }
     
     private lazy var fetchResultController: NSFetchedResultsController<TrackerCategoryCoreData> = {
-        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         let sortDescriptors = NSSortDescriptor(key: "categoryName", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptors]
         let fetchResultedController = NSFetchedResultsController(
@@ -39,15 +39,17 @@ final class TrackerStore: NSObject{
     }()
     
     func saveCategory(_ category: String) {
-        let request = fetchResultController.fetchRequest
-        let predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryName), category)
+        print("Category: \(category)")
+        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let predicate = NSPredicate(format: "%K == '\(category)'", #keyPath(TrackerCategoryCoreData.categoryName))
         request.predicate = predicate
-        if let categoryName = try? context.fetch(request).first?.categoryName {
-            if categoryName.isEmpty {
-                let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
-                trackerCategoryCoreData.categoryName = categoryName
-                saveContext()
-            }
+        if let categoryData = try? context.fetch(request).first {
+            print(categoryData.categoryName)
+            return
+        } else {
+            let categoryCoreData = TrackerCategoryCoreData(context: context)
+            categoryCoreData.categoryName = category
+            saveContext()
         }
         return
     }
