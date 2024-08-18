@@ -30,7 +30,7 @@ final class TrackerStore: NSObject{
         fetchRequest.sortDescriptors = [sortDescriptors]
         let fetchResultedController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
-            managedObjectContext: context,
+            managedObjectContext: self.context,
             sectionNameKeyPath: nil,
             cacheName: nil)
         fetchResultedController.delegate = self
@@ -41,6 +41,7 @@ final class TrackerStore: NSObject{
     func saveCategory(_ category: String) {
         print("Category: \(category)")
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+//        let request = fetchResultController.fetchRequest
         let predicate = NSPredicate(format: "%K == '\(category)'", #keyPath(TrackerCategoryCoreData.categoryName))
         request.predicate = predicate
         if let categoryData = try? context.fetch(request).first {
@@ -70,9 +71,10 @@ final class TrackerStore: NSObject{
         fetchResultController.sections?[section].numberOfObjects ?? 0
     }
     
-    func object(at indexPath: IndexPath) -> String? {
+    func object(at indexPath: IndexPath) -> String {
         let categoryCoreData = fetchResultController.object(at: indexPath)
-        let categoryName = categoryCoreData.categoryName
+        guard let categoryName = categoryCoreData.categoryName else { return ""}
+        print("Объект категории: \(categoryName)")
         return categoryName
     }
     
@@ -86,13 +88,33 @@ final class TrackerStore: NSObject{
         return categoryCoreData.isEmpty ? true : false
     }
     
-    func count() -> Int {
-        let fetchRequest = fetchResultController.fetchRequest
-        fetchRequest.resultType = .countResultType
-        let categories = try! context.execute(fetchRequest) as! NSAsynchronousFetchResult<NSFetchRequestResult>
-        guard let count = categories.finalResult?.first else { return 0}
-        return count as! Int
+    func loadCategories() -> [String] {
+        let request = fetchResultController.fetchRequest
+        guard let categorysData = try? context.fetch(request) else { return [] }
+        var categories:[String] = []
+        for category in categorysData {
+            categories.append(category.categoryName ?? "")
+        }
+        return categories
     }
+    
+    func count() -> Int {
+        let request = fetchResultController.fetchRequest
+        guard let categorysData = try? context.fetch(request) else { return 0 }
+        var categories:[String] = []
+        for category in categorysData {
+            categories.append(category.categoryName ?? "")
+        }
+        return categories.count
+    }
+    
+//    func count() -> Int {
+//        let fetchRequest = fetchResultController.fetchRequest
+//        fetchRequest.resultType = .countResultType
+//        let categories = try! context.execute(fetchRequest) as! NSAsynchronousFetchResult<NSFetchRequestResult>
+//        guard let count = categories.finalResult?.first else { return 0}
+//        return count as! Int
+//    }
 }
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {

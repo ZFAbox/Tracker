@@ -112,7 +112,7 @@ final class TrackerCategoriesList: UIViewController {
             trackerTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
             trackerTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             trackerTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            trackerTableView.bottomAnchor.constraint(equalTo: createCategoryButton.topAnchor, constant: -8)
+            trackerTableView.bottomAnchor.constraint(lessThanOrEqualTo: createCategoryButton.topAnchor)
         ])
         
         trackerTableViewController.didMove(toParent: self)

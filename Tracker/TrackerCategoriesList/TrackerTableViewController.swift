@@ -125,7 +125,8 @@ final class TrackerTableViewController: UIViewController {
             categoriesListTableView.topAnchor.constraint(equalTo: view.topAnchor),
             categoriesListTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             categoriesListTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            categoriesListTableView.heightAnchor.constraint(equalToConstant: CGFloat(categoryStore.count() * 75 - 1))//CGFloat(categoryList.count * 75 - 1))
+//            categoriesListTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categoryStore.count() - 1))
+            categoriesListTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
@@ -138,12 +139,16 @@ extension TrackerTableViewController: UITableViewDataSource {
 //        emptyCategoryListImage.isHidden = !categoryList.isEmpty
         emptyCategoryListText.isHidden = !categoryStore.isEmpty()
         emptyCategoryListImage.isHidden = !categoryStore.isEmpty()
-        return  categoryStore.numberOfItemsInSection(section) //categoryList.count
+        let numberOfItems = categoryStore.numberOfItemsInSection(section)
+        print("Количество элементов в секции: \(numberOfItems)")
+        return  numberOfItems //categoryList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TrackerCategoriesListCell
-        cell.categoryName.text = categoryStore.object(at: indexPath)//categoryList[indexPath.row]
+        let categoryName = categoryStore.object(at: indexPath)//categoryList[indexPath.row]
+        print(categoryName)
+        cell.categoryName.text = categoryName
         return cell
     }
 }
@@ -159,7 +164,6 @@ extension TrackerTableViewController: UITableViewDelegate {
             delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
         } else {
             cell.accessoryType = .checkmark
-            categoryStore.count()
             isSelected = true
             selectedCategory = cell.categoryName.text
             delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
@@ -177,16 +181,16 @@ extension TrackerTableViewController: UpdateCategoryListProtocol {
     func updateCategoryList(with category: String) {
 //        categoryList.append(category)
         categoryStore.saveCategory(category)
-//        categoriesListTableView.updateConstraints()
-//        categoriesListTableView.reloadData()
+        categoriesListTableView.updateConstraints()
+        categoriesListTableView.reloadData()
+        print("Списко категорий: \(categoryStore.loadCategories())")
 //        print(categoryList)
-//        categoriesListTableView.layoutIfNeeded()
+        categoriesListTableView.layoutIfNeeded()
     }
     
     func updateCategoryTableList(){
         categoriesListTableView.reloadData()
                 categoriesListTableView.updateConstraints()
-        print(categoryStore.count())
                 categoriesListTableView.layoutIfNeeded()
     }
 }
