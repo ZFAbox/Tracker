@@ -10,7 +10,6 @@ import UIKit
 
 protocol TrackerCategoryIsSelectedProtocol{
     func isCategorySelected(_ isCategorySelected: Bool, selectedCategory: String?)
-    func updateLayout()
 }
 
 final class TrackerTableViewController: UIViewController {
@@ -69,6 +68,7 @@ final class TrackerTableViewController: UIViewController {
         tableView.separatorInset.left = 16
         tableView.separatorInset.right = 16
         tableView.separatorColor = .trackerDarkGray
+        tableView.tableFooterView = UIView()
         tableView.isScrollEnabled = true
         return tableView
     }()
@@ -125,7 +125,6 @@ final class TrackerTableViewController: UIViewController {
             categoriesListTableView.topAnchor.constraint(equalTo: view.topAnchor),
             categoriesListTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             categoriesListTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-//            categoriesListTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categoryStore.count() - 1))
             categoriesListTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
@@ -147,8 +146,14 @@ extension TrackerTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TrackerCategoriesListCell
         let categoryName = categoryStore.object(at: indexPath)//categoryList[indexPath.row]
-        print(categoryName)
         cell.categoryName.text = categoryName
+        if indexPath.row == categoryStore.count() - 1 {
+            cell.layer.cornerRadius = 16
+            cell.clipsToBounds = true
+            cell.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        } else {
+            cell.layer.cornerRadius = 0
+        }
         return cell
     }
 }
@@ -167,7 +172,7 @@ extension TrackerTableViewController: UITableViewDelegate {
             isSelected = true
             selectedCategory = cell.categoryName.text
             delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
-            for cellIndex in 0...categoryList.count - 1 {
+            for cellIndex in 0...categoryStore.count() - 1 {
                 if cellIndex != indexPath.row {
                     let otherCell = tableView.cellForRow(at: IndexPath(row: cellIndex, section: 0)) as! TrackerCategoriesListCell
                     otherCell.accessoryType = .none
@@ -184,14 +189,12 @@ extension TrackerTableViewController: UpdateCategoryListProtocol {
         categoriesListTableView.updateConstraints()
         categoriesListTableView.reloadData()
         print("Списко категорий: \(categoryStore.loadCategories())")
-//        print(categoryList)
+        print(categoryStore.count())
         categoriesListTableView.layoutIfNeeded()
     }
     
     func updateCategoryTableList(){
         categoriesListTableView.reloadData()
-                categoriesListTableView.updateConstraints()
-                categoriesListTableView.layoutIfNeeded()
     }
 }
 
