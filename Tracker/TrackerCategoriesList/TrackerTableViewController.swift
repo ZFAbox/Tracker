@@ -132,8 +132,6 @@ final class TrackerTableViewController: UIViewController {
 
 extension TrackerTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        emptyCategoryListText.isHidden = !categoryList.isEmpty
-//        emptyCategoryListImage.isHidden = !categoryList.isEmpty
         emptyCategoryListText.isHidden = !categoryStore.isEmpty()
         emptyCategoryListImage.isHidden = !categoryStore.isEmpty()
         let numberOfItems = categoryStore.numberOfItemsInSection(section)
@@ -197,7 +195,19 @@ extension TrackerTableViewController: UITableViewDelegate {
     }
     
     func remove(at indexPath: IndexPath) {
-        categoryStore.removeCategory(at: indexPath)
+        let alert = UIAlertController(title: nil, message: "Эта категория точно не нужна?", preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+            guard let self = self else { return }
+            self.categoryStore.removeCategory(at: indexPath)
+        }
+        
+        let cancelButton = UIAlertAction(title: "Отменить", style: .cancel) {  _ in
+            alert.dismiss(animated: true)
+        }
+        alert.addAction(deleteAction)
+        alert.addAction(cancelButton)
+        self.present(alert, animated: true)
     }
     
     func edit(at indexPath: IndexPath) {
@@ -214,13 +224,7 @@ extension TrackerTableViewController: UpdateCategoryListProtocol {
     }
     
     func updateCategoryList(with category: String) {
-//        categoryList.append(category)
         categoryStore.saveCategory(category)
-//        categoriesListTableView.updateConstraints()
-//        categoriesListTableView.reloadData()
-//        print("Списко категорий: \(categoryStore.loadCategories())")
-//        print(categoryStore.count())
-//        categoriesListTableView.layoutIfNeeded()
     }
     
     func updateCategoryTableList(){

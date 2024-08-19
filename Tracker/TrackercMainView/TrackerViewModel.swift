@@ -117,7 +117,7 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
     }
 }
 
-extension TrackerViewModel: HabbitCreateViewControllerProtocol {
+extension TrackerViewModel: TrackerCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
         addTracker(categoryName: category, tracker: tracker)
     }

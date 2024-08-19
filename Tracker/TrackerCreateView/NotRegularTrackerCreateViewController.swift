@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-protocol HabbitCreateViewControllerProtocol{
+protocol TrackerCreateViewControllerProtocol{
     func createTracker(category: String, tracker: Tracker)
 }
 
-class TrackerCreateViewController: UIViewController {
+class NotRegularTrackerCreateViewController: UIViewController {
     
-    var delegate: HabbitCreateViewControllerProtocol?
+    var delegate: TrackerCreateViewControllerProtocol?
     private var category: String?
     private var regular: Bool
     private var trackerTypeSelectViewController: TrackerTypeSelectViewController
@@ -35,11 +35,7 @@ class TrackerCreateViewController: UIViewController {
     }
     
     private lazy var categoryAndScheduleArray:[String] = {
-        if regular {
-            return ["Категория", "Расписание"]
-        } else {
             return ["Категория"]
-        }
     }()
     
     private let sectionHeader = ["Emoji","Цвет"]
@@ -356,7 +352,7 @@ class TrackerCreateViewController: UIViewController {
     
 }
 
-extension TrackerCreateViewController: UITableViewDataSource {
+extension NotRegularTrackerCreateViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categoryAndScheduleArray.count
@@ -383,24 +379,16 @@ extension TrackerCreateViewController: UITableViewDataSource {
     }
 }
 
-extension TrackerCreateViewController: UITableViewDelegate {
+extension NotRegularTrackerCreateViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.row == 1 {
-            let viewController = ScheduleViewController()
-            viewController.delegate = self
-            viewController.modalPresentationStyle = .popover
-            self.present(viewController, animated: true)
-        } else {
-            let viewController = TrackerCategoriesList(delegate: self)
-            //            viewController.delegate = self
-            viewController.modalPresentationStyle = .popover
-            self.present(viewController, animated: true)
-        }
+        let viewController = TrackerCategoriesList(delegate: self)
+        viewController.modalPresentationStyle = .popover
+        self.present(viewController, animated: true)
     }
 }
 
-extension TrackerCreateViewController: UICollectionViewDataSource {
+extension NotRegularTrackerCreateViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
@@ -446,7 +434,7 @@ extension TrackerCreateViewController: UICollectionViewDataSource {
     }
 }
 
-extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
+extension NotRegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -519,7 +507,7 @@ extension TrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension TrackerCreateViewController: UITextFieldDelegate {
+extension NotRegularTrackerCreateViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         trackerName = textField.text ?? ""
@@ -528,7 +516,7 @@ extension TrackerCreateViewController: UITextFieldDelegate {
     }
 }
 
-extension TrackerCreateViewController: SelectCategoryForTrackerProtocl {
+extension NotRegularTrackerCreateViewController: SelectCategoryForTrackerProtocl {
     func setSelectedCategory(_ category: String) {
         self.category = category
         categoryAndScheduleTableView.reloadData()

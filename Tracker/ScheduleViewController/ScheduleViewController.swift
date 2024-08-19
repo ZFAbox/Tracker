@@ -24,7 +24,7 @@ final class ScheduleViewController: UIViewController {
     
     private var trackerSchedule: [String] = []
     private var scheduleSubtitle: [String] = []
-    var delegate: TrackerCreateViewController?
+    var delegate: RegularTrackerCreateViewController?
     
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
