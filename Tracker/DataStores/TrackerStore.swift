@@ -82,6 +82,12 @@ final class TrackerStore: NSObject{
         saveCategory(category)
     }
     
+    func removeCategory(at indexPath: IndexPath) {
+        let categoryCoreData = fetchResultController.object(at: indexPath)
+        context.delete(categoryCoreData)
+        saveContext()
+    }
+    
     func isEmpty() -> Bool {
         let fetchRequest = fetchResultController.fetchRequest
         guard let categoryCoreData = try? context.fetch(fetchRequest) else { return true }

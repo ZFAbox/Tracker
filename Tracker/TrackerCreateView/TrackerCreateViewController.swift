@@ -223,7 +223,7 @@ class TrackerCreateViewController: UIViewController {
             Weekdays.Sunday.rawValue
         ]
         
-        let category = regular ? self.category ?? "Категория не выбрана" : (self.category ?? "Категория не выбрана") + " " + "🔥"
+        let category = regular ? self.category ?? "Категория не выбрана" : (self.category ?? "Категория не выбрана")// + " " + "🔥"
         
         let tracker = Tracker(
             trackerId: UUID(),

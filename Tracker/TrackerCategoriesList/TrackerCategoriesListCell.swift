@@ -19,19 +19,26 @@ final class TrackerCategoriesListCell: UITableViewCell {
         return lable
     }()
     
-    lazy var accessoryImageView: UIImageView = {
-        let  defaultImage = UIImage(systemName: "chevron.right")
-        let  imageView = UIImageView(image: defaultImage)
-        imageView.tintColor = .trackerDarkGray
+    lazy var checkMark: UIImageView = {
+        let  image = UIImage(named: "Check Mark")
+        let  imageView = UIImageView(image: image)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.tintColor = .trackerBlue
         return imageView
+    }()
+    
+    lazy var separatorView: UIView = {
+        let separator = UIView()
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        separator.backgroundColor = .trackerDarkGrayOpacity70
+        return separator
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-    
         addSubiews()
         setConstraints()
-        
+        checkMark.isHidden = true
     }
     
     required init?(coder: NSCoder) {
@@ -40,10 +47,14 @@ final class TrackerCategoriesListCell: UITableViewCell {
     
     func addSubiews(){
         contentView.addSubview(categoryName)
+        contentView.addSubview(separatorView)
+        contentView.addSubview(checkMark)
     }
     
     func setConstraints(){
         setCategoryNameConstraints()
+        setSeparatorConstraints()
+        setCheckMarkConstraints()
     }
     
     func setCategoryNameConstraints (){
@@ -51,6 +62,24 @@ final class TrackerCategoriesListCell: UITableViewCell {
             categoryName.topAnchor.constraint(equalTo: contentView.topAnchor),
             categoryName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             categoryName.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
+    
+    func setCheckMarkConstraints (){
+        NSLayoutConstraint.activate([
+            checkMark.centerYAnchor.constraint(equalTo: categoryName.centerYAnchor),
+            checkMark.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -21),
+            checkMark.heightAnchor.constraint(equalToConstant: 14),
+            checkMark.widthAnchor.constraint(equalToConstant: 14)
+        ])
+    }
+    
+    private func setSeparatorConstraints(){
+        NSLayoutConstraint.activate([
+            separatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
     

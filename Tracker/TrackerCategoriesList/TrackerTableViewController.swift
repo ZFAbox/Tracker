@@ -64,11 +64,9 @@ final class TrackerTableViewController: UIViewController {
         tableView.delegate = self
         tableView.register(TrackerCategoriesListCell.self, forCellReuseIdentifier: "cell")
         tableView.rowHeight = 75
-        tableView.separatorStyle = .singleLine
+        tableView.separatorStyle = .none
         tableView.separatorInset.left = 16
         tableView.separatorInset.right = 16
-        tableView.separatorColor = .trackerDarkGray
-        tableView.tableFooterView = UIView()
         tableView.isScrollEnabled = true
         return tableView
     }()
@@ -147,12 +145,16 @@ extension TrackerTableViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TrackerCategoriesListCell
         let categoryName = categoryStore.object(at: indexPath)//categoryList[indexPath.row]
         cell.categoryName.text = categoryName
+        cell.accessoryType = .none
+        cell.backgroundColor = .trackerBackgroundOpacityGray
         if indexPath.row == categoryStore.count() - 1 {
             cell.layer.cornerRadius = 16
             cell.clipsToBounds = true
-            cell.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            cell.separatorView.isHidden = true
         } else {
             cell.layer.cornerRadius = 0
+            cell.separatorView.isHidden = false
         }
         return cell
     }
@@ -163,22 +165,43 @@ extension TrackerTableViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = tableView.cellForRow(at: indexPath) as! TrackerCategoriesListCell
         if cell.accessoryType == .checkmark {
-            cell.accessoryType = .none
+            cell.checkMark.isHidden = true
             isSelected = false
             selectedCategory = nil
             delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
         } else {
-            cell.accessoryType = .checkmark
+            cell.checkMark.isHidden = false
             isSelected = true
             selectedCategory = cell.categoryName.text
             delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
             for cellIndex in 0...categoryStore.count() - 1 {
                 if cellIndex != indexPath.row {
                     let otherCell = tableView.cellForRow(at: IndexPath(row: cellIndex, section: 0)) as! TrackerCategoriesListCell
-                    otherCell.accessoryType = .none
+                    otherCell.checkMark.isHidden = true
                 }
             }
         }
+    }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: "Редактировать") { [weak self] _ in
+                    self?.edit(at: indexPath)
+                },
+                UIAction(title: "Удалить",handler: { [weak self] _ in
+                    self?.remove(at: indexPath)
+                })
+            ])
+        })
+    }
+    
+    func remove(at indexPath: IndexPath) {
+        categoryStore.removeCategory(at: indexPath)
+    }
+    
+    func edit(at indexPath: IndexPath) {
+        let categoryName = categoryStore.object(at: indexPath)
     }
 }
 
@@ -186,11 +209,11 @@ extension TrackerTableViewController: UpdateCategoryListProtocol {
     func updateCategoryList(with category: String) {
 //        categoryList.append(category)
         categoryStore.saveCategory(category)
-        categoriesListTableView.updateConstraints()
-        categoriesListTableView.reloadData()
-        print("Списко категорий: \(categoryStore.loadCategories())")
-        print(categoryStore.count())
-        categoriesListTableView.layoutIfNeeded()
+//        categoriesListTableView.updateConstraints()
+//        categoriesListTableView.reloadData()
+//        print("Списко категорий: \(categoryStore.loadCategories())")
+//        print(categoryStore.count())
+//        categoriesListTableView.layoutIfNeeded()
     }
     
     func updateCategoryTableList(){
