@@ -186,10 +186,10 @@ extension TrackerTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(actionProvider: { actions in
             return UIMenu(children: [
-                UIAction(title: "Редактировать") { [weak self] _ in
+                UIAction(title: "Редактировать", handler: { [weak self] _ in
                     self?.edit(at: indexPath)
-                },
-                UIAction(title: "Удалить",handler: { [weak self] _ in
+                }),
+                UIAction(title: "Удалить", attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
                     self?.remove(at: indexPath)
                 })
             ])
@@ -201,11 +201,18 @@ extension TrackerTableViewController: UITableViewDelegate {
     }
     
     func edit(at indexPath: IndexPath) {
-        let categoryName = categoryStore.object(at: indexPath)
+        let vc = TrackerCategoryEditor(delegate: self, indexPath: indexPath)
+        vc.modalPresentationStyle = .popover
+        self.present(vc, animated: true)
     }
 }
 
 extension TrackerTableViewController: UpdateCategoryListProtocol {
+    func editCategory(with category: String, indexPath: IndexPath) {
+        categoryStore.editCategory(at: indexPath, with: category)
+        categoriesListTableView.reloadData()
+    }
+    
     func updateCategoryList(with category: String) {
 //        categoryList.append(category)
         categoryStore.saveCategory(category)

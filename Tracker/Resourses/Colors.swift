@@ -20,6 +20,7 @@ extension UIColor {
     static var trackerGray = UIColor.rgbColors(red: 240, green: 240, blue: 240, alpha: 1)
     static var trackerGreen = UIColor.rgbColors(red: 51, green: 207, blue: 105, alpha: 1)
     static var trackerOrnage = UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1)
+    static var trackerRed = UIColor.rgbColors(red: 255, green: 69, blue: 58, alpha: 1)
     static var trackerDarkGray = UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 1)
     static var trackerDarkGrayOpacity30 = UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 0.4)
     static var trackerDarkGrayOpacity70 = UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 0.7)

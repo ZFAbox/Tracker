@@ -31,6 +31,7 @@
 		90DE58632C0A655400351750 /* TrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90DE58622C0A655400351750 /* TrackerViewController.swift */; };
 		90DE58682C0A655600351750 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90DE58672C0A655600351750 /* Assets.xcassets */; };
 		90DE586B2C0A655600351750 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 90DE586A2C0A655600351750 /* Base */; };
+		90F8223F2C73C4AD0053DF20 /* TrackerCategoryEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F8223E2C73C4AD0053DF20 /* TrackerCategoryEditor.swift */; };
 		9F6CEA312C13120B007BA364 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA302C13120B007BA364 /* Tracker.swift */; };
 		9F6CEA332C13122A007BA364 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA322C13122A007BA364 /* TrackerCategory.swift */; };
 		9F6CEA352C13123D007BA364 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA342C13123D007BA364 /* TrackerRecord.swift */; };
@@ -81,6 +82,7 @@
 		90DE58672C0A655600351750 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		90DE586A2C0A655600351750 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		90DE586C2C0A655600351750 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90F8223E2C73C4AD0053DF20 /* TrackerCategoryEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryEditor.swift; sourceTree = "<group>"; };
 		9F6CEA302C13120B007BA364 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		9F6CEA322C13122A007BA364 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		9F6CEA342C13123D007BA364 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				9F8B4FB62C6F393E00FD0076 /* TrackerCategoryCreate.swift */,
 				9F9C1C0C2C6E44ED00798392 /* TrackerTableViewController.swift */,
 				9F9EB6CB2C6D01FE008DF57E /* TrackerCategoriesListCell.swift */,
+				90F8223E2C73C4AD0053DF20 /* TrackerCategoryEditor.swift */,
 			);
 			path = TrackerCategoriesList;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				9FE74DBF2C219BF5007ACB54 /* Int+Days Extension.swift in Sources */,
 				9F6D973E2C4E568D000A57A4 /* DataStore.swift in Sources */,
 				902759512C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift in Sources */,
+				90F8223F2C73C4AD0053DF20 /* TrackerCategoryEditor.swift in Sources */,
 				9F6D973C2C4E561E000A57A4 /* TrackerRecordStore.swift in Sources */,
 				9FA950EE2C6BA18000414C6F /* TrackerBinding.swift in Sources */,
 				903B3EED2C27757B00B79BD3 /* TrackerCreateViewController.swift in Sources */,

@@ -1,27 +1,23 @@
 //
-//  TrackerCategoryCreate.swift
+//  TrackerCategoryEditor.swift
 //  Tracker
 //
-//  Created by Fedor on 16.08.2024.
+//  Created by Федор Завьялов on 19.08.2024.
 //
 
 import UIKit
 
-protocol UpdateCategoryListProtocol {
-    
-    func updateCategoryList(with category: String)
-    func updateCategoryTableList()
-    func editCategory(with category: String, indexPath: IndexPath)
-}
-
-final class TrackerCategoryCreate: UIViewController {
+final class TrackerCategoryEditor: UIViewController {
     
     private var categoryName: String = ""
     
     private var delegate: UpdateCategoryListProtocol
     
-    init(delegate: UpdateCategoryListProtocol) {
+    private var indexPath: IndexPath
+    
+    init(delegate: UpdateCategoryListProtocol, indexPath: IndexPath) {
         self.delegate = delegate
+        self.indexPath = indexPath
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -32,7 +28,7 @@ final class TrackerCategoryCreate: UIViewController {
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        titleLable.text = "Категория"
+        titleLable.text = "Редактирование категории"
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
@@ -83,7 +79,7 @@ final class TrackerCategoryCreate: UIViewController {
     }
 
     @objc func createCategory(){
-        delegate.updateCategoryList(with: categoryName)
+        delegate.editCategory(with: categoryName, indexPath: indexPath)
         self.dismiss(animated: true)
     }
     
@@ -144,7 +140,7 @@ final class TrackerCategoryCreate: UIViewController {
 }
 
 
-extension TrackerCategoryCreate: UITextFieldDelegate {
+extension TrackerCategoryEditor: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let text = textField.text else { return true }
@@ -152,4 +148,3 @@ extension TrackerCategoryCreate: UITextFieldDelegate {
         return true
     }
 }
-
