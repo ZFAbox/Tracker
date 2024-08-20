@@ -45,6 +45,18 @@ final class TrackerCategoryStore: NSObject {
         let searchedText = (self.searchedText).lowercased()
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         if searchedText == "" {
+            
+//            let  textAndDatePredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+//            
+//            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
+//            let isCompleted = NSPredicate(format: "Any %K >= %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+//            let isCompletedDateEmpty = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+////            let notVisibleBeforeCreate = NSPredicate(format: "%K <= %@",  #keyPath(TrackerCoreData.createDate), currentDate as NSDate)
+//            let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompleted])
+//            let NotCompletedAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [isCompletedDateEmpty, notRegularAndCompleted])
+//            
+//            let predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [NotCompletedAndCompleted, textAndDatePredicate])
+            
             fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
         } else {
             fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name.lowercased), searchedText)
@@ -80,6 +92,7 @@ final class TrackerCategoryStore: NSObject {
             trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
         }
         saveContext()
+        try? fetchedResultController.performFetch()
     }
     
 //    func updateDateAndText(weekday: String, searchedText: String ) {
@@ -96,17 +109,17 @@ final class TrackerCategoryStore: NSObject {
         let weekday = DateFormatter.weekday(date: currentDate)
         if searchedText == "" {
             let  textAndDatePredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
-            
+//            
             let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
-            let isCompleted = NSPredicate(format: "Any %K >= %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let isCompletedDateEmpty = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+            let isCompletedBeforeCurrentDate = NSPredicate(format: "Any %K < %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+            let neverCompleted = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
             let notVisibleBeforeCreate = NSPredicate(format: "%K <= %@",  #keyPath(TrackerCoreData.createDate), currentDate as NSDate)
-            let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompleted])
-            let NotCompletedAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [isCompletedDateEmpty, notRegularAndCompleted])
+            let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedBeforeCurrentDate])
+            let removeCompletednotRegular = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompleted])
+            let notCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [neverCompleted, removeCompletednotRegular])
+            let predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [textAndDatePredicate, notVisibleBeforeCreate, notCompleted])
             
-            let predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [NotCompletedAndCompleted, textAndDatePredicate, notVisibleBeforeCreate])
-            
-            fetchedResultController.fetchRequest.predicate = predicate
+            fetchedResultController.fetchRequest.predicate = predicate //predicate
             try? fetchedResultController.performFetch()
             
         } else {

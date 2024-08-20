@@ -205,7 +205,6 @@ class NotRegularTrackerCreateViewController: UIViewController {
     @objc func inputText(_ sender: UITextField){
         let text = sender.text ?? ""
         trackerName = text
-        //        print(text)
     }
     
     @objc func createTracker(){
