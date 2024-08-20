@@ -209,7 +209,7 @@ class NotRegularTrackerCreateViewController: UIViewController {
     }
     
     @objc func createTracker(){
-        let schedule = regular ? trackerSchedule : [
+        let schedule = [
             Weekdays.Monday.rawValue,
             Weekdays.Tuesday.rawValue,
             Weekdays.Wednesday.rawValue,
@@ -219,14 +219,16 @@ class NotRegularTrackerCreateViewController: UIViewController {
             Weekdays.Sunday.rawValue
         ]
         
-        let category = regular ? self.category ?? "Категория не выбрана" : (self.category ?? "Категория не выбрана")// + " " + "🔥"
+        let category = self.category ?? "Категория не выбрана"
         
         let tracker = Tracker(
             trackerId: UUID(),
             name: trackerName,
             emoji: trackerEmoji ?? "🤬",
             color: trackerColor ?? UIColor.trackerBlack,
-            schedule: schedule)
+            schedule: schedule,
+            isRegular: regular,
+            createDate: Date().removeTimeInfo ?? Date())
         
         delegate?.createTracker(category: category, tracker: tracker)
         self.dismiss(animated: false)

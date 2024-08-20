@@ -68,6 +68,8 @@ final class TrackerCategoryStore: NSObject {
         trackerData.emoji = tracker.emoji
         trackerData.color = UIColor.getHexColor(from: tracker.color)
         trackerData.schedule = tracker.schedule.joined(separator: ",")
+        trackerData.isRegular = tracker.isRegular
+        trackerData.createDate = tracker.createDate
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
         if let category = try? context.fetch(request).first {
@@ -80,15 +82,39 @@ final class TrackerCategoryStore: NSObject {
         saveContext()
     }
     
-    func updateDateAndText(weekday: String, searchedText: String ) {
+//    func updateDateAndText(weekday: String, searchedText: String ) {
+//        if searchedText == "" {
+//            fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+//            try? fetchedResultController.performFetch()
+//        } else {
+//            fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name.lowercased), searchedText)
+//            try? fetchedResultController.performFetch()
+//        }
+//    }
+    
+    func updateDateAndText(currentDate: Date, searchedText: String ) {
+        let weekday = DateFormatter.weekday(date: currentDate)
         if searchedText == "" {
-            fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+            let  textAndDatePredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+            
+            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
+            let isCompleted = NSPredicate(format: "Any %K >= %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+            let isCompletedDateEmpty = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+            let notVisibleBeforeCreate = NSPredicate(format: "%K <= %@",  #keyPath(TrackerCoreData.createDate), currentDate as NSDate)
+            let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompleted])
+            let NotCompletedAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [isCompletedDateEmpty, notRegularAndCompleted])
+            
+            let predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [NotCompletedAndCompleted, textAndDatePredicate, notVisibleBeforeCreate])
+            
+            fetchedResultController.fetchRequest.predicate = predicate
             try? fetchedResultController.performFetch()
+            
         } else {
             fetchedResultController.fetchRequest.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name.lowercased), searchedText)
             try? fetchedResultController.performFetch()
         }
     }
+    
     
     
     var numberOfSections: Int {
@@ -106,7 +132,9 @@ final class TrackerCategoryStore: NSObject {
             name: trackerCoreData.name ?? "",
             emoji: trackerCoreData.emoji ?? "🤬",
             color: UIColor.getUIColor(from: trackerCoreData.color ?? "#FFFFFF"),
-            schedule: trackerCoreData.schedule?.components(separatedBy: ",") ?? ["Воскресенье"]
+            schedule: trackerCoreData.schedule?.components(separatedBy: ",") ?? ["Воскресенье"],
+            isRegular: trackerCoreData.isRegular,
+            createDate: trackerCoreData.createDate ?? Date()
         )
         return tracker
     }
@@ -144,7 +172,9 @@ final class TrackerCategoryStore: NSObject {
                 name: tracker.name ?? "",
                 emoji: tracker.emoji ?? "🤬",
                 color: UIColor.getUIColor(from: tracker.color ?? "#FFFFFF"),
-                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"])
+                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"],
+                isRegular: tracker.isRegular,
+                createDate: tracker.createDate ?? Date())
             print(tracker)
             
             if trackerCategories.contains(where: { trackerCategory in
@@ -172,10 +202,56 @@ final class TrackerCategoryStore: NSObject {
         return trackerCategories
     }
     
-    func loadVisibleTrackers(weekday: String, searchedText: String) -> [TrackerCategory] {
+//    func loadVisibleTrackers(weekday: String, searchedText: String) -> [TrackerCategory] {
+//        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+//        if searchedText == "" {
+//            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+//        } else {
+//            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name.lowercased), searchedText)
+//        }
+//        let trackerCoreData = try? context.fetch(request)
+//        var trackerCategories:[TrackerCategory] = []
+//        guard let trackerCoreData = trackerCoreData else { return [] }
+//        trackerCoreData.forEach({ tracker in
+//            let categoryName = tracker.category?.categoryName ?? "Пусто"
+//            print(categoryName)
+//            let tracker = Tracker(
+//                trackerId: tracker.trackerId ?? UUID(),
+//                name: tracker.name ?? "",
+//                emoji: tracker.emoji ?? "🤬",
+//                color: UIColor.getUIColor(from: tracker.color ?? "#FFFFFF"),
+//                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"],
+//                isRegular: tracker.isRegular)
+//            if trackerCategories.contains(where: { trackerCategory in
+//                trackerCategory.categoryName == categoryName
+//            }) {
+//                var newTrackerArray:[Tracker] = []
+//                trackerCategories.forEach ({
+//                    if $0.categoryName == categoryName {
+//                        newTrackerArray = $0.trackersOfCategory
+//                        newTrackerArray.append(tracker)
+//                    }
+//                })
+//                trackerCategories.removeAll { trackerCategory in
+//                    trackerCategory.categoryName == categoryName
+//                }
+//                trackerCategories.append(TrackerCategory(categoryName: categoryName, trackersOfCategory: newTrackerArray))
+//
+//            } else {
+//                let trackerCategory = TrackerCategory(
+//                    categoryName: categoryName,
+//                    trackersOfCategory: [tracker])
+//                trackerCategories.append(trackerCategory)
+//            }
+//        })
+//        return trackerCategories
+//    }
+    
+    func loadVisibleTrackers(currentDate: Date, searchedText: String) -> [TrackerCategory] {
+        let weekday = DateFormatter.weekday(date: currentDate)
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         if searchedText == "" {
-            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND !(%K != true AND %K > %ld )", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.isRegular), #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
         } else {
             request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name.lowercased), searchedText)
         }
@@ -190,7 +266,9 @@ final class TrackerCategoryStore: NSObject {
                 name: tracker.name ?? "",
                 emoji: tracker.emoji ?? "🤬",
                 color: UIColor.getUIColor(from: tracker.color ?? "#FFFFFF"),
-                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"])
+                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"],
+                isRegular: tracker.isRegular,
+                createDate: tracker.createDate ?? Date())
             if trackerCategories.contains(where: { trackerCategory in
                 trackerCategory.categoryName == categoryName
             }) {

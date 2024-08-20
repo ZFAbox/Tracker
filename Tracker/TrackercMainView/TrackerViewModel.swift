@@ -47,9 +47,10 @@ final class TrackerViewModel {
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
-        let weekday = DateFormatter.weekday(date: currentDate)
-        let searchText = searchedText.lowercased()
-        trackerCategoryStore.updateDateAndText(weekday: weekday, searchedText: searchText)
+//        let weekday = DateFormatter.weekday(date: currentDate)
+//        let searchText = searchedText.lowercased()
+//        trackerCategoryStore.updateDateAndText(weekday: weekday, searchedText: searchText)
+        trackerCategoryStore.updateDateAndText(currentDate: currentDate, searchedText: searchedText)
     }
     
     func addTracker(categoryName: String, tracker: Tracker){

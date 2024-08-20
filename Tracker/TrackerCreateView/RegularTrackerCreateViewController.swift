@@ -222,30 +222,20 @@ class RegularTrackerCreateViewController: UIViewController {
     @objc func inputText(_ sender: UITextField){
         let text = sender.text ?? ""
         trackerName = text
-        //        print(text)
     }
     
     @objc func createTracker(){
-        let schedule = regular ? trackerSchedule : [
-            Weekdays.Monday.rawValue,
-            Weekdays.Tuesday.rawValue,
-            Weekdays.Wednesday.rawValue,
-            Weekdays.Thursday.rawValue,
-            Weekdays.Friday.rawValue,
-            Weekdays.Saturday.rawValue,
-            Weekdays.Sunday.rawValue
-        ]
-        
-        let category = regular ? self.category ?? "Категория не выбрана" : (self.category ?? "Категория не выбрана")// + " " + "🔥"
+        let category = self.category ?? "Категория не выбрана"
         
         let tracker = Tracker(
             trackerId: UUID(),
             name: trackerName,
             emoji: trackerEmoji ?? "🤬",
             color: trackerColor ?? UIColor.trackerBlack,
-            schedule: schedule)
+            schedule: trackerSchedule,
+            isRegular: regular,
+            createDate: Date().removeTimeInfo ?? Date())
         
-
             createButton.backgroundColor = .trackerBlack
             delegate?.createTracker(category: category, tracker: tracker)
             self.dismiss(animated: false)
@@ -263,8 +253,7 @@ class RegularTrackerCreateViewController: UIViewController {
         let scheduleIsEmpty = trackerSchedule.isEmpty
         let trackerEmojiIsEmpty = trackerEmoji?.isEmpty ?? true
         let categoryIsEmpty = category?.isEmpty ?? true
-//        let colorIsSelected = trackerColor == UIColor()
-        return !trackerNameIsEmpty && !scheduleIsEmpty && trackerColorIsSelected
+        return !trackerNameIsEmpty && !scheduleIsEmpty && trackerColorIsSelected && !trackerEmojiIsEmpty && !categoryIsEmpty
     }
     
     private func isCreateButtonEnable() {
@@ -427,7 +416,6 @@ extension RegularTrackerCreateViewController: UITableViewDelegate {
             self.present(viewController, animated: true)
         } else {
             let viewController = TrackerCategoriesList(delegate: self)
-            //            viewController.delegate = self
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
         }
@@ -503,7 +491,6 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         collectionView.indexPathsForSelectedItems?.filter({ $0.section == indexPath.section}).forEach({collectionView.deselectItem(at: $0, animated: true)})

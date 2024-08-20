@@ -24,6 +24,12 @@ final class TrackerRecordStore{
         let trackerRecordData = TrackerRecordCoreData(context: context)
         trackerRecordData.trackerId = trackerRecord.trackerId
         trackerRecordData.trackerDate = trackerRecord.trackerDate
+        
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCoreData.trackerId), trackerRecord.trackerId as NSUUID)
+        if let tracker = try? context.fetch(request).first {
+            trackerRecordData.tracker = tracker
+        }
         saveTrackerRecord()
     }
     
