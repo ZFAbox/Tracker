@@ -12,7 +12,7 @@ final class TrackerViewModel {
     var currentDate: Date? {
         didSet {
             updateTrackersForCurrentDate(searchedText: "")
-            currentDateBinding?(currentDate ?? Date())
+            currentDateBinding?(currentDate ?? DateFormatter.removeTime(date: Date()))
         }
     }
     
@@ -32,7 +32,7 @@ final class TrackerViewModel {
     
     //MARK: - CoreData Constants
     
-    private lazy var trackerCategoryStore = TrackerCategoryStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
+    private lazy var trackerCategoryStore = TrackerStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
     private lazy var trackerRecordStore = TrackerRecordStore()
     
     //MARK: - Bindings
@@ -88,6 +88,11 @@ final class TrackerViewModel {
     
     func headerTitle(for indexPath: IndexPath) -> String {
         trackerCategoryStore.header(indexPath)
+    }
+    
+    func performFetches() {
+        trackerCategoryStore.perform()
+        currentDate = nil
     }
 }
 

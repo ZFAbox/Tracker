@@ -14,11 +14,7 @@ protocol SelectCategoryForTrackerProtocl {
 
 final class TrackerCategoriesList: UIViewController {
     
-    private var delegate: SelectCategoryForTrackerProtocl?
-    
-    private var isCategorySelected: Bool = false
-    
-    private var selectedCategory: String?
+    var trackerCategoriesViewModel: TrackerCategoriesViewModel
     
     private var trackerTableViewController: TrackerTableViewController?
     
@@ -43,7 +39,7 @@ final class TrackerCategoriesList: UIViewController {
     }()
     
     init(delegate: SelectCategoryForTrackerProtocl?) {
-        self.delegate = delegate
+        self.trackerCategoriesViewModel = TrackerCategoriesViewModel(delegate: delegate)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -61,12 +57,9 @@ final class TrackerCategoriesList: UIViewController {
     
     @objc func createCategory(){
         //TODO: - Действие добавления категории
-        if isCategorySelected {
-            if let selectedCategory = self.selectedCategory {
-                delegate?.setSelectedCategory(selectedCategory)
-                print(selectedCategory)
-                self.dismiss(animated: true)
-            }
+        if trackerCategoriesViewModel.isCategorySelected {
+            trackerCategoriesViewModel.setCategory()
+            self.dismiss(animated: true)
         } else {
             guard let trackerTableViewController = trackerTableViewController else { return }
             let vc = TrackerCategoryCreate(delegate: trackerTableViewController)
@@ -101,7 +94,7 @@ final class TrackerCategoriesList: UIViewController {
     }
     
     private func setTableView(){
-        trackerTableViewController = TrackerTableViewController(delegate: self )
+        trackerTableViewController = TrackerTableViewController(delegate: trackerCategoriesViewModel )
         guard let trackerTableViewController = trackerTableViewController else { return }
         guard let trackerTableView = trackerTableViewController.view else { return }
         trackerTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -119,12 +112,7 @@ final class TrackerCategoriesList: UIViewController {
     }
 }
 
-extension TrackerCategoriesList: TrackerCategoryIsSelectedProtocol {
-    func isCategorySelected(_ isCategorySelected: Bool, selectedCategory: String?) {
-        self.isCategorySelected = isCategorySelected
-        self.selectedCategory = selectedCategory
-    }
-}
+
 
 
 

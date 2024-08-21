@@ -86,6 +86,11 @@ final class TrackerViewController: UIViewController{
         return filterButton
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.performFetches()
+        updateTrackerCollectionView()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white

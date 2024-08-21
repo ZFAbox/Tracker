@@ -238,6 +238,7 @@ class NotRegularTrackerCreateViewController: UIViewController {
     
     @objc func cancel(){
         self.dismiss(animated: true)
+        trackerTypeSelectViewController.viewModel?.performFetches()
     }
     
     func reloadTable(){
@@ -268,7 +269,6 @@ class NotRegularTrackerCreateViewController: UIViewController {
         setButtonStackConstraintsForTecker()
         contentView.bottomAnchor.constraint(equalTo: buttonStack.bottomAnchor).isActive = true
     }
-    
     
     private func setScrollViewConstraints(){
         NSLayoutConstraint.activate([

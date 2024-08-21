@@ -144,7 +144,7 @@ class RegularTrackerCreateViewController: UIViewController {
         let lable = UILabel()
         lable.translatesAutoresizingMaskIntoConstraints = false
         lable.text = "Ограничение 38 символов"
-        lable.tintColor = .trackerRed
+        lable.textColor = .trackerRed
         lable.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         return lable
     }()
@@ -222,6 +222,7 @@ class RegularTrackerCreateViewController: UIViewController {
     override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
+        textFieldLimitationMessage.isHidden = true
         buttonStack.addArrangedSubview(cancelButton)
         buttonStack.addArrangedSubview(createButton)
         addSubviews()

@@ -9,23 +9,13 @@ import Foundation
 import UIKit
 
 protocol TrackerCategoryIsSelectedProtocol{
-    func isCategorySelected(_ isCategorySelected: Bool, selectedCategory: String?)
+    func isCategorySelected(isCategorySelected: Bool, selectedCategory: String?)
 }
 
 final class TrackerTableViewController: UIViewController {
     
-    private var categoryList: [String] = ["Спорт", "Домашние дела", "Учеба"]
+    private var trackerCategoriesViewModel: TrackerCategoriesViewModel
     
-    private var isSelected = false
-    
-    private var selectedCategory: String?
-    
-    private lazy var categoryStore = TrackerStore(delegate: self)
-    
-    var delegate: TrackerCategoryIsSelectedProtocol?
-    
-    
-//    "Спорт", "Домашние дела", "Учеба"
     private lazy var placeholderView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -71,8 +61,8 @@ final class TrackerTableViewController: UIViewController {
         return tableView
     }()
     
-    init(delegate: TrackerCategoryIsSelectedProtocol?) {
-        self.delegate = delegate
+    init(delegate: TrackerCategoriesViewModel) {
+        self.trackerCategoriesViewModel = delegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -91,6 +81,13 @@ final class TrackerTableViewController: UIViewController {
         setPlaceholderImageConstraints()
         setPlaceholderTexConstraints()
         setCatrgoryTableConstraints()
+        setBindings()
+    }
+    
+    func setBindings(){
+        trackerCategoriesViewModel.insertedTableIndexesBinding = { [weak self] _ in
+            self?.updateCategoryTableList()
+        }
     }
     
     private func setPLaceholderConstraints(){
@@ -132,20 +129,19 @@ final class TrackerTableViewController: UIViewController {
 
 extension TrackerTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        emptyCategoryListText.isHidden = !categoryStore.isEmpty()
-        emptyCategoryListImage.isHidden = !categoryStore.isEmpty()
-        let numberOfItems = categoryStore.numberOfItemsInSection(section)
-        print("Количество элементов в секции: \(numberOfItems)")
-        return  numberOfItems //categoryList.count
+        emptyCategoryListText.isHidden = !trackerCategoriesViewModel.isCategoriesEmpty()
+        emptyCategoryListImage.isHidden = !trackerCategoriesViewModel.isCategoriesEmpty()
+        let numberOfItems = trackerCategoriesViewModel.numberOfItemsInSection(section)
+        return  numberOfItems
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TrackerCategoriesListCell
-        let categoryName = categoryStore.object(at: indexPath)//categoryList[indexPath.row]
+        let categoryName = trackerCategoriesViewModel.object(at: indexPath)
         cell.categoryName.text = categoryName
         cell.accessoryType = .none
         cell.backgroundColor = .trackerBackgroundOpacityGray
-        if indexPath.row == categoryStore.count() - 1 {
+        if indexPath.row == trackerCategoriesViewModel.count() - 1 {
             cell.layer.cornerRadius = 16
             cell.clipsToBounds = true
             cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -164,15 +160,12 @@ extension TrackerTableViewController: UITableViewDelegate {
         let cell = tableView.cellForRow(at: indexPath) as! TrackerCategoriesListCell
         if cell.accessoryType == .checkmark {
             cell.checkMark.isHidden = true
-            isSelected = false
-            selectedCategory = nil
-            delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
+            trackerCategoriesViewModel.isCategorySelected(isCategorySelected: false, selectedCategory: nil)
         } else {
             cell.checkMark.isHidden = false
-            isSelected = true
-            selectedCategory = cell.categoryName.text
-            delegate?.isCategorySelected(isSelected, selectedCategory: selectedCategory)
-            for cellIndex in 0...categoryStore.count() - 1 {
+            let selectedCategory = cell.categoryName.text
+            trackerCategoriesViewModel.isCategorySelected(isCategorySelected: true, selectedCategory: selectedCategory)
+            for cellIndex in 0...trackerCategoriesViewModel.count() - 1 {
                 if cellIndex != indexPath.row {
                     let otherCell = tableView.cellForRow(at: IndexPath(row: cellIndex, section: 0)) as! TrackerCategoriesListCell
                     otherCell.checkMark.isHidden = true
@@ -199,7 +192,7 @@ extension TrackerTableViewController: UITableViewDelegate {
         
         let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
             guard let self = self else { return }
-            self.categoryStore.removeCategory(at: indexPath)
+            self.trackerCategoriesViewModel.removeCategory(at: indexPath)
         }
         
         let cancelButton = UIAlertAction(title: "Отменить", style: .cancel) {  _ in
@@ -219,12 +212,12 @@ extension TrackerTableViewController: UITableViewDelegate {
 
 extension TrackerTableViewController: UpdateCategoryListProtocol {
     func editCategory(with category: String, indexPath: IndexPath) {
-        categoryStore.editCategory(at: indexPath, with: category)
+        trackerCategoriesViewModel.editCategory(at: indexPath, with: category)
         categoriesListTableView.reloadData()
     }
     
     func updateCategoryList(with category: String) {
-        categoryStore.saveCategory(category)
+        trackerCategoriesViewModel.saveCategory(category)
     }
     
     func updateCategoryTableList(){
