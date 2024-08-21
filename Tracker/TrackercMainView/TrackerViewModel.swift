@@ -118,6 +118,19 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
             return}
         trackerRecordStore.deleteTrackerRecord(id: id, currentDate: date)
     }
+    
+    func model(indexPath: IndexPath) -> TrackerCellModel? {
+        guard let tracker = getTracker(for: indexPath) else { return nil }
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerId)
+        let completedDays = completedTrackersCount(id: tracker.trackerId)
+        let model = TrackerCellModel(
+            tracker: tracker,
+            isCompletedToday: isCompletedToday,
+            indexPath: indexPath,
+            completedDays: completedDays,
+            currentDate: currentDate)
+        return model
+    }
 }
 
 extension TrackerViewModel: TrackerCreateViewControllerProtocol {

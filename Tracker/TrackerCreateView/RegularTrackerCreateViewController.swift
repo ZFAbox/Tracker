@@ -58,11 +58,24 @@ class RegularTrackerCreateViewController: UIViewController {
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
+//    private lazy var collectionViewCellSize: Int = {
+//        if (view.frame.width - 32) / 6 >= 52 {
+//            return 52
+//        } else {
+//            return 48
+//        }
+//    }()
+    
     private lazy var collectionViewCellSize: Int = {
-        if (view.frame.width - 32) / 6 >= 52 {
+        if (view.frame.width - 32 - 25) / 6 >= 52 {
+            return Int((view.frame.width - 32 - 25) / 6)
+        }
+        else if (view.frame.width - 32) / 6 >= 52 {
             return 52
-        } else {
+        } else if (view.frame.width - 32) / 6 >= 48{
             return 48
+        } else {
+            return Int((view.frame.width - 32) / 6)
         }
     }()
     

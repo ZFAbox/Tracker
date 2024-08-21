@@ -12,6 +12,7 @@ final class TrackerTypeSelectViewController: UIViewController {
     
 //    weak var trackerViewController: TrackerViewController?
     weak var viewModel: TrackerViewModel?
+    weak var delegate: TrackerViewController?
     
     private var buttonsView: UIView = {
         let buttonsView = UIView()
@@ -58,6 +59,10 @@ final class TrackerTypeSelectViewController: UIViewController {
         view.backgroundColor = .trackerWhite
         addSubviews()
         setConstrains()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        delegate?.updateTrackerCollectionView()
     }
     
     @objc func habbitButtonTapped(){

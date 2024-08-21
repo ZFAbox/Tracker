@@ -41,11 +41,24 @@ class NotRegularTrackerCreateViewController: UIViewController {
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
+//    private lazy var collectionViewCellSize: Int = {
+//        if (view.frame.width - 32) / 6 >= 52 {
+//            return 52
+//        } else {
+//            return Int((view.frame.width - 32) / 6)
+//        }
+//    }()
+    
     private lazy var collectionViewCellSize: Int = {
-        if (view.frame.width - 32) / 6 >= 52 {
+        if (view.frame.width - 32 - 25) / 6 >= 52 {
+            return Int((view.frame.width - 32 - 25) / 6) 
+        }
+        else if (view.frame.width - 32) / 6 >= 52 {
             return 52
-        } else {
+        } else if (view.frame.width - 32) / 6 >= 48{
             return 48
+        } else {
+            return Int((view.frame.width - 32) / 6)
         }
     }()
     
@@ -438,7 +451,6 @@ extension NotRegularTrackerCreateViewController: UICollectionViewDataSource {
 extension NotRegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         let size = CGSize(width: collectionViewCellSize, height: collectionViewCellSize)
         return size
     }

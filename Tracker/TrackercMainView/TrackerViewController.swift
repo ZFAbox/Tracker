@@ -86,6 +86,7 @@ final class TrackerViewController: UIViewController{
         return filterButton
     }()
     
+
     override func viewWillAppear(_ animated: Bool) {
         viewModel.performFetches()
         updateTrackerCollectionView()
@@ -231,10 +232,8 @@ extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
         guard let cell = cell else { return UICollectionViewCell() }
-        guard let tracker = viewModel.getTracker(for: indexPath) else { return UICollectionViewCell() }
-        let isCompletedToday = viewModel.isTrackerCompletedToday(id: tracker.trackerId)
-        let completedDays = viewModel.completedTrackersCount(id: tracker.trackerId)
-        cell.configure(with: tracker, isCompletedToday: isCompletedToday, indexPath: indexPath, completedDays: completedDays, currentDate: viewModel.currentDate)
+        guard let model = viewModel.model(indexPath: indexPath) else { return UICollectionViewCell() }
+        cell.configure(with: model)
         cell.delegate = viewModel
         return cell
     }

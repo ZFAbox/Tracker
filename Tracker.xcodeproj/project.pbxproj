@@ -11,6 +11,7 @@
 		902759512C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902759502C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift */; };
 		902CA9932C43484A00DBF52C /* Array+Reoder Extendion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902CA9922C43484A00DBF52C /* Array+Reoder Extendion.swift */; };
 		903B3EED2C27757B00B79BD3 /* NotRegularTrackerCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903B3EEC2C27757B00B79BD3 /* NotRegularTrackerCreateViewController.swift */; };
+		9047451F2C768AAB0017209D /* TrackerCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9047451E2C768AAB0017209D /* TrackerCellModel.swift */; };
 		904FC6022C0C439700A6E2DB /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC6002C0C435800A6E2DB /* SF-Pro-Display-Bold.otf */; };
 		904FC6032C0C439700A6E2DB /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC6012C0C435D00A6E2DB /* SF-Pro-Display-Medium.otf */; };
 		904FC6042C0C439700A6E2DB /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 904FC5FF2C0C435500A6E2DB /* SF-Pro-Display-Regular.otf */; };
@@ -62,6 +63,7 @@
 		902759502C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+weekday Extension.swift"; sourceTree = "<group>"; };
 		902CA9922C43484A00DBF52C /* Array+Reoder Extendion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Reoder Extendion.swift"; sourceTree = "<group>"; };
 		903B3EEC2C27757B00B79BD3 /* NotRegularTrackerCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotRegularTrackerCreateViewController.swift; sourceTree = "<group>"; };
+		9047451E2C768AAB0017209D /* TrackerCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCellModel.swift; sourceTree = "<group>"; };
 		904FC5FF2C0C435500A6E2DB /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
 		904FC6002C0C435800A6E2DB /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
 		904FC6012C0C435D00A6E2DB /* SF-Pro-Display-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Medium.otf"; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				9F6CEA322C13122A007BA364 /* TrackerCategory.swift */,
 				9F6CEA342C13123D007BA364 /* TrackerRecord.swift */,
 				9F9ED0F22C1C6EAF0013D4D4 /* TrackerCellParameters.swift */,
+				9047451E2C768AAB0017209D /* TrackerCellModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -394,6 +397,7 @@
 				90DE58612C0A655400351750 /* SceneDelegate.swift in Sources */,
 				9FE74DC12C21C1EA007ACB54 /* TrackerTypeSelectViewController.swift in Sources */,
 				9FE74DBF2C219BF5007ACB54 /* Int+Days Extension.swift in Sources */,
+				9047451F2C768AAB0017209D /* TrackerCellModel.swift in Sources */,
 				9F6D973E2C4E568D000A57A4 /* DataStore.swift in Sources */,
 				902759512C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift in Sources */,
 				90F8223F2C73C4AD0053DF20 /* TrackerCategoryEditor.swift in Sources */,
