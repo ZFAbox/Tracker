@@ -47,15 +47,12 @@ final class TrackerViewModel {
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
-//        let weekday = DateFormatter.weekday(date: currentDate)
-//        let searchText = searchedText.lowercased()
-//        trackerCategoryStore.updateDateAndText(weekday: weekday, searchedText: searchText)
         trackerCategoryStore.updateDateAndText(currentDate: currentDate, searchedText: searchedText)
     }
     
-    func addTracker(categoryName: String, tracker: Tracker){
-        trackerCategoryStore.addRecord(categoryName: categoryName, tracker: tracker)
-    }
+//    func addTracker(categoryName: String, tracker: Tracker){
+//        trackerCategoryStore.addRecord(categoryName: categoryName, tracker: tracker)
+//    }
     
     func numberOfItemsIn(_ section: Int) -> Int {
         trackerCategoryStore.numberOfItemsInSection(section)
@@ -77,7 +74,7 @@ final class TrackerViewModel {
     }
     
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerCategoryStore.isVisibalteTrackersEmpty()
+        trackerCategoryStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: currentDate ?? Date())
     }
     
     func completedTrackersCount(id:UUID) -> Int {

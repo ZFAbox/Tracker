@@ -140,6 +140,15 @@ class RegularTrackerCreateViewController: UIViewController {
         return trackerName
     }()
     
+    private lazy var textFieldLimitationMessage: UILabel = {
+        let lable = UILabel()
+        lable.translatesAutoresizingMaskIntoConstraints = false
+        lable.text = "Ограничение 38 символов"
+        lable.tintColor = .trackerRed
+        lable.font = UIFont(name: "SFProDisplay-Regular", size: 17)
+        return lable
+    }()
+    
     lazy var categoryAndScheduleTableView: UITableView = {
         let categoryAndSchedule = UITableView()
         categoryAndSchedule.translatesAutoresizingMaskIntoConstraints = false
@@ -220,8 +229,16 @@ class RegularTrackerCreateViewController: UIViewController {
     }
     
     @objc func inputText(_ sender: UITextField){
-        let text = sender.text ?? ""
-        trackerName = text
+
+        UIView.animate(withDuration: 0.3) { [self] in
+            if trackerName.count <= 38 {
+                self.textFieldLimitationMessage.isHidden = true
+                let text = sender.text ?? ""
+                trackerName = text
+            } else {
+                self.textFieldLimitationMessage.isHidden = false
+            }
+        }
     }
     
     @objc func createTracker(){
@@ -276,11 +293,10 @@ class RegularTrackerCreateViewController: UIViewController {
         contentView.addSubview(titleLable)
         contentView.addSubview(layerTextFieldView)
         contentView.addSubview(trackerNameTextField)
+        contentView.addSubview(textFieldLimitationMessage)
         contentView.addSubview(categoryAndScheduleTableView)
         contentView.addSubview(emojiAndColors)
         contentView.addSubview(buttonStack)
-        
-        
     }
     
     private func setConstraints(){
@@ -288,6 +304,7 @@ class RegularTrackerCreateViewController: UIViewController {
         setScrollViewContentConstraints()
         setTitleConstraints()
         setLayerTextFieldViewConstrains()
+        setTextFiledLimitationMessage()
         setTrackerNameConstraints()
         setCategoryAndScheduleTableViewConstraints()
         setEmojiAndColors()
@@ -336,6 +353,13 @@ class RegularTrackerCreateViewController: UIViewController {
             trackerNameTextField.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
             trackerNameTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             trackerNameTextField.heightAnchor.constraint(equalToConstant: 75)
+        ])
+    }
+    
+    private func setTextFiledLimitationMessage(){
+        NSLayoutConstraint.activate([
+            textFieldLimitationMessage.topAnchor.constraint(equalTo: layerTextFieldView.bottomAnchor, constant: 8),
+            textFieldLimitationMessage.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -545,8 +569,25 @@ extension RegularTrackerCreateViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         trackerName = textField.text ?? ""
-        print(trackerName)
+        UIView.animate(withDuration: 0.3) { [self] in
+            if trackerName.count <= 38 {
+                self.textFieldLimitationMessage.isHidden = true
+            } else {
+                self.textFieldLimitationMessage.isHidden = false
+            }
+        }
         return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
+        let currentText = textField.text ?? ""
+
+        guard let stringRange = Range(range, in: currentText) else { return false }
+
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+
+        return updatedText.count <= 38
     }
 }
 

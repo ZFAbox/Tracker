@@ -20,7 +20,6 @@ final class TrackerViewController: UIViewController{
     private lazy var trackerLabel: UILabel = {
         let trackerLabel = UILabel()
         trackerLabel.font = UIFont(name: "SFProDisplay-Bold", size: 34)
-        
         trackerLabel.text = "Трекеры"
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
         trackerLabel.textColor = .trackerBlack
@@ -94,6 +93,7 @@ final class TrackerViewController: UIViewController{
         setSublayer()
         setConstrains()
         bindWithTrackerViewModel()
+        updateTrackerCollectionView()
     }
     
 //MARK: - Bindings
@@ -297,6 +297,6 @@ extension TrackerViewController {
 //            }
 //            trackerCollectionView.insertItems(at: [indexPath])
 //        }
-        trackerCollectionView.reloadData()
+        updateTrackerCollectionView()
     }
 }
