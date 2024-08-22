@@ -48,23 +48,11 @@ class RegularTrackerCreateViewController: UIViewController {
     }
     
     private lazy var categoryAndScheduleArray:[String] = {
-        if regular {
-            return ["Категория", "Расписание"]
-        } else {
-            return ["Категория"]
-        }
+        return ["Категория", "Расписание"]
     }()
     
     private let sectionHeader = ["Emoji","Цвет"]
     private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
-    
-//    private lazy var collectionViewCellSize: Int = {
-//        if (view.frame.width - 32) / 6 >= 52 {
-//            return 52
-//        } else {
-//            return 48
-//        }
-//    }()
     
     private lazy var collectionViewCellSize: Int = {
         if (view.frame.width - 32 - 25) / 6 >= 52 {
@@ -130,6 +118,15 @@ class RegularTrackerCreateViewController: UIViewController {
         return titleLable
     }()
     
+    private lazy var textFieldVStack: UIStackView = {
+        let vStack = UIStackView()
+        vStack.translatesAutoresizingMaskIntoConstraints = false
+        vStack.spacing = 8
+        vStack.axis = .vertical
+        vStack.alignment = .center
+        return vStack
+    }()
+    
     private lazy var layerTextFieldView: UIView = {
         let layerTextFieldView = UIView()
         layerTextFieldView.translatesAutoresizingMaskIntoConstraints = false
@@ -150,6 +147,7 @@ class RegularTrackerCreateViewController: UIViewController {
         trackerName.backgroundColor = .none
         trackerName.addTarget(self, action: #selector(inputText(_ :)), for: .allEditingEvents)
         trackerName.delegate = self
+        trackerName.clearButtonMode = .whileEditing
         return trackerName
     }()
     
@@ -158,6 +156,7 @@ class RegularTrackerCreateViewController: UIViewController {
         lable.translatesAutoresizingMaskIntoConstraints = false
         lable.text = "Ограничение 38 символов"
         lable.textColor = .trackerRed
+        lable.textAlignment = .center
         lable.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         return lable
     }()
@@ -235,22 +234,24 @@ class RegularTrackerCreateViewController: UIViewController {
     override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
-        textFieldLimitationMessage.isHidden = true
+        
         buttonStack.addArrangedSubview(cancelButton)
         buttonStack.addArrangedSubview(createButton)
         addSubviews()
         setConstraints()
+        
+        textFieldLimitationMessage.removeFromSuperview()
     }
     
     @objc func inputText(_ sender: UITextField){
-
-        UIView.animate(withDuration: 0.3) { [self] in
+        let text = sender.text ?? ""
+        trackerName = text
+        UIView.animate(withDuration: 0.4) { [self] in
             if trackerName.count <= 38 {
-                self.textFieldLimitationMessage.isHidden = true
-                let text = sender.text ?? ""
-                trackerName = text
+                self.textFieldLimitationMessage.removeFromSuperview()
             } else {
-                self.textFieldLimitationMessage.isHidden = false
+                trackerNameTextField.text = String(trackerName.dropLast())
+                self.textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
             }
         }
     }
@@ -267,12 +268,12 @@ class RegularTrackerCreateViewController: UIViewController {
             isRegular: regular,
             createDate: Date().removeTimeInfo ?? Date())
         
-            createButton.backgroundColor = .trackerBlack
-            delegate?.createTracker(category: category, tracker: tracker)
-            self.dismiss(animated: false)
-            trackerTypeSelectViewController.dismiss(animated: true)
-            trackerSchedule = []
-            scheduleSubtitle = nil
+        createButton.backgroundColor = .trackerBlack
+        delegate?.createTracker(category: category, tracker: tracker)
+        self.dismiss(animated: false)
+        trackerTypeSelectViewController.dismiss(animated: true)
+        trackerSchedule = []
+        scheduleSubtitle = nil
     }
     
     @objc func cancel(){
@@ -304,10 +305,17 @@ class RegularTrackerCreateViewController: UIViewController {
     private func addSubviews(){
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
+        
         contentView.addSubview(titleLable)
-        contentView.addSubview(layerTextFieldView)
+        
+        contentView.addSubview(textFieldVStack)
+        
+        textFieldVStack.addArrangedSubview(layerTextFieldView)
+        textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
+        
         contentView.addSubview(trackerNameTextField)
-        contentView.addSubview(textFieldLimitationMessage)
+        
+        
         contentView.addSubview(categoryAndScheduleTableView)
         contentView.addSubview(emojiAndColors)
         contentView.addSubview(buttonStack)
@@ -316,16 +324,18 @@ class RegularTrackerCreateViewController: UIViewController {
     private func setConstraints(){
         setScrollViewConstraints()
         setScrollViewContentConstraints()
+        
         setTitleConstraints()
+        
+        setTextViewVStackConstraints()
         setLayerTextFieldViewConstrains()
-        setTextFiledLimitationMessage()
         setTrackerNameConstraints()
+        
         setCategoryAndScheduleTableViewConstraints()
         setEmojiAndColors()
         setButtonStackConstraintsForTecker()
         contentView.bottomAnchor.constraint(equalTo: buttonStack.bottomAnchor).isActive = true
     }
-    
     
     private func setScrollViewConstraints(){
         NSLayoutConstraint.activate([
@@ -344,17 +354,25 @@ class RegularTrackerCreateViewController: UIViewController {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
-        
     }
+    
     private func setTitleConstraints(){
         NSLayoutConstraint.activate([
             titleLable.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 27),
             titleLable.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)])
     }
     
+    private func setTextViewVStackConstraints(){
+        NSLayoutConstraint.activate([
+            textFieldVStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 87),
+            textFieldVStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            textFieldVStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            textFieldVStack.heightAnchor.constraint(greaterThanOrEqualToConstant: 75)]
+        )
+    }
+    
     private func setLayerTextFieldViewConstrains(){
         NSLayoutConstraint.activate([
-            layerTextFieldView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 87),
             layerTextFieldView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             layerTextFieldView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             layerTextFieldView.heightAnchor.constraint(equalToConstant: 75)
@@ -363,23 +381,16 @@ class RegularTrackerCreateViewController: UIViewController {
     
     private func setTrackerNameConstraints(){
         NSLayoutConstraint.activate([
-            trackerNameTextField.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 87),
+            trackerNameTextField.topAnchor.constraint(equalTo: layerTextFieldView.topAnchor),
             trackerNameTextField.leadingAnchor.constraint(equalTo: layerTextFieldView.leadingAnchor, constant: 16),
-            trackerNameTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            trackerNameTextField.heightAnchor.constraint(equalToConstant: 75)
-        ])
-    }
-    
-    private func setTextFiledLimitationMessage(){
-        NSLayoutConstraint.activate([
-            textFieldLimitationMessage.topAnchor.constraint(equalTo: layerTextFieldView.bottomAnchor, constant: 8),
-            textFieldLimitationMessage.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            trackerNameTextField.trailingAnchor.constraint(equalTo: layerTextFieldView.trailingAnchor, constant: -12),
+            trackerNameTextField.bottomAnchor.constraint(equalTo: layerTextFieldView.bottomAnchor)
         ])
     }
     
     private func setCategoryAndScheduleTableViewConstraints(){
         NSLayoutConstraint.activate([
-            categoryAndScheduleTableView.topAnchor.constraint(equalTo: trackerNameTextField.bottomAnchor, constant: 24),
+            categoryAndScheduleTableView.topAnchor.constraint(equalTo: textFieldVStack.bottomAnchor, constant: 24),
             categoryAndScheduleTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             categoryAndScheduleTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             categoryAndScheduleTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * categoryAndScheduleArray.count - 1))
@@ -414,7 +425,6 @@ class RegularTrackerCreateViewController: UIViewController {
             buttonStack.bottomAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
-    
 }
 
 extension RegularTrackerCreateViewController: UITableViewDataSource {
@@ -583,25 +593,7 @@ extension RegularTrackerCreateViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         trackerName = textField.text ?? ""
-        UIView.animate(withDuration: 0.3) { [self] in
-            if trackerName.count <= 38 {
-                self.textFieldLimitationMessage.isHidden = true
-            } else {
-                self.textFieldLimitationMessage.isHidden = false
-            }
-        }
         return true
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
-        let currentText = textField.text ?? ""
-
-        guard let stringRange = Range(range, in: currentText) else { return false }
-
-        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-
-        return updatedText.count <= 38
     }
 }
 

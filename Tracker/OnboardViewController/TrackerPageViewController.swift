@@ -63,30 +63,30 @@ final class TrackerPageViewController: UIPageViewController {
     }
     
     
-    func addSubviews(){
+    private func addSubviews(){
         view.addSubview(startButton)
         view.addSubview(pageControl)
     }
     
-    func setConstraints(){
+    private func setConstraints(){
         setStartButtonConstraints()
         setPageControlConstraints()
     }
     
-    func setStartButtonConstraints(){
-            NSLayoutConstraint.activate([
-                startButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
-                startButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-                startButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-                startButton.heightAnchor.constraint(equalToConstant: 60)
-            ])
+    private func setStartButtonConstraints(){
+        NSLayoutConstraint.activate([
+            startButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+            startButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            startButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            startButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
     }
     
-    func setPageControlConstraints(){
-            NSLayoutConstraint.activate([
-                pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                pageControl.bottomAnchor.constraint(equalTo: startButton.topAnchor, constant: -24)
-            ])
+    private func setPageControlConstraints(){
+        NSLayoutConstraint.activate([
+            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            pageControl.bottomAnchor.constraint(equalTo: startButton.topAnchor, constant: -24)
+        ])
     }
 }
 

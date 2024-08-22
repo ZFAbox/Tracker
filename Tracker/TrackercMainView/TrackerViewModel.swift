@@ -96,7 +96,7 @@ final class TrackerViewModel {
     }
 }
 
-//MARK: - Protocols extensinons
+//MARK: - Protocols and extensinons
 extension TrackerViewModel: TrackerStoreUpdateDelegateProtocol {
     func updateTrackers(with indexPathAndSection: IndexPathAndSection) {
         self.indexPathAndSection = indexPathAndSection
