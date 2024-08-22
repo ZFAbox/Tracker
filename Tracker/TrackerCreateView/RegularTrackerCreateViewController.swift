@@ -148,6 +148,9 @@ class RegularTrackerCreateViewController: UIViewController {
         trackerName.addTarget(self, action: #selector(inputText(_ :)), for: .allEditingEvents)
         trackerName.delegate = self
         trackerName.clearButtonMode = .whileEditing
+        var paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineBreakMode = .byClipping
+        trackerName.defaultTextAttributes = [.paragraphStyle: paragraphStyle]
         return trackerName
     }()
     
