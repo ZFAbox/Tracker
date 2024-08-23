@@ -189,7 +189,14 @@ class RegularTrackerCreateViewController: UIViewController {
         return lable
     }()
     
-    
+    private lazy var clearTextButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImage(named: "")
+        button.setImage(image, for: .normal)
+        button.addTarget(self, action: #selector(clearText), for: .touchUpInside)
+        return button
+    }()
     
     lazy var categoryAndScheduleTableView: UITableView = {
         let categoryAndSchedule = UITableView()
@@ -285,6 +292,10 @@ class RegularTrackerCreateViewController: UIViewController {
                 self.textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
             }
         }
+    }
+    
+    @objc func clearText(){
+        trackerNameTextField.text = ""
     }
     
     @objc func createTracker(){
