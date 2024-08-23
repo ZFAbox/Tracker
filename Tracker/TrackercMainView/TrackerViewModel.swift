@@ -92,7 +92,6 @@ final class TrackerViewModel {
     
     func performFetches() {
         trackerCategoryStore.perform()
-        currentDate = nil
     }
 }
 

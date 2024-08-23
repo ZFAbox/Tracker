@@ -14,6 +14,14 @@ final class TabBarViewController: UITabBarController {
     let trackerViewController = TrackerViewController()
     let statisticViewController = StatisticViewController()
     
+    private lazy var pickerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .blue
+        view.addGestureRecognizer(UIGestureRecognizer(target: self, action: #selector(datePickerChangeValue(_ :))))
+        return view
+    }()
+    
     enum TabBars: String {
         case trackers = "Трекеры"
         case statistic = "Статистика"
@@ -24,6 +32,14 @@ final class TabBarViewController: UITabBarController {
         trackerViewController.viewModel.currentDate = Date().removeTimeInfo
         setupTabBar()
         setupNavigationBar()
+        
+        view.addSubview(pickerView)
+        NSLayoutConstraint.activate([
+            pickerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            pickerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            pickerView.widthAnchor.constraint(equalToConstant: 80),
+            pickerView.heightAnchor.constraint(equalToConstant: 34)
+        ])
     }
     
     func setupTabBar(){
@@ -48,7 +64,8 @@ final class TabBarViewController: UITabBarController {
 
         let datePicker = UIDatePicker()
         datePickerActivate(datePicker: datePicker)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        pickerView.addSubview(datePicker)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pickerView)
         self.navigationItem.rightBarButtonItem?.tintColor = .trackerBlack
     }
     
@@ -62,6 +79,8 @@ final class TabBarViewController: UITabBarController {
     }
     
     func datePickerActivate(datePicker: UIDatePicker){
+        datePicker.isEnabled = true
+        datePicker.layer.opacity = 0
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         let locale = Locale(identifier: "ru_CH")
@@ -74,6 +93,7 @@ final class TabBarViewController: UITabBarController {
     }
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){
+        sender.layer.opacity = 1
         let selectedDate = sender.date
         trackerViewController.viewModel.currentDate = selectedDate.removeTimeInfo
     }

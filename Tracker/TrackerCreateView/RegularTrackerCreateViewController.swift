@@ -135,26 +135,6 @@ class RegularTrackerCreateViewController: UIViewController {
         return layerTextFieldView
     }()
     
-//    private lazy var trackerNameTextField: UITextField = {
-//        let trackerName = UITextField()
-//        trackerName.translatesAutoresizingMaskIntoConstraints = false
-//        let attributes = [
-//            NSAttributedString.Key.foregroundColor: UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 1),
-//            NSAttributedString.Key.font : UIFont(name: "SFProDisplay-Regular", size: 17)!
-//        ]
-//        trackerName.attributedPlaceholder = NSAttributedString(string: "Введите название трекера", attributes:attributes)
-//        trackerName.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-//        trackerName.backgroundColor = .none
-//        trackerName.addTarget(self, action: #selector(inputText(_ :)), for: .allEditingEvents)
-//        trackerName.delegate = self
-//        trackerName.clearButtonMode = .whileEditing
-//        var paragraphStyle = NSMutableParagraphStyle()
-//        paragraphStyle.lineBreakMode = .byClipping
-//        trackerName.defaultTextAttributes = [.paragraphStyle: paragraphStyle]
-//
-//        return trackerName
-//    }()
-    
     private let placeholderText = "Введите название трекера"
     
     private lazy var placeholderLableView: UILabel = {
@@ -192,9 +172,11 @@ class RegularTrackerCreateViewController: UIViewController {
     private lazy var clearTextButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let image = UIImage(named: "")
+        let image = UIImage(named: "Clear Button")
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(clearText), for: .touchUpInside)
+        button.isEnabled = false
+        button.layer.opacity = 0
         return button
     }()
     
@@ -271,31 +253,19 @@ class RegularTrackerCreateViewController: UIViewController {
     override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
-        
-        
         buttonStack.addArrangedSubview(cancelButton)
         buttonStack.addArrangedSubview(createButton)
         addSubviews()
         setConstraints()
-        removeTextFieldEditing()
         textFieldLimitationMessage.removeFromSuperview()
-    }
-    
-    @objc func inputText(_ sender: UITextField){
-        let text = sender.text ?? ""
-        trackerName = text
-        UIView.animate(withDuration: 0.4) { [self] in
-            if trackerName.count <= 38 {
-                self.textFieldLimitationMessage.removeFromSuperview()
-            } else {
-                trackerNameTextField.text = String(trackerName.dropLast())
-                self.textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
-            }
-        }
     }
     
     @objc func clearText(){
         trackerNameTextField.text = ""
+        UIView.animate(withDuration: 0.3) { [self] in
+            self.placeholderLableView.isHidden = false
+            hideClearButton()
+        }
     }
     
     @objc func createTracker(){
@@ -322,17 +292,6 @@ class RegularTrackerCreateViewController: UIViewController {
         self.dismiss(animated: true)
     }
     
-    
-    func removeTextFieldEditing() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(endTextEditing))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func endTextEditing() {
-        trackerNameTextField.endEditing(true)
-    }
-    
     private func createIsCompleted() -> Bool {
         let trackerNameIsEmpty = trackerName.isEmpty
         let scheduleIsEmpty = trackerSchedule.isEmpty
@@ -351,9 +310,9 @@ class RegularTrackerCreateViewController: UIViewController {
         }
     }
     
-    func reloadTable(){
-        categoryAndScheduleTableView.reloadData()
-    }
+//    func reloadTable(){
+//        categoryAndScheduleTableView.reloadData()
+//    }
     
     private func addSubviews(){
         view.addSubview(scrollView)
@@ -368,6 +327,7 @@ class RegularTrackerCreateViewController: UIViewController {
         
         contentView.addSubview(placeholderLableView)
         contentView.addSubview(trackerNameTextField)
+        contentView.addSubview(clearTextButton)
         
         
         contentView.addSubview(categoryAndScheduleTableView)
@@ -385,6 +345,7 @@ class RegularTrackerCreateViewController: UIViewController {
         setLayerTextFieldViewConstrains()
         setTrackerNameConstraints()
         setPlaceholdeTextViewConstraints()
+        setClearButtonConstraints()
         
         setCategoryAndScheduleTableViewConstraints()
         setEmojiAndColors()
@@ -452,6 +413,15 @@ class RegularTrackerCreateViewController: UIViewController {
         ])
     }
     
+    private func setClearButtonConstraints() {
+        NSLayoutConstraint.activate([
+            clearTextButton.centerYAnchor.constraint(equalTo: layerTextFieldView.centerYAnchor),
+            clearTextButton.trailingAnchor.constraint(equalTo: layerTextFieldView.trailingAnchor, constant: -12),
+            clearTextButton.heightAnchor.constraint(equalToConstant: 17),
+            clearTextButton.widthAnchor.constraint(equalToConstant: 17)
+        ])
+    }
+    
     private func setCategoryAndScheduleTableViewConstraints(){
         NSLayoutConstraint.activate([
             categoryAndScheduleTableView.topAnchor.constraint(equalTo: textFieldVStack.bottomAnchor, constant: 24),
@@ -461,7 +431,6 @@ class RegularTrackerCreateViewController: UIViewController {
         ])
     }
     
-    
     private func setEmojiAndColors(){
         NSLayoutConstraint.activate([
             emojiAndColors.topAnchor.constraint(equalTo: categoryAndScheduleTableView.bottomAnchor, constant: 8),
@@ -469,7 +438,6 @@ class RegularTrackerCreateViewController: UIViewController {
             emojiAndColors.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             emojiAndColors.heightAnchor.constraint(equalToConstant: CGFloat(collectionViewHeight))
         ])
-        
     }
     
     private func setButtonStackConstraintsForTecker(){
@@ -653,54 +621,67 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
     }
 }
 
-extension RegularTrackerCreateViewController: UITextFieldDelegate {
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        trackerName = textField.text ?? ""
-        return true
-    }
-}
+//extension RegularTrackerCreateViewController: UITextFieldDelegate {
+//    
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        trackerName = textField.text ?? ""
+//        return true
+//    }
+//}
 
 extension RegularTrackerCreateViewController: UITextViewDelegate {
     
+    func hideClearButton(){
+        self.clearTextButton.layer.opacity = 0
+        self.clearTextButton.isEnabled = false
+    }
+    
+    func showClearButton(){
+        self.clearTextButton.layer.opacity = 1
+        self.clearTextButton.isEnabled = true
+    }
+    
     func textViewDidChange(_ textView: UITextView) {
         
-        let text = textView.text ?? ""
-            trackerName = text
+        var text = textView.text ?? ""
+        let isEnterButtonTapped = text.contains("\n") ? true : false
+        
+        if isEnterButtonTapped {
+            text = String(text.dropLast())
+            textView.endEditing(true)
+        }
+        
+        trackerName = text
+        textView.text = text
+        
         if text != "" {
-            placeholderLableView.isHidden = true
-            UIView.animate(withDuration: 0.4) { [self] in
+            UIView.animate(withDuration: 0.3) { [self] in
+                self.placeholderLableView.isHidden = true
                 if trackerName.count <= 38 {
                     self.textFieldLimitationMessage.removeFromSuperview()
                 } else {
                     trackerNameTextField.text = String(trackerName.dropLast())
                     self.textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
                 }
+                if isEnterButtonTapped {
+                    hideClearButton()
+                } else {
+                    showClearButton()
+                }
             }
         } else {
-            placeholderLableView.isHidden = false
+            UIView.animate(withDuration: 0.3) { [self] in
+                self.placeholderLableView.isHidden = false
+                hideClearButton()
+            }
         }
     }
     
-//    func textViewDidBeginEditing(_ textView: UITextView) {
-//        textView.text = ""
-//        textView.textColor = .trackerBlack
-//    }
-//
-//    func textViewShouldEndEditing(_ textView: UITextView) -> Bool {
-//        if textView.text == "" {
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
-//
-//    func textViewDidEndEditing(_ textView: UITextView) {
-//        if textView.text == "" {
-//            textView.text = placeholderText
-//            textView.textColor = .trackerDarkGray
-//        }
-//    }
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if !textView.text.isEmpty{
+            showClearButton()
+        }
+    }
 }
 
 extension RegularTrackerCreateViewController: SelectCategoryForTrackerProtocl {
