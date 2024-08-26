@@ -140,7 +140,6 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
 
 extension TrackerViewModel: TrackerCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
-//        addTracker(categoryName: category, tracker: tracker)
         trackerStore.addRecord(categoryName: category, tracker: tracker)
     }
 }
