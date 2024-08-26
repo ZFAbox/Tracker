@@ -10,7 +10,6 @@ import UIKit
 
 final class TrackerTypeSelectViewController: UIViewController {
     
-//    weak var trackerViewController: TrackerViewController?
     weak var viewModel: TrackerViewModel?
     weak var delegate: TrackerViewController?
     
@@ -39,8 +38,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         habbitButton.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         return habbitButton
     }()
-    
-    
+
     private lazy var notRegularButton: UIButton = {
         let notRegularButton = UIButton(type: .system)
         notRegularButton.translatesAutoresizingMaskIntoConstraints = false
@@ -52,7 +50,6 @@ final class TrackerTypeSelectViewController: UIViewController {
         notRegularButton.addTarget(self, action: #selector(notRegularButtonTapped), for: .touchUpInside)
         return notRegularButton
     }()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()

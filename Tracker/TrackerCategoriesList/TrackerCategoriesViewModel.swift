@@ -64,6 +64,12 @@ final class TrackerCategoriesViewModel {
     func saveCategory(_ category: String) {
         categoryStore.saveCategory(category)
     }
+    
+    func updateSelectedCategory(category: String){
+        if isCategorySelected {
+            selectedCategory = category
+        }
+    }
 }
 
 extension TrackerCategoriesViewModel: TrackerCategoryIsSelectedProtocol {

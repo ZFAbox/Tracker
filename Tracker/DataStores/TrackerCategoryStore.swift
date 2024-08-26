@@ -99,6 +99,7 @@ final class TrackerCategoryStore: NSObject{
     func editCategory(at indexPath: IndexPath, with categoryName: String) {
         let categoryCoreData = fetchResultController.object(at: indexPath)
         categoryCoreData.categoryName = categoryName
+        saveContext()
         try? fetchResultController.performFetch()
     }
     

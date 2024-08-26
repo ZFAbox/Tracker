@@ -221,6 +221,7 @@ extension TrackerTableViewController: UITableViewDelegate {
 extension TrackerTableViewController: UpdateCategoryListProtocol {
     func editCategory(with category: String, indexPath: IndexPath) {
         trackerCategoriesViewModel.editCategory(at: indexPath, with: category)
+        trackerCategoriesViewModel.updateSelectedCategory(category: category)
         categoriesListTableView.reloadData()
     }
     
