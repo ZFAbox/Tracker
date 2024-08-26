@@ -52,7 +52,6 @@ class RegularTrackerCreateViewController: UIViewController {
     }()
     
     private let sectionHeader = ["Emoji","Цвет"]
-    private let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
     private lazy var collectionViewCellSize: Int = {
         if (view.frame.width - 32 - 25) / 6 >= 52 {
@@ -70,30 +69,10 @@ class RegularTrackerCreateViewController: UIViewController {
     private lazy var supplementaryViewCellSize: Int = 34
     private lazy var safeZoneCollectioView: Int = 58
     private lazy var collectionViewHeight: Int = {
-        return sectionHeader.count * (supplementaryViewCellSize + safeZoneCollectioView) + emoji.count / 6 * collectionViewCellSize + colors.count / 6 * collectionViewCellSize
+        return sectionHeader.count * (supplementaryViewCellSize + safeZoneCollectioView) + Constants.emoji.count / 6 * collectionViewCellSize + Constants.colors.count / 6 * collectionViewCellSize
     }()
     
-    private let colors: [UIColor] = [
-        UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1),
-        UIColor.rgbColors(red: 255, green: 136, blue: 30, alpha: 1),
-        UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1),
-        UIColor.rgbColors(red: 110, green: 68, blue: 254, alpha: 1),
-        UIColor.rgbColors(red: 51, green: 207, blue: 105, alpha: 1),
-        UIColor.rgbColors(red: 230, green: 109, blue: 212, alpha: 1),
-        UIColor.rgbColors(red: 249, green: 212, blue: 212, alpha: 1),
-        UIColor.rgbColors(red: 52, green: 167, blue: 254, alpha: 1),
-        UIColor.rgbColors(red: 70, green: 230, blue: 157, alpha: 1),
-        UIColor.rgbColors(red: 53, green: 52, blue: 124, alpha: 1),
-        UIColor.rgbColors(red: 255, green: 103, blue: 77, alpha: 1),
-        UIColor.rgbColors(red: 255, green: 153, blue: 204, alpha: 1),
-        UIColor.rgbColors(red: 236, green: 196, blue: 139, alpha: 1),
-        UIColor.rgbColors(red: 121, green: 148, blue: 245, alpha: 1),
-        UIColor.rgbColors(red: 131, green: 44, blue: 241, alpha: 1),
-        UIColor.rgbColors(red: 173, green: 86, blue: 218, alpha: 1),
-        UIColor.rgbColors(red: 141, green: 214, blue: 230, alpha: 1),
-        UIColor.rgbColors(red: 47, green: 208, blue: 88, alpha: 1)
-    ]
-    
+    //MARK: - UI Elements
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -311,10 +290,6 @@ class RegularTrackerCreateViewController: UIViewController {
         }
     }
     
-//    func reloadTable(){
-//        categoryAndScheduleTableView.reloadData()
-//    }
-    
     private func addSubviews(){
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -322,14 +297,12 @@ class RegularTrackerCreateViewController: UIViewController {
         contentView.addSubview(titleLable)
         
         contentView.addSubview(textFieldVStack)
-        
         textFieldVStack.addArrangedSubview(layerTextFieldView)
         textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
         
         contentView.addSubview(placeholderLableView)
         contentView.addSubview(trackerNameTextField)
         contentView.addSubview(clearTextButton)
-        
         
         contentView.addSubview(categoryAndScheduleTableView)
         contentView.addSubview(emojiAndColors)
@@ -507,8 +480,8 @@ extension RegularTrackerCreateViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
-        case 0: return emoji.count
-        case 1: return colors.count
+        case 0: return Constants.emoji.count
+        case 1: return Constants.colors.count
         default: return 0
         }
     }
@@ -524,8 +497,8 @@ extension RegularTrackerCreateViewController: UICollectionViewDataSource {
         let emojiIsHidden = section == 0
         cell.emoji.isHidden = !emojiIsHidden
         cell.color.isHidden = emojiIsHidden
-        cell.emoji.text = emoji[indexPath.row]
-        cell.color.backgroundColor = colors[indexPath.row]
+        cell.emoji.text = Constants.emoji[indexPath.row]
+        cell.color.backgroundColor = Constants.colors[indexPath.row]
         return cell
     }
     
@@ -577,7 +550,7 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
         collectionView.indexPathsForSelectedItems?.filter({ $0.section == indexPath.section}).forEach({collectionView.deselectItem(at: $0, animated: true)})
         
         if let trackerEmoji = self.trackerEmoji {
-            let index = self.emoji.firstIndex { emoji in
+            let index = Constants.emoji.firstIndex { emoji in
                 emoji == trackerEmoji
             }
             let selectedCell = collectionView.cellForItem(at: IndexPath(row: index ?? 0, section: indexPath.section)) as? EmojiAndColorCollectionViewCell
@@ -587,7 +560,7 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
         }
         
         if let trackerColor = self.trackerColor {
-            let index = self.colors.firstIndex { color in
+            let index = Constants.colors.firstIndex { color in
                 color == trackerColor
             }
             
@@ -610,25 +583,17 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
                 cell?.layer.cornerRadius = 16
                 cell?.clipsToBounds = true
                 cell?.backgroundColor = .trackerEmojiSelectionGray
-                self.trackerEmoji = self.emoji[indexPath.row]
+                self.trackerEmoji = Constants.emoji[indexPath.row]
             } else {
                 cell?.layer.cornerRadius = 8
                 cell?.layer.borderWidth = 3
-                cell?.layer.borderColor = Constants.selecctionColors[indexPath.row].cgColor
-                self.trackerColor = self.colors[indexPath.row]
+                cell?.layer.borderColor = Constants.selectionColors[indexPath.row].cgColor
+                self.trackerColor = Constants.colors[indexPath.row]
                 self.trackerColorIsSelected = true
             }
         }
     }
 }
-
-//extension RegularTrackerCreateViewController: UITextFieldDelegate {
-//    
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        trackerName = textField.text ?? ""
-//        return true
-//    }
-//}
 
 extension RegularTrackerCreateViewController: UITextViewDelegate {
     
