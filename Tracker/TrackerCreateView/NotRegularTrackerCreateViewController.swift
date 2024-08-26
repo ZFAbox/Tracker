@@ -271,7 +271,6 @@ class NotRegularTrackerCreateViewController: UIViewController {
     
     @objc func cancel(){
         self.dismiss(animated: true)
-        trackerTypeSelectViewController.viewModel?.performFetches()
     }
     
     private func createIsCompleted() -> Bool {

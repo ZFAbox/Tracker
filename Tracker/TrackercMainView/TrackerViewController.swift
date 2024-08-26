@@ -11,7 +11,7 @@ final class TrackerViewController: UIViewController{
 
 //MARK: - Constants
     
-    lazy var viewModel = TrackerViewModel()
+    var viewModel: TrackerViewModel
     
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
@@ -86,7 +86,15 @@ final class TrackerViewController: UIViewController{
         return filterButton
     }()
     
-
+    init(viewModel: TrackerViewModel) {
+        self.viewModel = viewModel
+        super .init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         viewModel.performFetches()
         updateTrackerCollectionView()

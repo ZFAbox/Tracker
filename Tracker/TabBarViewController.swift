@@ -10,7 +10,7 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
     
-    let trackerViewController = TrackerViewController()
+    let trackerViewController = TrackerViewController(viewModel: TrackerViewModel())
     let statisticViewController = StatisticViewController()
     
     private lazy var datePicker: UIDatePicker = {
