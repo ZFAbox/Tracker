@@ -322,8 +322,18 @@ final class TrackerStore: NSObject {
             return false
         }
     }
-
+    
+    func isTrackersExist() -> Bool {
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        guard let trackerData = try? context.fetch(request) else { return false }
+        if trackerData.isEmpty {
+            return false
+        } else {
+            return true
+        }
+    }
 }
+
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {

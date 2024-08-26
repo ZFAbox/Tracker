@@ -122,6 +122,15 @@ final class TrackerViewController: UIViewController{
     
     func updateTrackerCollectionView() {
         trackerCollectionView.reloadData()
+        if viewModel.isTrackerExists() {
+            let image = UIImage(named: "NoTracker")
+            emptyTrackerListImage.image = image
+            emptyTrackerListText.text = "Ничего не найдено"
+        } else {
+            let image = UIImage(named: "Empty Tracker List")
+            emptyTrackerListImage.image = image
+            emptyTrackerListText.text = "Что будем отслеживать?"
+        }
         trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
         filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
     }

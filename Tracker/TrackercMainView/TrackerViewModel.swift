@@ -93,6 +93,10 @@ final class TrackerViewModel {
     func performFetches() {
         trackerCategoryStore.perform()
     }
+    
+    func isTrackerExists() -> Bool {
+        trackerCategoryStore.isTrackersExist()
+    }
 }
 
 //MARK: - Protocols and extensinons

@@ -10,16 +10,22 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
     
-    
     let trackerViewController = TrackerViewController()
     let statisticViewController = StatisticViewController()
     
-    private lazy var pickerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .blue
-        view.addGestureRecognizer(UIGestureRecognizer(target: self, action: #selector(datePickerChangeValue(_ :))))
-        return view
+    private lazy var datePicker: UIDatePicker = {
+      let datePicker = UIDatePicker(frame: .zero)
+        datePicker.isEnabled = true
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.datePickerMode = .date
+        let locale = Locale(identifier: "ru_CH")
+        datePicker.locale = locale
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
+        NSLayoutConstraint.activate([
+            datePicker.widthAnchor.constraint(equalToConstant: 80),
+            datePicker.heightAnchor.constraint(equalToConstant: 34)])
+      return datePicker
     }()
     
     enum TabBars: String {
@@ -32,28 +38,22 @@ final class TabBarViewController: UITabBarController {
         trackerViewController.viewModel.currentDate = Date().removeTimeInfo
         setupTabBar()
         setupNavigationBar()
-        
-        view.addSubview(pickerView)
-        NSLayoutConstraint.activate([
-            pickerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            pickerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            pickerView.widthAnchor.constraint(equalToConstant: 80),
-            pickerView.heightAnchor.constraint(equalToConstant: 34)
-        ])
     }
     
     func setupTabBar(){
-        self.tabBar.backgroundColor = .white
-    
+        self.tabBar.layer.borderWidth = 0.5
+        self.tabBar.layer.borderColor = UIColor.trackerDarkGray.cgColor
+       
         trackerViewController.tabBarItem = UITabBarItem(
             title: TabBars.trackers.rawValue,
-            image: UIImage(systemName: "record.circle.fill"),
+            image: UIImage(named: "Circle"),
             selectedImage: nil
         )
         statisticViewController.tabBarItem = UITabBarItem(
             title: TabBars.statistic.rawValue,
-            image: UIImage(systemName: "hare.fill"),
+            image: UIImage(named: "Hare"),
             selectedImage: nil)
+        
         self.viewControllers = [trackerViewController, statisticViewController]
     }
     
@@ -61,11 +61,7 @@ final class TabBarViewController: UITabBarController {
         let leftNavigationbuttonImage = UIImage(named: "Tracker Add Plus")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
         self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
-
-        let datePicker = UIDatePicker()
-        datePickerActivate(datePicker: datePicker)
-        pickerView.addSubview(datePicker)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: pickerView)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         self.navigationItem.rightBarButtonItem?.tintColor = .trackerBlack
     }
     
@@ -76,20 +72,6 @@ final class TabBarViewController: UITabBarController {
         viewController.delegate = trackerViewController
         viewController.modalPresentationStyle = .popover
         self.present(viewController, animated: true)
-    }
-    
-    func datePickerActivate(datePicker: UIDatePicker){
-        datePicker.isEnabled = true
-        datePicker.layer.opacity = 0
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.datePickerMode = .date
-        let locale = Locale(identifier: "ru_CH")
-        datePicker.locale = locale
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
-        NSLayoutConstraint.activate([
-            datePicker.widthAnchor.constraint(equalToConstant: 80),
-            datePicker.heightAnchor.constraint(equalToConstant: 34)])
     }
     
     @objc func datePickerChangeValue(_ sender: UIDatePicker){

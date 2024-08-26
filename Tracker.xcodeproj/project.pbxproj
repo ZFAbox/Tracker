@@ -224,8 +224,8 @@
 			isa = PBXGroup;
 			children = (
 				9F6D973D2C4E568D000A57A4 /* DataStore.swift */,
-				9F6D97372C4E55ED000A57A4 /* TrackerCategoryStore.swift */,
 				9F6D97392C4E5605000A57A4 /* TrackerStore.swift */,
+				9F6D97372C4E55ED000A57A4 /* TrackerCategoryStore.swift */,
 				9F6D973B2C4E561E000A57A4 /* TrackerRecordStore.swift */,
 			);
 			path = DataStores;

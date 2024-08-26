@@ -112,7 +112,7 @@ class NotRegularTrackerCreateViewController: UIViewController {
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        titleLable.text = "Новая привычка"
+        titleLable.text = "Новое нерегулярное событие"
         titleLable.tintColor = .trackerBlack
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
@@ -231,6 +231,7 @@ class NotRegularTrackerCreateViewController: UIViewController {
         button.tintColor = .trackerWhite
         button.backgroundColor = .trackerDarkGray
         button.addTarget(self, action: #selector(createTracker), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     
@@ -614,7 +615,7 @@ extension NotRegularTrackerCreateViewController: UICollectionViewDelegateFlowLay
             } else {
                 cell?.layer.cornerRadius = 8
                 cell?.layer.borderWidth = 3
-                cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
+                cell?.layer.borderColor = Constants.selecctionColors[indexPath.row].cgColor
                 self.trackerColor = self.colors[indexPath.row]
                 self.trackerColorIsSelected = true
             }

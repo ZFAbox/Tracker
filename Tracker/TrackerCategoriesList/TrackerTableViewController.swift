@@ -129,8 +129,16 @@ final class TrackerTableViewController: UIViewController {
 
 extension TrackerTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        emptyCategoryListText.isHidden = !trackerCategoriesViewModel.isCategoriesEmpty()
-        emptyCategoryListImage.isHidden = !trackerCategoriesViewModel.isCategoriesEmpty()
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
+            if self.trackerCategoriesViewModel.isCategoriesEmpty() {
+                tableView.layer.opacity = 0
+                self.placeholderView.layer.opacity = 1
+            } else {
+                tableView.layer.opacity = 1
+                self.placeholderView.layer.opacity = 0
+            }
+        }
         let numberOfItems = trackerCategoriesViewModel.numberOfItemsInSection(section)
         return  numberOfItems
     }

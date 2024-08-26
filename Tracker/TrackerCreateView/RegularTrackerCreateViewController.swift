@@ -231,6 +231,7 @@ class RegularTrackerCreateViewController: UIViewController {
         button.tintColor = .trackerWhite
         button.backgroundColor = .trackerDarkGray
         button.addTarget(self, action: #selector(createTracker), for: .touchUpInside)
+        button.isEnabled = false
         return button
     }()
     
@@ -613,7 +614,7 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
             } else {
                 cell?.layer.cornerRadius = 8
                 cell?.layer.borderWidth = 3
-                cell?.layer.borderColor = selecctionColors[indexPath.row].cgColor
+                cell?.layer.borderColor = Constants.selecctionColors[indexPath.row].cgColor
                 self.trackerColor = self.colors[indexPath.row]
                 self.trackerColorIsSelected = true
             }
