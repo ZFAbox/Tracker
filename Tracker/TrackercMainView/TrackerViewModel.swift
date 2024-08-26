@@ -32,14 +32,20 @@ final class TrackerViewModel {
     
     //MARK: - CoreData Constants
     
-    private lazy var trackerCategoryStore = TrackerStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
-    private lazy var trackerRecordStore = TrackerRecordStore()
+    private lazy var trackerStore = TrackerStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
+    private var trackerRecordStore: TrackerRecordStore
     
     //MARK: - Bindings
     
     var indexPathAndSectionBinding: Binding<IndexPathAndSection>?
     var currentDateBinding: Binding<Date>?
     var searchedTextBinding: Binding<String>?
+    
+    
+    init() {
+        self.currentDate = Date().removeTimeInfo
+        self.trackerRecordStore = TrackerRecordStore()
+    }
 
     //MARK: - Collection View Update Methods
     
@@ -47,23 +53,19 @@ final class TrackerViewModel {
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
-        trackerCategoryStore.updateDateAndText(currentDate: currentDate, searchedText: searchedText)
+        trackerStore.updateDateAndText(currentDate: currentDate, searchedText: searchedText)
     }
     
-//    func addTracker(categoryName: String, tracker: Tracker){
-//        trackerCategoryStore.addRecord(categoryName: categoryName, tracker: tracker)
-//    }
-    
     func numberOfItemsIn(_ section: Int) -> Int {
-        trackerCategoryStore.numberOfItemsInSection(section)
+        trackerStore.numberOfItemsInSection(section)
     }
     
     func numberOfSections() -> Int{
-        trackerCategoryStore.numberOfSections
+        trackerStore.numberOfSections
     }
     
     func getTracker(for indexPath: IndexPath) -> Tracker? {
-        trackerCategoryStore.object(indexPath)
+        trackerStore.object(indexPath)
     }
     
     func isCompletedTracker(for id: UUID) -> Bool {
@@ -74,7 +76,7 @@ final class TrackerViewModel {
     }
     
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerCategoryStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: currentDate ?? Date())
+        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: currentDate ?? Date())
     }
     
     func completedTrackersCount(id:UUID) -> Int {
@@ -87,15 +89,15 @@ final class TrackerViewModel {
     }
     
     func headerTitle(for indexPath: IndexPath) -> String {
-        trackerCategoryStore.header(indexPath)
+        trackerStore.header(indexPath)
     }
     
     func performFetches() {
-        trackerCategoryStore.perform()
+        trackerStore.perform()
     }
     
     func isTrackerExists() -> Bool {
-        trackerCategoryStore.isTrackersExist()
+        trackerStore.isTrackersExist()
     }
 }
 
@@ -139,7 +141,7 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
 extension TrackerViewModel: TrackerCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
 //        addTracker(categoryName: category, tracker: tracker)
-        trackerCategoryStore.addRecord(categoryName: category, tracker: tracker)
+        trackerStore.addRecord(categoryName: category, tracker: tracker)
     }
 }
 
