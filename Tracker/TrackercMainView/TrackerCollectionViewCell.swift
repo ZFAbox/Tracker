@@ -158,6 +158,10 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         self.dayMarkLable.text = completedDays.daysEnding()
     }
     
+    func setSelectedView() -> UIView {
+        return trackerView
+    }
+    
     func addSubviews(){
         self.addSubview(cardView)
         cardView.addSubview(trackerView)

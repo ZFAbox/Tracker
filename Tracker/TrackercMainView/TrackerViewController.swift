@@ -300,6 +300,30 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        let pinAction = UIAction(title: "Закрепить", handler: { [weak self] _ in
+            
+        })
+        let editAction = UIAction(title: "Редактировать", handler: { [weak self] _ in
+            
+        })
+        let removeAction = UIAction(title: "Удалить", attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
+            
+        })
+        let menuActions = UIMenu(children: [pinAction, editAction, removeAction])
+        let contextMenu = UIContextMenuConfiguration { actions in
+            menuActions
+        }
+        return contextMenu
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+        let cell = collectionView.cellForItem(at: indexPath) as! TrackerCollectionViewCell
+        let selectedView = cell.setSelectedView()
+        return UITargetedPreview(view: selectedView)
+    }
+    
 }
 
 extension TrackerViewController: UISearchBarDelegate {
