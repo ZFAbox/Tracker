@@ -73,7 +73,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return dayMarkLable
     }()
     
-    
     let dayMarkButton: UIButton = {
         let dayMarkButton = UIButton(type: .system)
         dayMarkButton.translatesAutoresizingMaskIntoConstraints = false
@@ -115,7 +114,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             trackerUndone()
         }
         if let date = currentDate {
-            if date > Date(){
+            if (date > Date())/* || (date < tracker.createDate)*/ {
                 dayMarkButton.isEnabled = false
             } else {
                 dayMarkButton.isEnabled = true
