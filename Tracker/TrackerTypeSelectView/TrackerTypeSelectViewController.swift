@@ -10,7 +10,8 @@ import UIKit
 
 final class TrackerTypeSelectViewController: UIViewController {
     
-    weak var trackerViewController: TrackerViewController?
+    weak var viewModel: TrackerViewModel?
+    weak var delegate: TrackerViewController?
     
     private var buttonsView: UIView = {
         let buttonsView = UIView()
@@ -37,8 +38,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         habbitButton.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         return habbitButton
     }()
-    
-    
+
     private lazy var notRegularButton: UIButton = {
         let notRegularButton = UIButton(type: .system)
         notRegularButton.translatesAutoresizingMaskIntoConstraints = false
@@ -51,7 +51,6 @@ final class TrackerTypeSelectViewController: UIViewController {
         return notRegularButton
     }()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
@@ -59,18 +58,22 @@ final class TrackerTypeSelectViewController: UIViewController {
         setConstrains()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        delegate?.updateTrackerCollectionView()
+    }
+    
     @objc func habbitButtonTapped(){
         //TODO: - move to habbit screen
-        let viewController = TrackerCreateViewController(regular: true, trackerTypeSelectViewController: self)
-        viewController.delegate = trackerViewController
+        let viewController = RegularTrackerCreateViewController(regular: true, trackerTypeSelectViewController: self)
+        viewController.delegate = viewModel
         viewController.modalPresentationStyle = .popover
         self.present(viewController, animated: true)
     }
     
     @objc func notRegularButtonTapped(){
         //TODO: - move to notRegular screen
-        let viewController = TrackerCreateViewController(regular: false, trackerTypeSelectViewController: self)
-        viewController.delegate = trackerViewController
+        let viewController = NotRegularTrackerCreateViewController(regular: false, trackerTypeSelectViewController: self)
+        viewController.delegate = viewModel
         viewController.modalPresentationStyle = .popover
         self.present(viewController, animated: true)
     }

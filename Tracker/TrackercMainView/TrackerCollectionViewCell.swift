@@ -73,7 +73,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return dayMarkLable
     }()
     
-    
     let dayMarkButton: UIButton = {
         let dayMarkButton = UIButton(type: .system)
         dayMarkButton.translatesAutoresizingMaskIntoConstraints = false
@@ -94,12 +93,13 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         setConstrains()
     }
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int, currentDate: Date?) {
-        
-        self.isCompletedToday = isCompletedToday
+    func configure(with model: TrackerCellModel) {
+        let tracker = model.tracker
+        let currentDate = model.currentDate
+        self.isCompletedToday = model.isCompletedToday
         self.trackerId = tracker.trackerId
-        self.completedDays = completedDays
-        self.indexPath = indexPath
+        self.completedDays = model.completedDays
+        self.indexPath = model.indexPath
         
         let color = tracker.color
         trackerView.backgroundColor = color
@@ -114,7 +114,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             trackerUndone()
         }
         if let date = currentDate {
-            if date > Date(){
+            if (date > Date())/* || (date < tracker.createDate)*/ {
                 dayMarkButton.isEnabled = false
             } else {
                 dayMarkButton.isEnabled = true
@@ -185,7 +185,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             cardView.bottomAnchor.constraint(equalTo: self.bottomAnchor)])
     }
     
-
     func setTrackerViewConstrains(){
         NSLayoutConstraint.activate([
         trackerView.topAnchor.constraint(equalTo: cardView.topAnchor),
