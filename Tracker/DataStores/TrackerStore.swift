@@ -18,6 +18,7 @@ struct IndexPathAndSection {
     let section: Int?
     let deleteIndexPath: IndexPath?
     let deletedSection: Int?
+
 }
 
 final class TrackerStore: NSObject {
@@ -26,11 +27,12 @@ final class TrackerStore: NSObject {
     private var delegate: TrackerStoreUpdateDelegateProtocol?
     private var currentDate: Date?
     private var searchedText: String
-    private var insertedIndexes: IndexPath?
-    private var deleteIndexes: IndexPath?
+    private var insertedIndexes: IndexPath? = nil
+    private var deleteIndexes: IndexPath? = nil
     private var oldNumberOfSection: Int = 0
-    private var insertedSections: Int?
-    private var deletedSections: Int?
+    private var insertedSections: Int? = nil
+    private var deletedSections: Int? = nil
+    private var numberOfItems: Int? = nil
     
     init(context: NSManagedObjectContext, delegate: TrackerStoreUpdateDelegateProtocol, currentDate: Date?, searchedText: String) {
         self.context = context
@@ -168,10 +170,11 @@ final class TrackerStore: NSObject {
     }
     
     func removeObject(indexPath: IndexPath) {
+        try? fetchedResultController.performFetch()
         let trackerCoredData = fetchedResultController.object(at: indexPath)
         context.delete(trackerCoredData)
         saveContext()
-        try? fetchedResultController.performFetch()
+//        try? fetchedResultController.performFetch()
     }
     
     
@@ -368,14 +371,15 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexPath()
         deleteIndexes = IndexPath()
         oldNumberOfSection = fetchedResultController.sections?.count ?? 0
+//        numberOfItems = fetchedResultController.sections
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        if let indexPath = insertedIndexes {
+//        if let indexPath = insertedIndexes {
             //            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
-            let indexPathAndSection = IndexPathAndSection(insertIndexPath: indexPath, section: insertedSections, deleteIndexPath: deleteIndexes, deletedSection: deletedSections)
+            let indexPathAndSection = IndexPathAndSection(insertIndexPath: insertedIndexes, section: insertedSections, deleteIndexPath: deleteIndexes, deletedSection: deletedSections)
             delegate?.updateTrackers(with: indexPathAndSection)
-        }
+//        }
         insertedIndexes = nil
         insertedSections = nil
         deleteIndexes = nil
@@ -387,19 +391,37 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         case .insert:
             if let indexPath = newIndexPath {
                 insertedIndexes = indexPath
-                if oldNumberOfSection < (fetchedResultController.sections?.count ?? 0) {
-                    oldNumberOfSection = (fetchedResultController.sections?.count ?? 0)
+                guard let newNumberOfSection = fetchedResultController.sections  else { return }
+                if oldNumberOfSection < newNumberOfSection.count {
                     insertedSections = indexPath.section
+                } else {
+                    insertedSections = nil
                 }
             }
+            deleteIndexes = nil
+            deletedSections = nil
         case .delete:
             if let indexPath = indexPath {
                 deleteIndexes = indexPath
-                if oldNumberOfSection > (fetchedResultController.sections?.count ?? 0) {
-                    deletedSections = indexPath.section
+                if indexPath.row == 0 {
+                    if let numberOfSections = controller.sections {
+                        if numberOfSections.isEmpty {
+                            deletedSections = indexPath.section
+                        } else {
+                            print(numberOfSections[indexPath.section].numberOfObjects)
+                            if numberOfSections[indexPath.section].numberOfObjects == 1 {
+                                deletedSections = indexPath.section
+                            } else {
+                                deletedSections = nil
+                            }
+                        }
+                    } else {
+                        deletedSections = indexPath.section
+                    }
                 }
             }
-            
+            insertedIndexes = nil
+            insertedSections = nil
         default:
             break
         }

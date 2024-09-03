@@ -331,6 +331,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     
     func removeTracker(indexPath: IndexPath) {
         viewModel.removeTracker(indexPath: indexPath)
+        
 //        updateTrackerCollectionView()
     }
     
@@ -352,20 +353,20 @@ extension TrackerViewController: UISearchBarDelegate {
 extension TrackerViewController {
     
     func addTracker(indexPathAndSection: IndexPathAndSection) {
-//        trackerCollectionView.performBatchUpdates {
-//            if let insetedSections = indexPathAndSection.section {
-//                trackerCollectionView.insertSections([insetedSections])
-//            }
-//            if let insertIndexPath = indexPathAndSection.insertIndexPath {
-//                trackerCollectionView.insertItems(at: [insertIndexPath])
-//            }
-//            if let deleteIndexPath = indexPathAndSection.deleteIndexPath {
-//                trackerCollectionView.deleteItems(at: [deleteIndexPath])
-//            }
-//            if let deletedSections = indexPathAndSection.deletedSection {
-//                trackerCollectionView.deleteSections([deletedSections])
-//            }
-//        }
+        trackerCollectionView.performBatchUpdates {
+            if let insetedSections = indexPathAndSection.section {
+                trackerCollectionView.insertSections([insetedSections])
+            }
+            if let insertIndexPath = indexPathAndSection.insertIndexPath {
+                trackerCollectionView.insertItems(at: [insertIndexPath])
+            }
+            if let deleteIndexPath = indexPathAndSection.deleteIndexPath {
+                trackerCollectionView.deleteItems(at: [deleteIndexPath])
+            }
+            if let deletedSections = indexPathAndSection.deletedSection {
+                trackerCollectionView.deleteSections([deletedSections])
+            }
+        }
 //
 //        if viewModel.isTrackerExists() {
 //            let image = UIImage(named: "NoTracker")
@@ -378,6 +379,6 @@ extension TrackerViewController {
 //        }
 //        trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
 //        filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
-        updateTrackerCollectionView()
+//        updateTrackerCollectionView()
     }
 }
