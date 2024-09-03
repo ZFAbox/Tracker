@@ -14,8 +14,10 @@ protocol TrackerStoreUpdateDelegateProtocol {
 }
 
 struct IndexPathAndSection {
-    let indexPath: IndexPath
+    let insertIndexPath: IndexPath?
     let section: Int?
+    let deleteIndexPath: IndexPath?
+    let deletedSection: Int?
 }
 
 final class TrackerStore: NSObject {
@@ -25,8 +27,10 @@ final class TrackerStore: NSObject {
     private var currentDate: Date?
     private var searchedText: String
     private var insertedIndexes: IndexPath?
+    private var deleteIndexes: IndexPath?
     private var oldNumberOfSection: Int = 0
     private var insertedSections: Int?
+    private var deletedSections: Int?
     
     init(context: NSManagedObjectContext, delegate: TrackerStoreUpdateDelegateProtocol, currentDate: Date?, searchedText: String) {
         self.context = context
@@ -147,6 +151,30 @@ final class TrackerStore: NSObject {
         return tracker
     }
     
+    func pinObject(indexPath: IndexPath) {
+        let trackerCoreData = fetchedResultController.object(at: indexPath)
+        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryName), "Закрепленные")
+        request.predicate = predicate
+        if let trackerCategoryData = try? context.fetch(request).first {
+            trackerCoreData.category = trackerCategoryData
+        } else {
+            let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+            trackerCategoryCoreData.categoryName = "Закрепленные"
+            trackerCategoryCoreData.addToTrackersOfCategory(trackerCoreData)
+        }
+        saveContext()
+        try? fetchedResultController.performFetch()
+    }
+    
+    func removeObject(indexPath: IndexPath) {
+        let trackerCoredData = fetchedResultController.object(at: indexPath)
+        context.delete(trackerCoredData)
+        saveContext()
+        try? fetchedResultController.performFetch()
+    }
+    
+    
     func header(_ indexPath: IndexPath) -> String {
         let trackerCoreData = fetchedResultController.object(at: indexPath)
         guard let trackerHeader = trackerCoreData.category?.categoryName else {return "Нет такой категории"}
@@ -210,50 +238,50 @@ final class TrackerStore: NSObject {
         return trackerCategories
     }
     
-//    func loadVisibleTrackers(weekday: String, searchedText: String) -> [TrackerCategory] {
-//        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-//        if searchedText == "" {
-//            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
-//        } else {
-//            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name.lowercased), searchedText)
-//        }
-//        let trackerCoreData = try? context.fetch(request)
-//        var trackerCategories:[TrackerCategory] = []
-//        guard let trackerCoreData = trackerCoreData else { return [] }
-//        trackerCoreData.forEach({ tracker in
-//            let categoryName = tracker.category?.categoryName ?? "Пусто"
-//            print(categoryName)
-//            let tracker = Tracker(
-//                trackerId: tracker.trackerId ?? UUID(),
-//                name: tracker.name ?? "",
-//                emoji: tracker.emoji ?? "🤬",
-//                color: UIColor.getUIColor(from: tracker.color ?? "#FFFFFF"),
-//                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"],
-//                isRegular: tracker.isRegular)
-//            if trackerCategories.contains(where: { trackerCategory in
-//                trackerCategory.categoryName == categoryName
-//            }) {
-//                var newTrackerArray:[Tracker] = []
-//                trackerCategories.forEach ({
-//                    if $0.categoryName == categoryName {
-//                        newTrackerArray = $0.trackersOfCategory
-//                        newTrackerArray.append(tracker)
-//                    }
-//                })
-//                trackerCategories.removeAll { trackerCategory in
-//                    trackerCategory.categoryName == categoryName
-//                }
-//                trackerCategories.append(TrackerCategory(categoryName: categoryName, trackersOfCategory: newTrackerArray))
-//
-//            } else {
-//                let trackerCategory = TrackerCategory(
-//                    categoryName: categoryName,
-//                    trackersOfCategory: [tracker])
-//                trackerCategories.append(trackerCategory)
-//            }
-//        })
-//        return trackerCategories
-//    }
+    //    func loadVisibleTrackers(weekday: String, searchedText: String) -> [TrackerCategory] {
+    //        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+    //        if searchedText == "" {
+    //            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
+    //        } else {
+    //            request.predicate = NSPredicate(format: "%K CONTAINS[n] %@ AND %K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday, #keyPath(TrackerCoreData.name.lowercased), searchedText)
+    //        }
+    //        let trackerCoreData = try? context.fetch(request)
+    //        var trackerCategories:[TrackerCategory] = []
+    //        guard let trackerCoreData = trackerCoreData else { return [] }
+    //        trackerCoreData.forEach({ tracker in
+    //            let categoryName = tracker.category?.categoryName ?? "Пусто"
+    //            print(categoryName)
+    //            let tracker = Tracker(
+    //                trackerId: tracker.trackerId ?? UUID(),
+    //                name: tracker.name ?? "",
+    //                emoji: tracker.emoji ?? "🤬",
+    //                color: UIColor.getUIColor(from: tracker.color ?? "#FFFFFF"),
+    //                schedule: tracker.schedule?.components(separatedBy: ",") ?? ["Воскресенье"],
+    //                isRegular: tracker.isRegular)
+    //            if trackerCategories.contains(where: { trackerCategory in
+    //                trackerCategory.categoryName == categoryName
+    //            }) {
+    //                var newTrackerArray:[Tracker] = []
+    //                trackerCategories.forEach ({
+    //                    if $0.categoryName == categoryName {
+    //                        newTrackerArray = $0.trackersOfCategory
+    //                        newTrackerArray.append(tracker)
+    //                    }
+    //                })
+    //                trackerCategories.removeAll { trackerCategory in
+    //                    trackerCategory.categoryName == categoryName
+    //                }
+    //                trackerCategories.append(TrackerCategory(categoryName: categoryName, trackersOfCategory: newTrackerArray))
+    //
+    //            } else {
+    //                let trackerCategory = TrackerCategory(
+    //                    categoryName: categoryName,
+    //                    trackersOfCategory: [tracker])
+    //                trackerCategories.append(trackerCategory)
+    //            }
+    //        })
+    //        return trackerCategories
+    //    }
     
     func loadVisibleTrackers(currentDate: Date, searchedText: String) -> [TrackerCategory] {
         let weekday = DateFormatter.weekday(date: currentDate)
@@ -303,15 +331,15 @@ final class TrackerStore: NSObject {
     }
     
     func isVisibalteTrackersEmpty(searchedText: String, currentDate: Date) -> Bool {
-//        if let fetchedObjects = fetchedResultController.fetchedObjects {
-//            try? fetchedResultController.performFetch()
-//            return fetchedObjects.isEmpty
-//        }
-//        try? fetchedResultController.performFetch()
-//        return true
+        //        if let fetchedObjects = fetchedResultController.fetchedObjects {
+        //            try? fetchedResultController.performFetch()
+        //            return fetchedObjects.isEmpty
+        //        }
+        //        try? fetchedResultController.performFetch()
+        //        return true
         
-//        let currentDate = self.currentDate ?? Date()
-//        let searchedText = (self.searchedText).lowercased()
+        //        let currentDate = self.currentDate ?? Date()
+        //        let searchedText = (self.searchedText).lowercased()
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate)
         request.predicate = predicate
@@ -338,17 +366,20 @@ final class TrackerStore: NSObject {
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         insertedIndexes = IndexPath()
+        deleteIndexes = IndexPath()
         oldNumberOfSection = fetchedResultController.sections?.count ?? 0
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let indexPath = insertedIndexes {
-//            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
-            let indexPathAndSection = IndexPathAndSection(indexPath: indexPath, section: insertedSections)
+            //            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
+            let indexPathAndSection = IndexPathAndSection(insertIndexPath: indexPath, section: insertedSections, deleteIndexPath: deleteIndexes, deletedSection: deletedSections)
             delegate?.updateTrackers(with: indexPathAndSection)
         }
         insertedIndexes = nil
         insertedSections = nil
+        deleteIndexes = nil
+        deletedSections = nil
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -361,7 +392,14 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
                     insertedSections = indexPath.section
                 }
             }
-
+        case .delete:
+            if let indexPath = indexPath {
+                deleteIndexes = indexPath
+                if oldNumberOfSection > (fetchedResultController.sections?.count ?? 0) {
+                    deletedSections = indexPath.section
+                }
+            }
+            
         default:
             break
         }

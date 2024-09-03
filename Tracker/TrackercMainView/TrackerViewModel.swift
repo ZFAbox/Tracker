@@ -136,6 +136,14 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
             currentDate: currentDate)
         return model
     }
+    
+    func pinTracker(indexPath: IndexPath) {
+        trackerStore.pinObject(indexPath: indexPath)
+    }
+    
+    func removeTracker(indexPath: IndexPath) {
+        trackerStore.removeObject(indexPath: indexPath)
+    }
 }
 
 extension TrackerViewModel: TrackerCreateViewControllerProtocol {

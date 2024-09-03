@@ -114,7 +114,7 @@ final class TrackerViewController: UIViewController{
     
     func bindWithTrackerViewModel(){
         viewModel.indexPathAndSectionBinding = { [weak self] indexPathAndSection in
-            self?.addTracker(indexPath: indexPathAndSection.indexPath, insetedSections: indexPathAndSection.section)
+            self?.addTracker(indexPathAndSection: indexPathAndSection)
         }
         viewModel.searchedTextBinding = { [weak self] _ in
             self?.updateTrackerCollectionView()
@@ -275,6 +275,8 @@ extension TrackerViewController: UICollectionViewDataSource {
         }
         return headerView
     }
+    
+    
 }
 
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
@@ -303,19 +305,33 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         let pinAction = UIAction(title: "Закрепить", handler: { [weak self] _ in
-            
+            if let indexPath = indexPaths.first {
+                self?.pinTracker(indexPath: indexPath)
+            }
         })
         let editAction = UIAction(title: "Редактировать", handler: { [weak self] _ in
             
         })
         let removeAction = UIAction(title: "Удалить", attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
-            
+            if let indexPath = indexPaths.first {
+                self?.removeTracker(indexPath: indexPath)
+            }
         })
         let menuActions = UIMenu(children: [pinAction, editAction, removeAction])
-        let contextMenu = UIContextMenuConfiguration { actions in
+        let contextMenu = UIContextMenuConfiguration(actionProvider:  { actions in
             menuActions
-        }
+        })
         return contextMenu
+    }
+    
+    func pinTracker(indexPath: IndexPath){
+        viewModel.pinTracker(indexPath: indexPath)
+//        updateTrackerCollectionView()
+    }
+    
+    func removeTracker(indexPath: IndexPath) {
+        viewModel.removeTracker(indexPath: indexPath)
+//        updateTrackerCollectionView()
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
@@ -335,13 +351,33 @@ extension TrackerViewController: UISearchBarDelegate {
 
 extension TrackerViewController {
     
-    func addTracker(indexPath: IndexPath, insetedSections: Int?) {
+    func addTracker(indexPathAndSection: IndexPathAndSection) {
 //        trackerCollectionView.performBatchUpdates {
-//            if let insetedSections = insetedSections {
+//            if let insetedSections = indexPathAndSection.section {
 //                trackerCollectionView.insertSections([insetedSections])
 //            }
-//            trackerCollectionView.insertItems(at: [indexPath])
+//            if let insertIndexPath = indexPathAndSection.insertIndexPath {
+//                trackerCollectionView.insertItems(at: [insertIndexPath])
+//            }
+//            if let deleteIndexPath = indexPathAndSection.deleteIndexPath {
+//                trackerCollectionView.deleteItems(at: [deleteIndexPath])
+//            }
+//            if let deletedSections = indexPathAndSection.deletedSection {
+//                trackerCollectionView.deleteSections([deletedSections])
+//            }
 //        }
+//
+//        if viewModel.isTrackerExists() {
+//            let image = UIImage(named: "NoTracker")
+//            emptyTrackerListImage.image = image
+//            emptyTrackerListText.text = "Ничего не найдено"
+//        } else {
+//            let image = UIImage(named: "Empty Tracker List")
+//            emptyTrackerListImage.image = image
+//            emptyTrackerListText.text = "Что будем отслеживать?"
+//        }
+//        trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
+//        filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
         updateTrackerCollectionView()
     }
 }

@@ -148,14 +148,18 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         let buttonImage = UIImage(named: "Tracker Done")
         self.dayMarkButton.layer.opacity = 0.7
         self.dayMarkButton.setImage(buttonImage, for: .normal)
-        self.dayMarkLable.text = completedDays.daysEnding()
+        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), completedDays)
+//        self.dayMarkLable.text = completedDays.daysEnding()
+        self.dayMarkLable.text = dayText
     }
     
     func trackerUndone() {
         let buttonImage = UIImage(named: "Tracker Plus")
         self.dayMarkButton.layer.opacity = 1
         self.dayMarkButton.setImage(buttonImage, for: .normal)
-        self.dayMarkLable.text = completedDays.daysEnding()
+//        self.dayMarkLable.text = completedDays.daysEnding()
+        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), completedDays)
+        self.dayMarkLable.text = dayText
     }
     
     func setSelectedView() -> UIView {
