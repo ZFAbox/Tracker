@@ -46,28 +46,44 @@ final class TrackerCategoryStore: NSObject{
     }()
     
     func saveCategory(_ category: String) {
-        print("Category: \(category)")
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-//        let request = fetchResultController.fetchRequest
         let predicate = NSPredicate(format: "%K == '\(category)'", #keyPath(TrackerCategoryCoreData.categoryName))
         request.predicate = predicate
         if let categoryData = try? context.fetch(request).first {
-            print(categoryData.categoryName)
-            try? fetchResultController.performFetch()
+            print("Существующая сategory: \(category) - categoryData.categoryName: \(categoryData.categoryName)")
             return
         } else {
             let categoryCoreData = TrackerCategoryCoreData(context: context)
             categoryCoreData.categoryName = category
+            print("Сохраненная сategory: \(category)")
             saveContext()
         }
-        return
     }
+    
+//    func saveCategory(_ category: String) {
+//        print("Category: \(category)")
+////        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+//        let request = fetchResultController.fetchRequest
+//        let predicate = NSPredicate(format: "%K == '\(category)'", #keyPath(TrackerCategoryCoreData.categoryName))
+//        request.predicate = predicate
+//        try? fetchResultController.performFetch()
+//        if let categoryData = fetchResultController.fetchedObjects?.first {
+//            print("Категория уже существует \(categoryData.categoryName)")
+//            try? fetchResultController.performFetch()
+//            return
+//        } else {
+//            let categoryCoreData = TrackerCategoryCoreData(context: context)
+//            categoryCoreData.categoryName = category
+//            saveContext()
+//        }
+//        return
+//    }
     
     private func saveContext(){
         do{
             try context.save()
         } catch {
-            print("Ошибка сохранения")
+            print("Ошибка сохранения контекста")
         }
     }
     
@@ -82,7 +98,7 @@ final class TrackerCategoryStore: NSObject{
     func object(at indexPath: IndexPath) -> String {
         let categoryCoreData = fetchResultController.object(at: indexPath)
         guard let categoryName = categoryCoreData.categoryName else { return ""}
-        print("Объект категории: \(categoryName)")
+        print("Получение объекта категории: \(categoryName)")
         return categoryName
     }
     

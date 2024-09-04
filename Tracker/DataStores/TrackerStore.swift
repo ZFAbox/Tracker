@@ -18,7 +18,7 @@ struct IndexPathAndSection {
     let section: Int?
     let deleteIndexPath: IndexPath?
     let deletedSection: Int?
-
+    
 }
 
 final class TrackerStore: NSObject {
@@ -81,14 +81,45 @@ final class TrackerStore: NSObject {
         request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
         if let category = try? context.fetch(request).first {
             trackerData.category = category
+            print("Существующая категория category.categoryName: \(category.categoryName) = categoryName: \(categoryName)")
+//            category.addToTrackersOfCategory(trackerData)
         } else {
             let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
             trackerCategoryCoreData.categoryName = categoryName
-            trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
+//            trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
+            trackerData.category = trackerCategoryCoreData
+            print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName) = categoryName: \(categoryName)")
         }
         saveContext()
         try? fetchedResultController.performFetch()
     }
+    
+//    func saveTrackerCategory(categoryName: String, tracker: Tracker) {
+//        let trackerData = TrackerCoreData(context: context)
+//        trackerData.trackerId = tracker.trackerId
+//        trackerData.name = tracker.name
+//        trackerData.emoji = tracker.emoji
+//        trackerData.color = UIColor.getHexColor(from: tracker.color)
+//        trackerData.schedule = tracker.schedule.joined(separator: ",")
+//        trackerData.isRegular = tracker.isRegular
+//        trackerData.createDate = tracker.createDate
+//        print(categoryName)
+//        let request = fetchedResultController.fetchRequest
+////        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+//        request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCoreData.category.categoryName))
+//        try? fetchedResultController.performFetch()
+//        if let trackersData = fetchedResultController.fetchedObjects?.first {
+//            let category = trackersData.category
+//            category?.addToTrackersOfCategory(trackersData)
+//            print(category!.categoryName!)
+//        } else {
+//            let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+//            trackerCategoryCoreData.categoryName = categoryName
+//            trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
+//        }
+//        saveContext()
+//        try? fetchedResultController.performFetch()
+//    }
     
     func updateDateAndText(currentDate: Date, searchedText: String ) {
         let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate)
@@ -174,7 +205,7 @@ final class TrackerStore: NSObject {
         let trackerCoredData = fetchedResultController.object(at: indexPath)
         context.delete(trackerCoredData)
         saveContext()
-//        try? fetchedResultController.performFetch()
+        //        try? fetchedResultController.performFetch()
     }
     
     
@@ -371,15 +402,15 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexPath()
         deleteIndexes = IndexPath()
         oldNumberOfSection = fetchedResultController.sections?.count ?? 0
-//        numberOfItems = fetchedResultController.sections
+        //        numberOfItems = fetchedResultController.sections
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        if let indexPath = insertedIndexes {
-            //            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
-            let indexPathAndSection = IndexPathAndSection(insertIndexPath: insertedIndexes, section: insertedSections, deleteIndexPath: deleteIndexes, deletedSection: deletedSections)
-            delegate?.updateTrackers(with: indexPathAndSection)
-//        }
+        //        if let indexPath = insertedIndexes {
+        //            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
+        let indexPathAndSection = IndexPathAndSection(insertIndexPath: insertedIndexes, section: insertedSections, deleteIndexPath: deleteIndexes, deletedSection: deletedSections)
+        delegate?.updateTrackers(with: indexPathAndSection)
+        //        }
         insertedIndexes = nil
         insertedSections = nil
         deleteIndexes = nil
@@ -403,22 +434,34 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         case .delete:
             if let indexPath = indexPath {
                 deleteIndexes = indexPath
-                if indexPath.row == 0 {
+                let row = indexPath.row
+                print("row: \(row)")
+                let section = indexPath.section
+                print("section: \(section)")
+                if row == 0 {
                     if let numberOfSections = controller.sections {
-                        if numberOfSections.isEmpty {
+                        print("numberOfSections: \(numberOfSections.count)")
+                        //                        if numberOfSections.isEmpty {
+                        //                            deletedSections = indexPath.section
+                        //                        } else {
+                        //                            print(numberOfSections[indexPath.section].numberOfObjects)
+                        //                            if numberOfSections[indexPath.section].numberOfObjects == 0 {
+                        //                                deletedSections = indexPath.section
+                        //                            } else {
+                        //                                deletedSections = nil
+                        //                            }
+                        //                        }
+                        if numberOfSections.count < oldNumberOfSection {
                             deletedSections = indexPath.section
                         } else {
-                            print(numberOfSections[indexPath.section].numberOfObjects)
-                            if numberOfSections[indexPath.section].numberOfObjects == 1 {
-                                deletedSections = indexPath.section
-                            } else {
-                                deletedSections = nil
-                            }
+                            deletedSections = nil
                         }
                     } else {
                         deletedSections = indexPath.section
                     }
                 }
+            } else {
+                deletedSections = nil
             }
             insertedIndexes = nil
             insertedSections = nil
