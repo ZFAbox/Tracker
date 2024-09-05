@@ -9,6 +9,15 @@ import Foundation
 import UIKit
 
 enum Weekdays: String, Codable{
+    
+//    case Sunday
+//    case Monday
+//    case Tuesday
+//    case Wednesday
+//    case Thursday
+//    case Friday
+//    case Saturday
+    
     case Sunday = "Воскресенье"
     case Monday = "Понедельник"
     case Tuesday = "Вторник"
@@ -16,6 +25,25 @@ enum Weekdays: String, Codable{
     case Thursday = "Четверг"
     case Friday = "Пятница"
     case Saturday = "Суббота"
+    
+    var localized: String {
+        switch self {
+        case .Sunday:
+            return NSLocalizedString("Sunday", comment: "")
+        case .Monday:
+            return NSLocalizedString("Monday", comment: "")
+        case.Tuesday:
+            return NSLocalizedString("Tuesday", comment: "")
+        case .Wednesday:
+            return NSLocalizedString("Wednesday", comment: "")
+        case . Thursday:
+            return NSLocalizedString("Thursday", comment: "")
+        case .Friday:
+            return NSLocalizedString("Friday", comment: "")
+        case .Saturday:
+            return NSLocalizedString("Saturday", comment: "")
+        }
+    }
     
     static let notRegularTrackerSchedule: [ String ] = {
         var array:[String] = []
@@ -39,21 +67,40 @@ enum Weekdays: String, Codable{
     static func shortWeekdayDescription(weekday: Weekdays) -> String {
         switch weekday {
         case .Sunday:
-            return "Вс"
+            return NSLocalizedString("Sun", comment: "")
         case .Monday:
-            return "Пн"
+            return NSLocalizedString("Mon", comment: "")
         case .Tuesday:
-            return "Вт"
+            return NSLocalizedString("Tues", comment: "")
         case .Wednesday:
-            return "Ср"
+            return NSLocalizedString("Wed", comment: "")
         case .Thursday:
-            return "Чт"
+            return NSLocalizedString("Thurs", comment: "")
         case .Friday:
-            return "Пт"
+            return NSLocalizedString("Fri", comment: "")
         case .Saturday:
-            return "Сб"
+            return NSLocalizedString("Sat", comment: "")
         }
     }
+    
+//    static func shortWeekdayDescription(weekday: Weekdays) -> String {
+//        switch weekday {
+//        case .Sunday:
+//            return "Вс"
+//        case .Monday:
+//            return "Пн"
+//        case .Tuesday:
+//            return "Вт"
+//        case .Wednesday:
+//            return "Ср"
+//        case .Thursday:
+//            return "Чт"
+//        case .Friday:
+//            return "Пт"
+//        case .Saturday:
+//            return "Сб"
+//        }
+//    }
     
     static func weekdayForIndex(at index: Int) -> Weekdays {
         switch index {

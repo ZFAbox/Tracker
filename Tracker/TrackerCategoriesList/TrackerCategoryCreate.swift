@@ -32,7 +32,8 @@ final class TrackerCategoryCreate: UIViewController {
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        titleLable.text = "Категория"
+        let categoryCreateTitleText = NSLocalizedString("categoryCreateTitleText", comment: "")
+        titleLable.text = categoryCreateTitleText
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
@@ -52,7 +53,8 @@ final class TrackerCategoryCreate: UIViewController {
             NSAttributedString.Key.foregroundColor: UIColor.rgbColors(red: 174, green: 175, blue: 180, alpha: 1),
             NSAttributedString.Key.font : UIFont(name: "SFProDisplay-Regular", size: 17)!
         ]
-        textField.attributedPlaceholder = NSAttributedString(string: "Введите название категории", attributes:attributes)
+        let categoryCreateTextFieldPlaceholderText = NSLocalizedString("categoryCreateTextFieldPlaceholderText", comment: "")
+        textField.attributedPlaceholder = NSAttributedString(string: categoryCreateTextFieldPlaceholderText, attributes:attributes)
         textField.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         textField.backgroundColor = .none
         textField.addTarget(self, action: #selector(inputText(_ :)), for: .allEditingEvents)
@@ -64,7 +66,8 @@ final class TrackerCategoryCreate: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.setTitle("Готово", for: .normal)
+        let confirmCreateButtonText = NSLocalizedString("confirmCreateButtonText", comment: "")
+        button.setTitle(confirmCreateButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.backgroundColor = .trackerDarkGray
         button.tintColor = .trackerWhite

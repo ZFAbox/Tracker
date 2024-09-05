@@ -19,7 +19,8 @@ final class ScheduleViewController: UIViewController {
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        titleLable.text = "Расписание"
+        let scheduleTitle = NSLocalizedString("scheduleTitle", comment: "")
+        titleLable.text = scheduleTitle
         titleLable.tintColor = .trackerBlack
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
@@ -45,7 +46,8 @@ final class ScheduleViewController: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.setTitle("Готово", for: .normal)
+        let confirmScheduleButtonText = NSLocalizedString("confirmScheduleButtonText", comment: "")
+        button.setTitle(confirmScheduleButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.backgroundColor = .trackerBlack
         button.tintColor = .trackerWhite
@@ -118,7 +120,7 @@ extension ScheduleViewController: UITableViewDataSource {
     }
     
     func configureCell(_ cell:UITableViewCell, at indexPath: IndexPath){
-        cell.textLabel?.text = Weekdays.weekdayForIndex(at: indexPath.row).rawValue
+        cell.textLabel?.text = Weekdays.weekdayForIndex(at: indexPath.row).localized
         let switcher = UISwitch(frame: .zero)
         switcher.setOn(false, animated: true)
         switcher.tag = indexPath.row
@@ -131,19 +133,19 @@ extension ScheduleViewController: UITableViewDataSource {
     @objc func switchChanged(_ sender: UISwitch){
         if sender.isOn {
             let weekday = Weekdays.weekdayForIndex(at: sender.tag)
-            trackerSchedule.append( weekday.rawValue)
-            print("Добален день недели \(weekday.rawValue)")
+            trackerSchedule.append( weekday.localized)
+            print("Добален день недели \(weekday.localized)")
             scheduleSubtitle.append(Weekdays.shortWeekdayDescription(weekday: weekday))
             scheduleSubtitle = scheduleSubtitle.reorder(by: Weekdays.scheduleSubtitlesArray)
             print(scheduleSubtitle)
         } else {
             trackerSchedule.removeAll { weekday in
-                weekday == Weekdays.weekdayForIndex(at: sender.tag).rawValue
+                weekday == Weekdays.weekdayForIndex(at: sender.tag).localized
             }
             scheduleSubtitle.removeAll { subtitle in
                 subtitle == Weekdays.scheduleSubtitlesArray[sender.tag]
             }
-            print("Удален день недели \(Weekdays.weekdayForIndex(at: sender.tag).rawValue)")
+            print("Удален день недели \(Weekdays.weekdayForIndex(at: sender.tag).localized)")
         }
         print(trackerSchedule)
         sender.isEnabled = true

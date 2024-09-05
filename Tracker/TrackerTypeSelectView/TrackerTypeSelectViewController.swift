@@ -23,7 +23,7 @@ final class TrackerTypeSelectViewController: UIViewController {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
         let trackerTypeSelectTitle = NSLocalizedString("trackerTypeSelectTitle", comment: "Tracker type select screen title")
-        titleLable.text = "Создание трекера"
+        titleLable.text = trackerTypeSelectTitle
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
