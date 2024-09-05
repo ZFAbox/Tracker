@@ -166,7 +166,7 @@ extension TrackerTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = tableView.cellForRow(at: indexPath) as! TrackerCategoriesListCell
-        if cell.accessoryType == .checkmark {
+        if cell.checkMark.isHidden == false {
             cell.checkMark.isHidden = true
             trackerCategoriesViewModel.isCategorySelected(isCategorySelected: false, selectedCategory: nil)
         } else {
@@ -184,11 +184,13 @@ extension TrackerTableViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(actionProvider: { actions in
+            let editCategory = NSLocalizedString("editCategory", comment: "")
+            let deleteCategory = NSLocalizedString("deleteCategory", comment: "")
             return UIMenu(children: [
-                UIAction(title: "Редактировать", handler: { [weak self] _ in
+                UIAction(title: editCategory, handler: { [weak self] _ in
                     self?.edit(at: indexPath)
                 }),
-                UIAction(title: "Удалить", attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
+                UIAction(title: deleteCategory, attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
                     self?.remove(at: indexPath)
                 })
             ])
@@ -196,14 +198,19 @@ extension TrackerTableViewController: UITableViewDelegate {
     }
     
     func remove(at indexPath: IndexPath) {
-        let alert = UIAlertController(title: nil, message: "Эта категория точно не нужна?", preferredStyle: .actionSheet)
+        let alertMessage = NSLocalizedString("alertMessage", comment: "")
+        let alert = UIAlertController(title: nil, message: alertMessage, preferredStyle: .actionSheet)
         
-        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+        let deleteAlertButtonText = NSLocalizedString("deleteAlertButtonText", comment: "")
+        let deleteAction = UIAlertAction(title: deleteAlertButtonText, style: .destructive) { [weak self] _ in
             guard let self = self else { return }
             self.trackerCategoriesViewModel.removeCategory(at: indexPath)
         }
         
-        let cancelButton = UIAlertAction(title: "Отменить", style: .cancel) {  _ in
+        
+        
+        let cancelAlertButtonText = NSLocalizedString("cancelAlertButtonText", comment: "")
+        let cancelButton = UIAlertAction(title: cancelAlertButtonText, style: .cancel) {  _ in
             alert.dismiss(animated: true)
         }
         alert.addAction(deleteAction)

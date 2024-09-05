@@ -37,10 +37,16 @@ class NotRegularTrackerCreateViewController: UIViewController {
     private var trackerEmoji: String?
     var scheduleSubtitle: String?
     private lazy var categoryAndScheduleArray:[String] = {
-        return ["Категория"]
+        let categorySelectMenu = NSLocalizedString("categorySelectMenu", comment: "Catgory menu")
+        return [categorySelectMenu]
     }()
     
-    private let sectionHeader = ["Emoji","Цвет"]
+
+    private lazy var sectionHeader = {
+        let emojiSelectMenu = NSLocalizedString("emojiSelectMenu", comment: "")
+        let colorSelectMenu = NSLocalizedString("colorSelectMenu", comment: "")
+        return [emojiSelectMenu, colorSelectMenu]
+    }()
     
     private lazy var collectionViewCellSize: Int = {
         if (view.frame.width - 32 - 25) / 6 >= 52 {
@@ -90,7 +96,8 @@ class NotRegularTrackerCreateViewController: UIViewController {
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        titleLable.text = "Новое нерегулярное событие"
+        let notRegularTrackerTitle = NSLocalizedString("notRegularTrackerTitle", comment: "")
+        titleLable.text = notRegularTrackerTitle
         titleLable.tintColor = .trackerBlack
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
@@ -113,12 +120,12 @@ class NotRegularTrackerCreateViewController: UIViewController {
         return layerTextFieldView
     }()
     
-    private let placeholderText = "Введите название трекера"
+    private let trackerNamePlaceholder = NSLocalizedString("trackerNamePlaceholder", comment: "")
     
     private lazy var placeholderLableView: UILabel = {
         let lable = UILabel()
         lable.translatesAutoresizingMaskIntoConstraints = false
-        lable.text = placeholderText
+        lable.text = trackerNamePlaceholder
         lable.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         lable.textColor = .trackerDarkGray
         return lable
@@ -140,7 +147,8 @@ class NotRegularTrackerCreateViewController: UIViewController {
     private lazy var textFieldLimitationMessage: UILabel = {
         let lable = UILabel()
         lable.translatesAutoresizingMaskIntoConstraints = false
-        lable.text = "Ограничение 38 символов"
+        let textLimitMessage = NSLocalizedString("textLimitMessage", comment: "")
+        lable.text = textLimitMessage
         lable.textColor = .trackerRed
         lable.textAlignment = .center
         lable.font = UIFont(name: "SFProDisplay-Regular", size: 17)
@@ -204,7 +212,8 @@ class NotRegularTrackerCreateViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
-        button.setTitle("Создать", for: .normal)
+        let createButtonText = NSLocalizedString("createButtonText", comment: "")
+        button.setTitle(createButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.tintColor = .trackerWhite
         button.backgroundColor = .trackerDarkGray
@@ -218,7 +227,8 @@ class NotRegularTrackerCreateViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
-        button.setTitle("Отменить", for: .normal)
+        let cancelButtonText = NSLocalizedString("cancelButtonText", comment: "")
+        button.setTitle(cancelButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.tintColor = .trackerPink
         button.backgroundColor = .trackerWhite

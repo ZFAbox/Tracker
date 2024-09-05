@@ -21,7 +21,8 @@ final class TrackerCategoriesList: UIViewController {
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        titleLable.text = "Категория"
+        let categoryListTitle = NSLocalizedString("categoryListTitle", comment: "")
+        titleLable.text = categoryListTitle
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
@@ -30,7 +31,8 @@ final class TrackerCategoriesList: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.setTitle("Добавить категорию", for: .normal)
+        let createCategoryButtonText = NSLocalizedString("createCategoryButtonText", comment: "")
+        button.setTitle(createCategoryButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.backgroundColor = .trackerBlack
         button.tintColor = .trackerWhite
@@ -56,7 +58,6 @@ final class TrackerCategoriesList: UIViewController {
     }
     
     @objc func createCategory(){
-        //TODO: - Действие добавления категории
         if trackerCategoriesViewModel.isCategorySelected {
             trackerCategoriesViewModel.setCategory()
             self.dismiss(animated: true)

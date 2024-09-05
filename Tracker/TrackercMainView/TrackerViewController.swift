@@ -17,10 +17,13 @@ final class TrackerViewController: UIViewController{
     
 //MARK: - Views
     
+
+    
     private lazy var trackerLabel: UILabel = {
         let trackerLabel = UILabel()
         trackerLabel.font = UIFont(name: "SFProDisplay-Bold", size: 34)
-        trackerLabel.text = "Трекеры"
+        let trackerMainLable = NSLocalizedString("trackMainLable", comment: "Main Lable")
+        trackerLabel.text = trackerMainLable
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
         trackerLabel.textColor = .trackerBlack
         return trackerLabel
@@ -29,7 +32,8 @@ final class TrackerViewController: UIViewController{
     private lazy var searchField: UISearchBar = {
         let searchField = UISearchBar()
         searchField.translatesAutoresizingMaskIntoConstraints = false
-        searchField.placeholder = "Поиск"
+        let searchFieldPlaceholder = NSLocalizedString("searchFieldPlaceholder", comment: "search field placeholder")
+        searchField.placeholder = searchFieldPlaceholder
         searchField.sizeToFit()
         searchField.searchTextField.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         searchField.layer.borderWidth = 1
@@ -49,7 +53,8 @@ final class TrackerViewController: UIViewController{
     private lazy var emptyTrackerListText: UILabel = {
         let emptyTrackerListText = UILabel()
         emptyTrackerListText.translatesAutoresizingMaskIntoConstraints = false
-        emptyTrackerListText.text = "Что будем отслеживать?"
+        let emtyTrackerPlaceholderText = NSLocalizedString("emtyTrackerPlaceholderText", comment: "Text of empty placeholder")
+        emptyTrackerListText.text = emtyTrackerPlaceholderText
         emptyTrackerListText.font = UIFont(name: "SFProDisplay-Medium", size: 12)
         emptyTrackerListText.tintColor = .trackerBlack
         return emptyTrackerListText
@@ -78,7 +83,7 @@ final class TrackerViewController: UIViewController{
         filterButton.translatesAutoresizingMaskIntoConstraints = false
         filterButton.backgroundColor = .trackerBlue
         filterButton.layer.cornerRadius = 17
-        let filterButtonText = "Фильтры"
+        let filterButtonText = NSLocalizedString("filterButtonText", comment: "Text of filter button")
         filterButton.setTitle(filterButtonText, for: .normal)
         filterButton.titleLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 16)
         filterButton.titleLabel?.tintColor = .trackerWhite
@@ -133,11 +138,13 @@ final class TrackerViewController: UIViewController{
         if viewModel.isTrackerExists() {
             let image = UIImage(named: "NoTracker")
             emptyTrackerListImage.image = image
-            emptyTrackerListText.text = "Ничего не найдено"
+            let notFoundTrackerPlaceholderText = NSLocalizedString("notFoundTrackerPlaceholderText", comment: "Text of placeholder when trackers not found")
+            emptyTrackerListText.text = notFoundTrackerPlaceholderText
         } else {
             let image = UIImage(named: "Empty Tracker List")
             emptyTrackerListImage.image = image
-            emptyTrackerListText.text = "Что будем отслеживать?"
+            let emtyTrackerPlaceholderText = NSLocalizedString("emtyTrackerPlaceholderText", comment: "Text of empty placeholder")
+            emptyTrackerListText.text = emtyTrackerPlaceholderText
         }
         trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
         filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
@@ -304,15 +311,18 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        let pinAction = UIAction(title: "Закрепить", handler: { [weak self] _ in
+        let pinText = NSLocalizedString("pinText", comment: "")
+        let pinAction = UIAction(title: pinText, handler: { [weak self] _ in
             if let indexPath = indexPaths.first {
                 self?.pinTracker(indexPath: indexPath)
             }
         })
-        let editAction = UIAction(title: "Редактировать", handler: { [weak self] _ in
+        let editText = NSLocalizedString("editText", comment: "")
+        let editAction = UIAction(title: editText, handler: { [weak self] _ in
             
         })
-        let removeAction = UIAction(title: "Удалить", attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
+        let deletText = NSLocalizedString("deletText", comment: "")
+        let removeAction = UIAction(title: deletText, attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
             if let indexPath = indexPaths.first {
                 self?.removeTracker(indexPath: indexPath)
             }

@@ -10,9 +10,13 @@ import UIKit
 
 final class TrackerPageViewController: UIPageViewController {
     
-    private let onboardPages: [UIViewController] = {
-        let page1 = OnboardViewController(image: #imageLiteral(resourceName: "Onboard Page 1"), onboardText: "Отслеживайте только то, что хотите")
-        let page2 = OnboardViewController(image: #imageLiteral(resourceName: "Onboard Page 2"), onboardText: "Даже если это не литры воды и йога")
+    private let pageOneText = NSLocalizedString("pageOneText", comment: "First page of onboard screen")
+    private let pageTwoText = NSLocalizedString("pageTwoText", comment: "Second page of onboard screen")
+    private let startButtonText = NSLocalizedString("startButtonText", comment: "Start button text")
+    
+    private lazy var onboardPages: [UIViewController] = {
+        let page1 = OnboardViewController(image: #imageLiteral(resourceName: "Onboard Page 1"), onboardText: pageOneText)
+        let page2 = OnboardViewController(image: #imageLiteral(resourceName: "Onboard Page 2"), onboardText: pageTwoText)
         return [page1, page2]
     }()
     
@@ -20,7 +24,7 @@ final class TrackerPageViewController: UIPageViewController {
         let startButton = UIButton(type: .system)
         startButton.translatesAutoresizingMaskIntoConstraints = false
         startButton.layer.cornerRadius = 16
-        startButton.setTitle("Вот это технологии!", for: .normal)
+        startButton.setTitle(startButtonText, for: .normal)
         startButton.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         startButton.backgroundColor = .trackerBlack
         startButton.tintColor = .trackerWhite

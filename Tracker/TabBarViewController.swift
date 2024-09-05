@@ -23,14 +23,23 @@ final class TabBarViewController: UITabBarController {
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
         NSLayoutConstraint.activate([
-            datePicker.widthAnchor.constraint(equalToConstant: 80),
+            datePicker.widthAnchor.constraint(equalToConstant: 85),
             datePicker.heightAnchor.constraint(equalToConstant: 34)])
       return datePicker
     }()
     
     enum TabBars: String {
-        case trackers = "Трекеры"
-        case statistic = "Статистика"
+        case trackers
+        case statistic
+        
+        var localizedText: String {
+            switch self {
+            case .trackers:
+                return NSLocalizedString("trackers", comment: "Trackers screen tab text")
+            case .statistic:
+                return NSLocalizedString("statistic", comment: "Statistic screen tab text")
+            }
+        }
     }
     
     override func viewDidLoad() {
@@ -44,12 +53,12 @@ final class TabBarViewController: UITabBarController {
         self.tabBar.layer.borderColor = UIColor.trackerDarkGray.cgColor
        
         trackerViewController.tabBarItem = UITabBarItem(
-            title: TabBars.trackers.rawValue,
+            title: TabBars.trackers.localizedText,
             image: UIImage(named: "Circle"),
             selectedImage: nil
         )
         statisticViewController.tabBarItem = UITabBarItem(
-            title: TabBars.statistic.rawValue,
+            title: TabBars.statistic.localizedText,
             image: UIImage(named: "Hare"),
             selectedImage: nil)
         
