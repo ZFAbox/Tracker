@@ -60,12 +60,24 @@ final class TrackerViewModel {
         trackerStore.numberOfItemsInSection(section)
     }
     
+    func numberOfItemsInPinCategory(_ section: Int) -> Int {
+        trackerStore.numberOfItemsInSectionPinCategories(section)
+    }
+    
     func numberOfSections() -> Int{
         trackerStore.numberOfSections
     }
     
+    func numberOfSectionsPinCategory() -> Int{
+        trackerStore.numberOfPinSections
+    }
+    
     func getTracker(for indexPath: IndexPath) -> Tracker? {
         trackerStore.object(indexPath)
+    }
+    
+    func getPinTracker(for indexPath: IndexPath) -> Tracker? {
+        trackerStore.objectPinCategoris(indexPath)
     }
     
     func isCompletedTracker(for id: UUID) -> Bool {
@@ -90,6 +102,10 @@ final class TrackerViewModel {
     
     func headerTitle(for indexPath: IndexPath) -> String {
         trackerStore.header(indexPath)
+    }
+    
+    func headerPinTitle(for indexPath: IndexPath) -> String {
+        trackerStore.headerPinCategories(indexPath)
     }
     
     func performFetches() {
@@ -137,12 +153,33 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
         return model
     }
     
+    func modelPinCategory(indexPath: IndexPath) -> TrackerCellModel? {
+        guard let tracker = getPinTracker(for: indexPath) else { return nil }
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerId)
+        let completedDays = completedTrackersCount(id: tracker.trackerId)
+        let model = TrackerCellModel(
+            tracker: tracker,
+            isCompletedToday: isCompletedToday,
+            indexPath: indexPath,
+            completedDays: completedDays,
+            currentDate: currentDate)
+        return model
+    }
+    
     func pinTracker(indexPath: IndexPath) {
         trackerStore.pinObject(indexPath: indexPath)
     }
     
+    func unPinTracker(indexPath: IndexPath) {
+        trackerStore.unPinObject(indexPath: indexPath)
+    }
+    
     func removeTracker(indexPath: IndexPath) {
         trackerStore.removeObject(indexPath: indexPath)
+    }
+    
+    func removePinTracker(indexPath: IndexPath) {
+        trackerStore.removePinObject(indexPath: indexPath)
     }
 }
 

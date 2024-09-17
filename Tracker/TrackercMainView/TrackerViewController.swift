@@ -246,20 +246,33 @@ final class TrackerViewController: UIViewController{
 //MARK: - Delegate and Data Source
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.numberOfItemsIn(section)
+        if (viewModel.numberOfSectionsPinCategory() == 1) && (section == 0) {
+            return viewModel.numberOfItemsInPinCategory(section)
+        } else {
+            return viewModel.numberOfItemsIn(section - viewModel.numberOfSectionsPinCategory())
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        viewModel.numberOfSections()
+        viewModel.numberOfSections() + viewModel.numberOfSectionsPinCategory()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
-        guard let cell = cell else { return UICollectionViewCell() }
-        guard let model = viewModel.model(indexPath: indexPath) else { return UICollectionViewCell() }
-        cell.configure(with: model)
-        cell.delegate = viewModel
-        return cell
+        if (viewModel.numberOfSectionsPinCategory() == 1) && (indexPath.section == 0) {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
+            guard let cell = cell else { return UICollectionViewCell() }
+            guard let model = viewModel.modelPinCategory(indexPath: indexPath) else { return UICollectionViewCell() }
+            cell.configure(with: model)
+            cell.delegate = viewModel
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
+            guard let cell = cell else { return UICollectionViewCell() }
+            guard let model = viewModel.model(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - viewModel.numberOfSectionsPinCategory())) else { return UICollectionViewCell() }
+            cell.configure(with: model)
+            cell.delegate = viewModel
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -273,17 +286,26 @@ extension TrackerViewController: UICollectionViewDataSource {
         }
         
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerSupplementaryViewCell
-        if id == "header" {
-            let headerTitleText = viewModel.headerTitle(for: indexPath)
-            headerView.titleLable.text = headerTitleText
-            print(headerTitleText)
+        if (viewModel.numberOfSectionsPinCategory() == 1) && (indexPath.section == 0) {
+            if id == "header" {
+                let headerTitleText = viewModel.headerPinTitle(for: indexPath)
+                headerView.titleLable.text = headerTitleText
+                print(headerTitleText)
+            } else {
+                headerView.titleLable.text = ""
+            }
         } else {
-            headerView.titleLable.text = ""
+            if id == "header" {
+                let headerTitleText = viewModel.headerTitle(for: IndexPath(row: indexPath.row, section: indexPath.section - viewModel.numberOfSectionsPinCategory()))
+                headerView.titleLable.text = headerTitleText
+                print(headerTitleText)
+            } else {
+                headerView.titleLable.text = ""
+            }
         }
         return headerView
+            
     }
-    
-    
 }
 
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
@@ -311,20 +333,22 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        let pinText = NSLocalizedString("pinText", comment: "")
-        let pinAction = UIAction(title: pinText, handler: { [weak self] _ in
-            if let indexPath = indexPaths.first {
-                self?.pinTracker(indexPath: indexPath)
-            }
-        })
+        guard let indexPath = indexPaths.first else { preconditionFailure("Context menu indexPath error")}
+        let pinAction = getPinAction(indexPath: indexPath)
+        
         let editText = NSLocalizedString("editText", comment: "")
         let editAction = UIAction(title: editText, handler: { [weak self] _ in
             
         })
         let deletText = NSLocalizedString("deletText", comment: "")
         let removeAction = UIAction(title: deletText, attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
+            guard let self = self else { return }
             if let indexPath = indexPaths.first {
-                self?.removeTracker(indexPath: indexPath)
+                if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
+                    self.viewModel.removePinTracker(indexPath: indexPath)
+                } else {
+                    self.viewModel.removeTracker(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory()))
+                }
             }
         })
         let menuActions = UIMenu(children: [pinAction, editAction, removeAction])
@@ -334,8 +358,31 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         return contextMenu
     }
     
+    func getPinAction(indexPath: IndexPath) -> UIAction {
+        if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
+            let pinText = NSLocalizedString("unpinText", comment: "")
+            let unPinAction = UIAction(title: pinText, handler: { [weak self] _ in
+                guard let self = self else { return }
+                self.unPinTracker(indexPath: indexPath)
+            })
+            return unPinAction
+        } else {
+            let pinText = NSLocalizedString("pinText", comment: "")
+            let pinAction = UIAction(title: pinText, handler: { [weak self] _ in
+                guard let self = self else { return }
+                    self.pinTracker(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory()))
+            })
+            return pinAction
+        }
+    }
+    
     func pinTracker(indexPath: IndexPath){
         viewModel.pinTracker(indexPath: indexPath)
+//        updateTrackerCollectionView()
+    }
+    
+    func unPinTracker(indexPath: IndexPath){
+        viewModel.unPinTracker(indexPath: indexPath)
 //        updateTrackerCollectionView()
     }
     
@@ -363,20 +410,21 @@ extension TrackerViewController: UISearchBarDelegate {
 extension TrackerViewController {
     
     func addTracker(indexPathAndSection: IndexPathAndSection) {
-        trackerCollectionView.performBatchUpdates {
-            if let insetedSections = indexPathAndSection.section {
-                trackerCollectionView.insertSections([insetedSections])
-            }
-            if let insertIndexPath = indexPathAndSection.insertIndexPath {
-                trackerCollectionView.insertItems(at: [insertIndexPath])
-            }
-            if let deleteIndexPath = indexPathAndSection.deleteIndexPath {
-                trackerCollectionView.deleteItems(at: [deleteIndexPath])
-            }
-            if let deletedSections = indexPathAndSection.deletedSection {
-                trackerCollectionView.deleteSections([deletedSections])
-            }
-        }
+//        trackerCollectionView.performBatchUpdates {
+//            if let insetedSections = indexPathAndSection.section {
+//                trackerCollectionView.insertSections([insetedSections])
+//            }
+//            if let insertIndexPath = indexPathAndSection.insertIndexPath {
+//                trackerCollectionView.insertItems(at: [insertIndexPath])
+//            }
+//            if let deleteIndexPath = indexPathAndSection.deleteIndexPath {
+//                trackerCollectionView.deleteItems(at: [deleteIndexPath])
+//            }
+//            if let deletedSections = indexPathAndSection.deletedSection {
+//                trackerCollectionView.deleteSections([deletedSections])
+//            }
+//            
+//        }
 //
 //        if viewModel.isTrackerExists() {
 //            let image = UIImage(named: "NoTracker")
@@ -389,6 +437,6 @@ extension TrackerViewController {
 //        }
 //        trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
 //        filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
-//        updateTrackerCollectionView()
+        updateTrackerCollectionView()
     }
 }

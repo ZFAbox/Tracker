@@ -17,7 +17,7 @@ final class TrackerRecordStore{
     }
     
     convenience init() {
-        self.init(context: (DataStore().persistentContainer.viewContext))
+        self.init(context: (DataStore.shared.viewContext))
     }
     
     func saveTrackerRecord(trackerRecord: TrackerRecord) {

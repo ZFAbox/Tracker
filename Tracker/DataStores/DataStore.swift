@@ -12,6 +12,8 @@ final class DataStore{
     
     static var shared = DataStore().persistentContainer
     
+    private init() {}
+    
     lazy var persistentContainer: NSPersistentContainer = {
         let persistentContainers = NSPersistentContainer(name: "TrackerCoreData")
         persistentContainers.loadPersistentStores { storeDescription, error in
