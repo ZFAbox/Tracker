@@ -10,6 +10,7 @@
 		9027594F2C3C8D3800AC8F0D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027594E2C3C8D3800AC8F0D /* Constants.swift */; };
 		902759512C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902759502C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift */; };
 		902CA9932C43484A00DBF52C /* Array+Reoder Extendion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902CA9922C43484A00DBF52C /* Array+Reoder Extendion.swift */; };
+		903486BC2C9A287D00E60678 /* NotRegularTrackerEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903486BB2C9A287D00E60678 /* NotRegularTrackerEditViewController.swift */; };
 		903B3EED2C27757B00B79BD3 /* NotRegularTrackerCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903B3EEC2C27757B00B79BD3 /* NotRegularTrackerCreateViewController.swift */; };
 		903E4ACA2C8658ED00B604BB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 903E4AC82C8658ED00B604BB /* Localizable.strings */; };
 		903E4ACF2C86597500B604BB /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 903E4ACD2C86597500B604BB /* Localizable.stringsdict */; };
@@ -65,6 +66,7 @@
 		9027594E2C3C8D3800AC8F0D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		902759502C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+weekday Extension.swift"; sourceTree = "<group>"; };
 		902CA9922C43484A00DBF52C /* Array+Reoder Extendion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Reoder Extendion.swift"; sourceTree = "<group>"; };
+		903486BB2C9A287D00E60678 /* NotRegularTrackerEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotRegularTrackerEditViewController.swift; sourceTree = "<group>"; };
 		903B3EEC2C27757B00B79BD3 /* NotRegularTrackerCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotRegularTrackerCreateViewController.swift; sourceTree = "<group>"; };
 		903E4AC92C8658ED00B604BB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		903E4ACB2C86593D00B604BB /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				9F2B9BBC2C996F5A00381C08 /* RegularTrackerEditViewController.swift */,
+				903486BB2C9A287D00E60678 /* NotRegularTrackerEditViewController.swift */,
 			);
 			path = TrackerEditView;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 				90F822412C73EBE10053DF20 /* RegularTrackerCreateViewController.swift in Sources */,
 				9F2B9BBD2C996F5A00381C08 /* RegularTrackerEditViewController.swift in Sources */,
 				9F9ED0F12C1C545A0013D4D4 /* TrackerCollectionViewCell.swift in Sources */,
+				903486BC2C9A287D00E60678 /* NotRegularTrackerEditViewController.swift in Sources */,
 				909178062C530C0300C5C847 /* UIColor+Hex Extension.swift in Sources */,
 				9092E2EF2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift in Sources */,
 			);

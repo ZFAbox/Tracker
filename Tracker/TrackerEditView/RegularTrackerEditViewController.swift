@@ -26,6 +26,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
     private var isPined: Bool
     private var tracker: Tracker
     private var completedDays: Int
+    private var createDate: Date = Date.removeTimeStamp(fromDate: Date())
     
     var trackerSchedule: [String] = [] {
         didSet {
@@ -57,6 +58,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         trackerColor = tracker.color
         trackerColorIsSelected = true
         trackerEmoji = tracker.emoji
+        createDate = tracker.createDate
         scheduleSubtitle = Weekdays.scheduleSubtitles(schedule: trackerSchedule)
         self.completedDays = completedDays
         super .init(nibName: nil, bundle: nil)
