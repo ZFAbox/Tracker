@@ -34,6 +34,8 @@ final class TrackerCategoryStore: NSObject{
     private lazy var fetchResultController: NSFetchedResultsController<TrackerCategoryCoreData> = {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         let sortDescriptors = NSSortDescriptor(key: "categoryName", ascending: false)
+        let predicate = NSPredicate(format: "%K != 'Закрепленные'", #keyPath(TrackerCategoryCoreData.categoryName))
+        fetchRequest.predicate = predicate
         fetchRequest.sortDescriptors = [sortDescriptors]
         let fetchResultedController = NSFetchedResultsController(
             fetchRequest: fetchRequest,

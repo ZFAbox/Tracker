@@ -38,7 +38,7 @@
 "habbitButtonText" = "Привычка";
 "notRegularButtonText" = "Нерегулярное событие";
 
-//MARK: - RegularTrackerCreateViewController and NotRegularTrackerCreateViewController
+//MARK: - RegularTrackerCreateViewController, NotRegularTrackerCreateViewController, RegularTrackerEditViewController
 
 "categorySelectMenu" = "Категория";
 "scheduleSelectMenu" = "Расписание";
@@ -48,6 +48,8 @@
 
 "regularTrackerTitle" = "Новая привычка";
 "notRegularTrackerTitle" = "Новое нерегулярное событие";
+"regularTrackerEditTitle" = "Редактирование привычки";
+"notRegularTrackerEditTitle" = "Редактирование нерегулярного события";
 
 "trackerNamePlaceholder" = "Введите название трекера";
 
@@ -55,6 +57,7 @@
 
 "createButtonText" = "Создать";
 "cancelButtonText" = "Отменить";
+"saveButtonText" = "Сохранить";
 
 //MARK: - TrackerCategoriesList
 

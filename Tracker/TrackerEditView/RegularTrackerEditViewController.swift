@@ -17,7 +17,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
     
     var delegate: TrackerUpdateViewControllerProtocol
     private var category: String? {
-        didSet{
+        didSet {
             isCreateButtonEnable()
         }
     }
@@ -25,6 +25,8 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
     private var indexPath: IndexPath
     private var isPined: Bool
     private var tracker: Tracker
+    private var completedDays: Int
+    
     var trackerSchedule: [String] = [] {
         didSet {
             isCreateButtonEnable()
@@ -44,7 +46,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
     private var trackerEmoji: String?
     var scheduleSubtitle: String?
     
-    init(delegate: TrackerUpdateViewControllerProtocol, tracker: Tracker, category: String, indexPath: IndexPath, isPined: Bool) {
+    init(delegate: TrackerUpdateViewControllerProtocol, tracker: Tracker, category: String, indexPath: IndexPath, isPined: Bool, completedDays: Int) {
         self.delegate = delegate
         self.tracker = tracker
         self.indexPath = indexPath
@@ -56,6 +58,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         trackerColorIsSelected = true
         trackerEmoji = tracker.emoji
         scheduleSubtitle = Weekdays.scheduleSubtitles(schedule: trackerSchedule)
+        self.completedDays = completedDays
         super .init(nibName: nil, bundle: nil)
     }
     
@@ -114,11 +117,22 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        let regularTrackerTitle = NSLocalizedString("regularTrackerTitle", comment: "")
+        let regularTrackerTitle = NSLocalizedString("regularTrackerEditTitle", comment: "")
         titleLable.text = regularTrackerTitle
         titleLable.tintColor = .trackerBlack
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
+    }()
+    
+    private lazy var daysLable: UILabel = {
+        let lable = UILabel()
+        lable.translatesAutoresizingMaskIntoConstraints = false
+        let daysLableText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), completedDays)
+        lable.text = daysLableText
+        lable.textAlignment = .center
+        lable.tintColor = .trackerBlack
+        lable.font = UIFont(name: "SFProDisplay-Bold", size: 32)
+        return lable
     }()
     
     private lazy var textFieldVStack: UIStackView = {
@@ -230,7 +244,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
         button.clipsToBounds = true
-        let createButtonText = NSLocalizedString("createButtonText", comment: "")
+        let createButtonText = NSLocalizedString("saveButtonText", comment: "")
         button.setTitle(createButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.tintColor = .trackerWhite
@@ -281,7 +295,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         let category = self.category ?? "Категория не выбрана"
         
         let tracker = Tracker(
-            trackerId: UUID(),
+            trackerId: tracker.trackerId,
             name: trackerName,
             emoji: trackerEmoji ?? "🤬",
             color: trackerColor ?? UIColor.trackerBlack,
@@ -323,7 +337,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         scrollView.addSubview(contentView)
         
         contentView.addSubview(titleLable)
-        
+        contentView.addSubview(daysLable)
         contentView.addSubview(textFieldVStack)
         textFieldVStack.addArrangedSubview(layerTextFieldView)
         textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
@@ -342,6 +356,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         setScrollViewContentConstraints()
         
         setTitleConstraints()
+        setDaysTitleConstraints()
         
         setTextViewVStackConstraints()
         setLayerTextFieldViewConstrains()
@@ -380,9 +395,18 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
             titleLable.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)])
     }
     
+    private func setDaysTitleConstraints(){
+        NSLayoutConstraint.activate([
+            daysLable.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 87),
+            daysLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            daysLable.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            daysLable.heightAnchor.constraint(equalToConstant: 38)
+        ])
+    }
+    
     private func setTextViewVStackConstraints(){
         NSLayoutConstraint.activate([
-            textFieldVStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 87),
+            textFieldVStack.topAnchor.constraint(equalTo: daysLable.bottomAnchor, constant: 40),
             textFieldVStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             textFieldVStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             textFieldVStack.heightAnchor.constraint(greaterThanOrEqualToConstant: 75)]

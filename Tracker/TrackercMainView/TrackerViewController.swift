@@ -333,7 +333,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let indexPath = indexPaths.first else { preconditionFailure("Context menu indexPath error")}
+        guard let indexPath = indexPaths.first else { return UIContextMenuConfiguration()}
         let pinAction = getPinAction(indexPath: indexPath)
         
         let editText = NSLocalizedString("editText", comment: "")
@@ -344,13 +344,15 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
                 let indexPath = indexPath
                 guard let tracker = self.viewModel.getPinTracker(for: indexPath) else { return }
                 let category = self.viewModel.headerPinTitle(for: indexPath)
-                self.editTracker(indexPath: indexPath, isPined: isPined, tracker: tracker, category: category)
+                let completedDays = self.viewModel.completedTrackersCount(id: tracker.trackerId)
+                self.editTracker(indexPath: indexPath, isPined: isPined, tracker: tracker, category: category, completedDays: completedDays)
             } else {
                 let isPined = false
                 let indexPath = IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory())
                 guard let tracker = self.viewModel.getTracker(for: indexPath) else { return }
                 let category = self.viewModel.headerTitle(for: indexPath)
-                self.editTracker(indexPath: indexPath, isPined: isPined, tracker: tracker, category: category)
+                let completedDays = self.viewModel.completedTrackersCount(id: tracker.trackerId)
+                self.editTracker(indexPath: indexPath, isPined: isPined, tracker: tracker, category: category, completedDays: completedDays)
             }
         })
         let deletText = NSLocalizedString("deletText", comment: "")
@@ -405,8 +407,8 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 //        updateTrackerCollectionView()
     }
     
-    func editTracker(indexPath: IndexPath, isPined: Bool,tracker: Tracker, category: String) {
-        let vc = RegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined)
+    func editTracker(indexPath: IndexPath, isPined: Bool,tracker: Tracker, category: String, completedDays: Int) {
+        let vc = RegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined, completedDays: completedDays)
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
     }
