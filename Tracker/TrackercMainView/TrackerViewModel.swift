@@ -189,3 +189,8 @@ extension TrackerViewModel: TrackerCreateViewControllerProtocol {
     }
 }
 
+extension TrackerViewModel: TrackerUpdateViewControllerProtocol {
+    func updateTracker(category: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool) {
+        trackerStore.updateRecord(categoryName: category, tracker: tracker, indexPath: indexPath, isPined: isPined)
+    }
+}

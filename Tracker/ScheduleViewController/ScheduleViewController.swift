@@ -8,13 +8,17 @@
 import Foundation
 import UIKit
 
-final class ScheduleViewController: UIViewController {
-    
+protocol ScheduleViewControllerProtocol {
+    var trackerSchedule: [String] { get set }
+    var scheduleSubtitle: String? { get set }
+    var categoryAndScheduleTableView: UITableView { get set }
+}
 
-    
+final class ScheduleViewController: UIViewController {
+
     private var trackerSchedule: [String] = []
     private var scheduleSubtitle: [String] = []
-    var delegate: RegularTrackerCreateViewController?
+    var delegate: ScheduleViewControllerProtocol //RegularTrackerCreateViewController?
     
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
@@ -55,6 +59,15 @@ final class ScheduleViewController: UIViewController {
         return button
     }()
     
+    init(delegate: ScheduleViewControllerProtocol) {
+        self.delegate = delegate
+        super .init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
@@ -63,12 +76,10 @@ final class ScheduleViewController: UIViewController {
     }
     
     @objc func confirmedButtonTapped(){
-        if let delegate = self.delegate {
             delegate.trackerSchedule = trackerSchedule
             delegate.scheduleSubtitle = scheduleSubtitle.joined(separator: ", ")
             delegate.categoryAndScheduleTableView.reloadData()
             self.dismiss(animated: true)
-        }
     }
     
     private func addSubviews(){

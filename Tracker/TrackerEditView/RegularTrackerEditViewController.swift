@@ -1,23 +1,30 @@
 //
-//  RegularTrackerCreateViewController.swift
+//  RegularTrackerEditViewController.swift
 //  Tracker
 //
-//  Created by Федор Завьялов on 20.08.2024.
+//  Created by Fedor on 17.09.2024.
 //
+
 
 import Foundation
 import UIKit
 
-class RegularTrackerCreateViewController: UIViewController, ScheduleViewControllerProtocol {
+protocol TrackerUpdateViewControllerProtocol{
+    func updateTracker(category: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool)
+}
+
+class RegularTrackerEditViewController: UIViewController, ScheduleViewControllerProtocol {
     
-    var delegate: TrackerCreateViewControllerProtocol?
+    var delegate: TrackerUpdateViewControllerProtocol
     private var category: String? {
         didSet{
             isCreateButtonEnable()
         }
     }
-    private var regular: Bool
-    private var trackerTypeSelectViewController: TrackerTypeSelectViewController
+    private var regular: Bool = true
+    private var indexPath: IndexPath
+    private var isPined: Bool
+    private var tracker: Tracker
     var trackerSchedule: [String] = [] {
         didSet {
             isCreateButtonEnable()
@@ -37,10 +44,19 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
     private var trackerEmoji: String?
     var scheduleSubtitle: String?
     
-    init(regular: Bool, trackerTypeSelectViewController: TrackerTypeSelectViewController) {
-        self.regular = regular
-        self.trackerTypeSelectViewController = trackerTypeSelectViewController
-        super.init(nibName: nil, bundle: nil)
+    init(delegate: TrackerUpdateViewControllerProtocol, tracker: Tracker, category: String, indexPath: IndexPath, isPined: Bool) {
+        self.delegate = delegate
+        self.tracker = tracker
+        self.indexPath = indexPath
+        self.isPined = isPined
+        self.category = category
+        trackerName = tracker.name
+        trackerSchedule = tracker.schedule
+        trackerColor = tracker.color
+        trackerColorIsSelected = true
+        trackerEmoji = tracker.emoji
+        scheduleSubtitle = Weekdays.scheduleSubtitles(schedule: trackerSchedule)
+        super .init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -249,6 +265,8 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
         addSubviews()
         setConstraints()
         textFieldLimitationMessage.removeFromSuperview()
+        trackerNameTextField.text = tracker.name
+        placeholderLableView.isHidden = true
     }
     
     @objc func clearText(){
@@ -272,9 +290,8 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
             createDate: Date().removeTimeInfo ?? Date())
         
         createButton.backgroundColor = .trackerBlack
-        delegate?.createTracker(category: category, tracker: tracker)
+        delegate.updateTracker(category: category, tracker: tracker, indexPath: indexPath, isPined: isPined)
         self.dismiss(animated: false)
-        trackerTypeSelectViewController.dismiss(animated: true)
         trackerSchedule = []
         scheduleSubtitle = nil
     }
@@ -444,7 +461,7 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
     }
 }
 
-extension RegularTrackerCreateViewController: UITableViewDataSource {
+extension RegularTrackerEditViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         categoryAndScheduleArray.count
@@ -471,7 +488,7 @@ extension RegularTrackerCreateViewController: UITableViewDataSource {
     }
 }
 
-extension RegularTrackerCreateViewController: UITableViewDelegate {
+extension RegularTrackerEditViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 1 {
@@ -487,7 +504,7 @@ extension RegularTrackerCreateViewController: UITableViewDelegate {
     }
 }
 
-extension RegularTrackerCreateViewController: UICollectionViewDataSource {
+extension RegularTrackerEditViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
@@ -510,6 +527,21 @@ extension RegularTrackerCreateViewController: UICollectionViewDataSource {
         cell.color.isHidden = emojiIsHidden
         cell.emoji.text = Constants.emoji[indexPath.row]
         cell.color.backgroundColor = Constants.colors[indexPath.row]
+        let colorIndex = Constants.getColorIndex(selectedColor: trackerColor)
+        let emojiIndex = Constants.getEmojiIndex(selectedEmoji: trackerEmoji)
+        if indexPath == IndexPath(row: emojiIndex, section: 0) {
+            cell.layer.cornerRadius = 16
+            cell.clipsToBounds = true
+            cell.backgroundColor = .trackerEmojiSelectionGray
+            self.trackerEmoji = Constants.emoji[indexPath.row]
+        }
+        if indexPath == IndexPath(row: colorIndex, section: 1) {
+            cell.layer.cornerRadius = 8
+            cell.layer.borderWidth = 3
+            cell.layer.borderColor = Constants.selectionColors[indexPath.row].cgColor
+            self.trackerColor = Constants.colors[indexPath.row]
+            self.trackerColorIsSelected = true
+        }
         return cell
     }
     
@@ -533,7 +565,7 @@ extension RegularTrackerCreateViewController: UICollectionViewDataSource {
     }
 }
 
-extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout {
+extension RegularTrackerEditViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -606,7 +638,7 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
     }
 }
 
-extension RegularTrackerCreateViewController: UITextViewDelegate {
+extension RegularTrackerEditViewController: UITextViewDelegate {
     
     func hideClearButton(){
         self.clearTextButton.layer.opacity = 0
@@ -661,12 +693,13 @@ extension RegularTrackerCreateViewController: UITextViewDelegate {
     }
 }
 
-extension RegularTrackerCreateViewController: SelectCategoryForTrackerProtocl {
+extension RegularTrackerEditViewController: SelectCategoryForTrackerProtocl {
     func setSelectedCategory(_ category: String) {
         self.category = category
         categoryAndScheduleTableView.reloadData()
     }
 }
+
 
 
 

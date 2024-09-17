@@ -128,6 +128,51 @@ final class TrackerStore: NSObject {
         try? fetchedResultController.performFetch()
     }
     
+    
+    func updateRecord(categoryName: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool) {
+        if isPined {
+            let trackerData = fetchedResultControllerPinCategories.object(at: indexPath)
+            trackerData.trackerId = tracker.trackerId
+            trackerData.name = tracker.name
+            trackerData.emoji = tracker.emoji
+            trackerData.color = UIColor.getHexColor(from: tracker.color)
+            trackerData.schedule = tracker.schedule.joined(separator: ",")
+            
+            let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+            request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
+            if let category = try? context.fetch(request).first {
+                trackerData.category = category
+                print("Существующая категория category.categoryName: \(category.categoryName) = categoryName: \(categoryName)")
+            } else {
+                let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+                trackerCategoryCoreData.categoryName = categoryName
+                trackerData.category = trackerCategoryCoreData
+                print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName) = categoryName: \(categoryName)")
+            }
+        } else {
+            let trackerData = fetchedResultController.object(at: indexPath)
+            trackerData.trackerId = tracker.trackerId
+            trackerData.name = tracker.name
+            trackerData.emoji = tracker.emoji
+            trackerData.color = UIColor.getHexColor(from: tracker.color)
+            trackerData.schedule = tracker.schedule.joined(separator: ",")
+            
+            let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+            request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
+            if let category = try? context.fetch(request).first {
+                trackerData.category = category
+                print("Существующая категория category.categoryName: \(category.categoryName) = categoryName: \(categoryName)")
+            } else {
+                let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
+                trackerCategoryCoreData.categoryName = categoryName
+                trackerData.category = trackerCategoryCoreData
+                print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName) = categoryName: \(categoryName)")
+            }
+        }
+        saveContext()
+        performFetch()
+    }
+    
     //    func saveTrackerCategory(categoryName: String, tracker: Tracker) {
     //        let trackerData = TrackerCoreData(context: context)
     //        trackerData.trackerId = tracker.trackerId
@@ -335,6 +380,7 @@ final class TrackerStore: NSObject {
     func unPinObject(indexPath: IndexPath) {
         let trackerCoreData = fetchedResultControllerPinCategories.object(at: indexPath)
         guard let categoryName = trackerCoreData.oldCategory else { return }
+        trackerCoreData.oldCategory = nil
         let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         let predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.categoryName), categoryName)
         request.predicate = predicate
@@ -383,6 +429,7 @@ final class TrackerStore: NSObject {
     func addRecord(categoryName: String, tracker: Tracker) {
         saveTrackerCategory(categoryName: categoryName, tracker: tracker)
     }
+    
     
     private func saveContext(){
         do{

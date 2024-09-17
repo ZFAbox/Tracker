@@ -61,6 +61,13 @@ enum Weekdays: String, Codable{
         return array
     }()
     
+    static func scheduleSubtitles(schedule: [String]) -> String {
+        var subtitles = schedule.map { weekday in
+            return  self.shortWeekdayDescription(weekday: Weekdays.weekdayDescriptionForWeekday(at: weekday))
+        }
+        return subtitles.joined(separator: ", ")
+    }
+    
 //
 //    ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
     
@@ -122,6 +129,29 @@ enum Weekdays: String, Codable{
             preconditionFailure("Не корректный индекс метки switch.tag")
         }
     }
+
+static func weekdayDescriptionForWeekday(at weekday: String) -> Weekdays {
+    switch weekday {
+    case Weekdays.Monday.localized:
+        return Weekdays.Monday
+    case Weekdays.Tuesday.localized:
+        return Weekdays.Tuesday
+    case Weekdays.Wednesday.localized:
+        return Weekdays.Wednesday
+    case Weekdays.Thursday.localized:
+        return Weekdays.Thursday
+    case Weekdays.Friday.localized:
+        return Weekdays.Friday
+    case Weekdays.Saturday.localized:
+        return Weekdays.Saturday
+    case Weekdays.Sunday.localized:
+        return Weekdays.Sunday
+    default:
+        preconditionFailure("Не корректное наименование дня недели")
+    }
+}
+
+
     
 }
 
@@ -171,5 +201,16 @@ struct Constants {
     ]
     
     static let emoji: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
+    
+    static func getColorIndex(selectedColor: UIColor?) -> Int {
+
+        guard let selectedColor = selectedColor, let index = colors.firstIndex(of: selectedColor) else { return 0 }
+        return index
+    }
+    
+    static func getEmojiIndex(selectedEmoji: String?) -> Int {
+        guard let selectedEmoji = selectedEmoji, let index = emoji.firstIndex(of: selectedEmoji) else { return 0 }
+        return index
+    }
 }
 

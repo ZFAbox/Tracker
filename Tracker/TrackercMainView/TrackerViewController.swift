@@ -338,7 +338,20 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         
         let editText = NSLocalizedString("editText", comment: "")
         let editAction = UIAction(title: editText, handler: { [weak self] _ in
-            
+            guard let self = self else { return }
+            if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
+                let isPined = true
+                let indexPath = indexPath
+                guard let tracker = self.viewModel.getPinTracker(for: indexPath) else { return }
+                let category = self.viewModel.headerPinTitle(for: indexPath)
+                self.editTracker(indexPath: indexPath, isPined: isPined, tracker: tracker, category: category)
+            } else {
+                let isPined = false
+                let indexPath = IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory())
+                guard let tracker = self.viewModel.getTracker(for: indexPath) else { return }
+                let category = self.viewModel.headerTitle(for: indexPath)
+                self.editTracker(indexPath: indexPath, isPined: isPined, tracker: tracker, category: category)
+            }
         })
         let deletText = NSLocalizedString("deletText", comment: "")
         let removeAction = UIAction(title: deletText, attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
@@ -392,12 +405,17 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 //        updateTrackerCollectionView()
     }
     
+    func editTracker(indexPath: IndexPath, isPined: Bool,tracker: Tracker, category: String) {
+        let vc = RegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined)
+        vc.modalPresentationStyle = .popover
+        self.present(vc, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
         let cell = collectionView.cellForItem(at: indexPath) as! TrackerCollectionViewCell
         let selectedView = cell.setSelectedView()
         return UITargetedPreview(view: selectedView)
     }
-    
 }
 
 extension TrackerViewController: UISearchBarDelegate {

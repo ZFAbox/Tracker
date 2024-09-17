@@ -36,6 +36,7 @@
 		90DE586B2C0A655600351750 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 90DE586A2C0A655600351750 /* Base */; };
 		90F8223F2C73C4AD0053DF20 /* TrackerCategoryEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F8223E2C73C4AD0053DF20 /* TrackerCategoryEditor.swift */; };
 		90F822412C73EBE10053DF20 /* RegularTrackerCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F822402C73EBE10053DF20 /* RegularTrackerCreateViewController.swift */; };
+		9F2B9BBD2C996F5A00381C08 /* RegularTrackerEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2B9BBC2C996F5A00381C08 /* RegularTrackerEditViewController.swift */; };
 		9F6CEA312C13120B007BA364 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA302C13120B007BA364 /* Tracker.swift */; };
 		9F6CEA332C13122A007BA364 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA322C13122A007BA364 /* TrackerCategory.swift */; };
 		9F6CEA352C13123D007BA364 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6CEA342C13123D007BA364 /* TrackerRecord.swift */; };
@@ -95,6 +96,7 @@
 		90DE586C2C0A655600351750 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		90F8223E2C73C4AD0053DF20 /* TrackerCategoryEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryEditor.swift; sourceTree = "<group>"; };
 		90F822402C73EBE10053DF20 /* RegularTrackerCreateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularTrackerCreateViewController.swift; sourceTree = "<group>"; };
+		9F2B9BBC2C996F5A00381C08 /* RegularTrackerEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularTrackerEditViewController.swift; sourceTree = "<group>"; };
 		9F6CEA302C13120B007BA364 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		9F6CEA322C13122A007BA364 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		9F6CEA342C13123D007BA364 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				9FA7612D2C3EBF600006A0D6 /* StatisticView */,
 				9FA7612E2C3EC2370006A0D6 /* TrackerTypeSelectView */,
 				906E489C2C3A0570008035EC /* TrackerCreateView */,
+				9F2B9BBB2C996F0600381C08 /* TrackerEditView */,
 				9F9EB6C82C6CFC02008DF57E /* TrackerCategoriesList */,
 				9F9E7EC22C3FC83C0032EA1D /* ScheduleViewController */,
 				90DE58672C0A655600351750 /* Assets.xcassets */,
@@ -215,6 +218,14 @@
 				90DE586C2C0A655600351750 /* Info.plist */,
 			);
 			path = Tracker;
+			sourceTree = "<group>";
+		};
+		9F2B9BBB2C996F0600381C08 /* TrackerEditView */ = {
+			isa = PBXGroup;
+			children = (
+				9F2B9BBC2C996F5A00381C08 /* RegularTrackerEditViewController.swift */,
+			);
+			path = TrackerEditView;
 			sourceTree = "<group>";
 		};
 		9F6CEA2F2C1311E8007BA364 /* Models */ = {
@@ -419,6 +430,7 @@
 				9F9ED0F32C1C6EAF0013D4D4 /* TrackerCellParameters.swift in Sources */,
 				9F6CEA312C13120B007BA364 /* Tracker.swift in Sources */,
 				90F822412C73EBE10053DF20 /* RegularTrackerCreateViewController.swift in Sources */,
+				9F2B9BBD2C996F5A00381C08 /* RegularTrackerEditViewController.swift in Sources */,
 				9F9ED0F12C1C545A0013D4D4 /* TrackerCollectionViewCell.swift in Sources */,
 				909178062C530C0300C5C847 /* UIColor+Hex Extension.swift in Sources */,
 				9092E2EF2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift in Sources */,
