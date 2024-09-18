@@ -125,7 +125,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     @objc func buttonTapped(){
         if isCompletedToday {
-            UIView.animate(withDuration: 0.2, delay: 0) {
+            UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
                 self.delegate?.uncompleteTracker(id: trackerId, at: indexPath)
                 self.completedDays -= 1
@@ -134,7 +134,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             }
            
         }else {
-            UIView.animate(withDuration: 0.2, delay: 0) {
+            UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
                 self.delegate?.completeTracker(id: trackerId, at: indexPath)
                 self.completedDays += 1
@@ -145,21 +145,21 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     func trackerDone() {
-        let buttonImage = UIImage(named: "Tracker Done")
-        self.dayMarkButton.layer.opacity = 0.7
-        self.dayMarkButton.setImage(buttonImage, for: .normal)
-        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), completedDays)
-//        self.dayMarkLable.text = completedDays.daysEnding()
-        self.dayMarkLable.text = dayText
+            let buttonImage = UIImage(named: "Tracker Done")
+            self.dayMarkButton.layer.opacity = 0.7
+            self.dayMarkButton.setImage(buttonImage, for: .normal)
+            let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
+    //        self.dayMarkLable.text = completedDays.daysEnding()
+            self.dayMarkLable.text = dayText
     }
     
     func trackerUndone() {
-        let buttonImage = UIImage(named: "Tracker Plus")
-        self.dayMarkButton.layer.opacity = 1
-        self.dayMarkButton.setImage(buttonImage, for: .normal)
-//        self.dayMarkLable.text = completedDays.daysEnding()
-        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), completedDays)
-        self.dayMarkLable.text = dayText
+            let buttonImage = UIImage(named: "Tracker Plus")
+            self.dayMarkButton.layer.opacity = 1
+            self.dayMarkButton.setImage(buttonImage, for: .normal)
+    //        self.dayMarkLable.text = completedDays.daysEnding()
+            let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
+            self.dayMarkLable.text = dayText
     }
     
     func setSelectedView() -> UIView {

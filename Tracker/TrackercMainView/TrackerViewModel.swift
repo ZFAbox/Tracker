@@ -11,15 +11,24 @@ final class TrackerViewModel {
     
     var currentDate: Date? {
         didSet {
-            updateTrackersForCurrentDate(searchedText: "")
+            updateTrackersForCurrentDate(searchedText: searchedText, selectedFilter: selectedFilter)
             currentDateBinding?(currentDate ?? DateFormatter.removeTime(date: Date()))
         }
     }
     
     var searchedText: String = "" {
         didSet{
-            updateTrackersForCurrentDate(searchedText: searchedText)
+            updateTrackersForCurrentDate(searchedText: searchedText, selectedFilter: selectedFilter)
             searchedTextBinding?(searchedText)
+        }
+    }
+    
+    var isFilterSelected: Bool = false
+    
+    var selectedFilter: String = "" {
+        didSet{
+            updateTrackersForCurrentDate(searchedText: searchedText, selectedFilter: selectedFilter)
+            selectedFilterBinding?(selectedFilter)
         }
     }
 
@@ -40,7 +49,7 @@ final class TrackerViewModel {
     var indexPathAndSectionBinding: Binding<IndexPathAndSection>?
     var currentDateBinding: Binding<Date>?
     var searchedTextBinding: Binding<String>?
-    
+    var selectedFilterBinding: Binding<String>?
     
     init() {
         self.currentDate = Date().removeTimeInfo
@@ -49,11 +58,11 @@ final class TrackerViewModel {
 
     //MARK: - Collection View Update Methods
     
-    private func updateTrackersForCurrentDate(searchedText: String){
+    private func updateTrackersForCurrentDate(searchedText: String, selectedFilter: String){
         guard let currentDate = currentDate else {
             print("Нет текущей даты")
             return }
-        trackerStore.updateDateAndText(currentDate: currentDate, searchedText: searchedText)
+        trackerStore.updateTrackerList(currentDate: currentDate, searchedText: searchedText, isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
     }
     
     func numberOfItemsIn(_ section: Int) -> Int {
@@ -193,4 +202,8 @@ extension TrackerViewModel: TrackerUpdateViewControllerProtocol {
     func updateTracker(category: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool) {
         trackerStore.updateRecord(categoryName: category, tracker: tracker, indexPath: indexPath, isPined: isPined)
     }
+}
+
+extension TrackerViewModel: FilterViewControllerProtocol {
+
 }

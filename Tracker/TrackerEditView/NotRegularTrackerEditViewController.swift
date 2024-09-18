@@ -307,10 +307,9 @@ class NotRegularTrackerEditViewController: UIViewController {
     
     private func createIsCompleted() -> Bool {
         let trackerNameIsEmpty = trackerName.isEmpty
-        let scheduleIsEmpty = trackerSchedule.isEmpty
         let trackerEmojiIsEmpty = trackerEmoji?.isEmpty ?? true
         let categoryIsEmpty = category?.isEmpty ?? true
-        return !trackerNameIsEmpty && !scheduleIsEmpty && trackerColorIsSelected && !trackerEmojiIsEmpty && !categoryIsEmpty
+        return !trackerNameIsEmpty && trackerColorIsSelected && !trackerEmojiIsEmpty && !categoryIsEmpty
     }
     
     private func isCreateButtonEnable() {
@@ -486,17 +485,10 @@ extension NotRegularTrackerEditViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? TrackerCreateViewCell
         guard let cell = cell else { return UITableViewCell() }
         cell.mainTitle.text = categoryAndScheduleArray[indexPath.row]
-        if indexPath.row == 1 {
-            if scheduleSubtitle != nil {
-                cell.lableStackView.addArrangedSubview(cell.additionalTitle)
-                cell.additionalTitle.text = scheduleSubtitle
-            }
-        } else {
             if category != nil {
                 cell.lableStackView.addArrangedSubview(cell.additionalTitle)
                 cell.additionalTitle.text = category
             }
-        }
         cell.backgroundColor = .trackerBackgroundOpacityGray
         cell.accessoryType = .disclosureIndicator
         return cell
@@ -506,16 +498,9 @@ extension NotRegularTrackerEditViewController: UITableViewDataSource {
 extension NotRegularTrackerEditViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.row == 1 {
-            let viewController = ScheduleViewController(delegate: self)
-//            viewController.delegate = self
-            viewController.modalPresentationStyle = .popover
-            self.present(viewController, animated: true)
-        } else {
             let viewController = TrackerCategoriesList(delegate: self)
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
-        }
     }
 }
 

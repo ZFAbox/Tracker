@@ -130,6 +130,10 @@ final class TrackerViewController: UIViewController{
     }
     
     @objc func filterButtonTapped(){
+        
+        let vc = FilterViewController(delegate: viewModel)
+        vc.modalPresentationStyle = .popover
+        self.present(vc, animated: true)
         //TODO: - add filter button action
     }
     
@@ -408,9 +412,15 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func editTracker(indexPath: IndexPath, isPined: Bool,tracker: Tracker, category: String, completedDays: Int) {
-        let vc = RegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined, completedDays: completedDays)
-        vc.modalPresentationStyle = .popover
-        self.present(vc, animated: true)
+        if tracker.isRegular {
+            let vc = RegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined, completedDays: completedDays)
+            vc.modalPresentationStyle = .popover
+            self.present(vc, animated: true)
+        } else {
+            let vc = NotRegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined, completedDays: completedDays)
+            vc.modalPresentationStyle = .popover
+            self.present(vc, animated: true)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {

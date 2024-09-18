@@ -51,7 +51,7 @@ final class TrackerStore: NSObject {
         let currentDate = self.currentDate ?? Date()
         let searchedText = (self.searchedText).lowercased()
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        let predicate = getPinPredicate(searchedText: searchedText, currentDate: currentDate)
+        let predicate = getPinPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
         fetchRequest.predicate = predicate
         let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
@@ -70,7 +70,7 @@ final class TrackerStore: NSObject {
         let currentDate = self.currentDate ?? Date()
         let searchedText = (self.searchedText).lowercased()
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate)
+        let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
         fetchRequest.predicate = predicate
         
         //        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryName), ascending: true) { (string1, string2) -> ComparisonResult in
@@ -98,7 +98,7 @@ final class TrackerStore: NSObject {
     }()
     
     func perform(){
-        fetchedResultController.fetchRequest.predicate = getPredicate(searchedText: "", currentDate: DateFormatter.removeTime(date: Date()))
+        fetchedResultController.fetchRequest.predicate = getPredicate(searchedText: "", currentDate: DateFormatter.removeTime(date: Date()), isFileterSelected: false, selectedFilter: "")
         try? fetchedResultController.performFetch()
     }
     
@@ -200,13 +200,15 @@ final class TrackerStore: NSObject {
     //        try? fetchedResultController.performFetch()
     //    }
     
-    func updateDateAndText(currentDate: Date, searchedText: String ) {
-        let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate)
+    func updateTrackerList(currentDate: Date, searchedText: String, isFilterSelected: Bool, selectedFilter: String) {
+        let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
+        let pinPredicate = getPinPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
         fetchedResultController.fetchRequest.predicate = predicate
-        try? fetchedResultController.performFetch()
+        fetchedResultControllerPinCategories.fetchRequest.predicate = pinPredicate
+        performFetch()
     }
     
-    func getPinPredicate(searchedText: String, currentDate: Date) -> NSPredicate {
+    func getPinPredicate(searchedText: String, currentDate: Date, isFileterSelected: Bool, selectedFilter: String) -> NSPredicate {
         let weekday = DateFormatter.weekday(date: currentDate)
         if searchedText == "" {
             let pinCategory = NSPredicate(format: "%K == 'Закрепленные'", #keyPath(TrackerCoreData.category.categoryName))
@@ -243,7 +245,7 @@ final class TrackerStore: NSObject {
         }
     }
     
-    func getPredicate(searchedText: String, currentDate: Date) -> NSPredicate {
+    func getPredicate(searchedText: String, currentDate: Date, isFileterSelected: Bool, selectedFilter: String) -> NSPredicate {
         let weekday = DateFormatter.weekday(date: currentDate)
         if searchedText == "" {
             let notPinCategory = NSPredicate(format: "%K != 'Закрепленные'", #keyPath(TrackerCoreData.category.categoryName))
