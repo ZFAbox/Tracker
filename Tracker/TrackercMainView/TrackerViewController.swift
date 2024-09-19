@@ -13,6 +13,8 @@ final class TrackerViewController: UIViewController{
     
     var viewModel: TrackerViewModel
     
+    var delegate: UIDatePicker
+    
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
 //MARK: - Views
@@ -91,8 +93,9 @@ final class TrackerViewController: UIViewController{
         return filterButton
     }()
     
-    init(viewModel: TrackerViewModel) {
+    init(viewModel: TrackerViewModel, delegate: UIDatePicker) {
         self.viewModel = viewModel
+        self.delegate = delegate
         super .init(nibName: nil, bundle: nil)
     }
     
@@ -127,18 +130,22 @@ final class TrackerViewController: UIViewController{
         viewModel.currentDateBinding = { [weak self] _ in
             self?.updateTrackerCollectionView()
         }
+        viewModel.selectedFilterBinding = { [weak self] _ in
+            self?.updateTrackerCollectionView()
+        }
+        
     }
     
     @objc func filterButtonTapped(){
-        
         let vc = FilterViewController(delegate: viewModel)
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
-        //TODO: - add filter button action
     }
     
     func updateTrackerCollectionView() {
+        
         trackerCollectionView.reloadData()
+        
         if viewModel.isTrackerExists() {
             let image = UIImage(named: "NoTracker")
             emptyTrackerListImage.image = image
@@ -150,6 +157,7 @@ final class TrackerViewController: UIViewController{
             let emtyTrackerPlaceholderText = NSLocalizedString("emtyTrackerPlaceholderText", comment: "Text of empty placeholder")
             emptyTrackerListText.text = emtyTrackerPlaceholderText
         }
+        
         trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
         filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
     }

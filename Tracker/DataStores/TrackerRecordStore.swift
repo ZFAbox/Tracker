@@ -68,6 +68,14 @@ final class TrackerRecordStore{
             return trackerRecordFound
     }
     
+    func isCompletedTrackerBefore(id: UUID, date: Date) -> Bool{
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        request.predicate = NSPredicate(format: "%K == %@ AND %K < %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), date as NSDate)
+        guard let recordsData = try? context.fetch(request) else { return false }
+            let trackerRecordFound = recordsData.isEmpty ? false : true
+            return trackerRecordFound
+    }
+    
     func completedTrackersCount(id:UUID) -> Int {
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
         request.resultType = .countResultType

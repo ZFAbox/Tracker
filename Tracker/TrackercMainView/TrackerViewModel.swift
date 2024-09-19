@@ -7,18 +7,27 @@
 
 import Foundation
 
-final class TrackerViewModel {
+final class TrackerViewModel: FilterViewControllerProtocol {
     
-    var currentDate: Date? {
+    var todayDate: Date? {
         didSet {
-            updateTrackersForCurrentDate(searchedText: searchedText, selectedFilter: selectedFilter)
-            currentDateBinding?(currentDate ?? DateFormatter.removeTime(date: Date()))
+            guard let todayDate = todayDate else { return }
+            todayDateBinding?(todayDate)
+        }
+    }
+    
+    var selectedDate: Date? {
+        didSet {
+            let selectedDate = selectedDate ?? DateFormatter.removeTime(date: Date())
+            updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
+            currentDateBinding?(selectedDate)
         }
     }
     
     var searchedText: String = "" {
         didSet{
-            updateTrackersForCurrentDate(searchedText: searchedText, selectedFilter: selectedFilter)
+            let selectedDate = selectedDate ?? DateFormatter.removeTime(date: Date())
+            updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
             searchedTextBinding?(searchedText)
         }
     }
@@ -27,8 +36,11 @@ final class TrackerViewModel {
     
     var selectedFilter: String = "" {
         didSet{
-            updateTrackersForCurrentDate(searchedText: searchedText, selectedFilter: selectedFilter)
-            selectedFilterBinding?(selectedFilter)
+            if isFilterSelected {
+                guard let selectedDate = selectedDate else { return }
+                updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
+                selectedFilterBinding?(selectedFilter)
+            }
         }
     }
 
@@ -41,28 +53,26 @@ final class TrackerViewModel {
     
     //MARK: - CoreData Constants
     
-    private lazy var trackerStore = TrackerStore(delegate: self, currentDate: currentDate, searchedText: searchedText)
+    private lazy var trackerStore = TrackerStore(delegate: self, currentDate: selectedDate, searchedText: searchedText)
     private var trackerRecordStore: TrackerRecordStore
     
     //MARK: - Bindings
     
     var indexPathAndSectionBinding: Binding<IndexPathAndSection>?
     var currentDateBinding: Binding<Date>?
+    var todayDateBinding: Binding<Date>?
     var searchedTextBinding: Binding<String>?
     var selectedFilterBinding: Binding<String>?
     
     init() {
-        self.currentDate = Date().removeTimeInfo
+        self.selectedDate = Date().removeTimeInfo
         self.trackerRecordStore = TrackerRecordStore()
     }
 
     //MARK: - Collection View Update Methods
     
-    private func updateTrackersForCurrentDate(searchedText: String, selectedFilter: String){
-        guard let currentDate = currentDate else {
-            print("Нет текущей даты")
-            return }
-        trackerStore.updateTrackerList(currentDate: currentDate, searchedText: searchedText, isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
+    private func updateTrackersForCurrentDate(selectedDate: Date, searchedText: String, selectedFilter: String){
+        trackerStore.updateTrackerList(currentDate: selectedDate, searchedText: searchedText, isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
     }
     
     func numberOfItemsIn(_ section: Int) -> Int {
@@ -90,14 +100,21 @@ final class TrackerViewModel {
     }
     
     func isCompletedTracker(for id: UUID) -> Bool {
-        guard let date = currentDate else {
+        guard let date = selectedDate else {
             print("Нет даты")
             return false }
         return trackerRecordStore.isCompletedTrackerRecords(id: id, date: date)
     }
     
+    func isCompletedBefore(for id: UUID) -> Bool {
+        guard let date = selectedDate else {
+            print("Нет даты")
+            return false }
+        return trackerRecordStore.isCompletedTrackerBefore(id: id, date: date)
+    }
+    
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: currentDate ?? Date())
+        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date())
     }
     
     func completedTrackersCount(id:UUID) -> Int {
@@ -135,7 +152,7 @@ extension TrackerViewModel: TrackerStoreUpdateDelegateProtocol {
 
 extension TrackerViewModel: TrackerCollectionViewCellProtocol {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
-        guard let date = currentDate else {
+        guard let date = selectedDate else {
             assertionFailure("Нет даты")
             return}
         let trackerRecord = TrackerRecord(trackerId: id, trackerDate: date)
@@ -143,7 +160,7 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
     }
     
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
-        guard let date = currentDate else {
+        guard let date = selectedDate else {
             assertionFailure("Нет даты")
             return}
         trackerRecordStore.deleteTrackerRecord(id: id, currentDate: date)
@@ -153,12 +170,14 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
         guard let tracker = getTracker(for: indexPath) else { return nil }
         let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerId)
         let completedDays = completedTrackersCount(id: tracker.trackerId)
+        let isCompletedBefore = isCompletedBefore(for: tracker.trackerId)
         let model = TrackerCellModel(
             tracker: tracker,
             isCompletedToday: isCompletedToday,
             indexPath: indexPath,
             completedDays: completedDays,
-            currentDate: currentDate)
+            currentDate: selectedDate,
+            isCompletedBefore: isCompletedBefore)
         return model
     }
     
@@ -166,12 +185,14 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
         guard let tracker = getPinTracker(for: indexPath) else { return nil }
         let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerId)
         let completedDays = completedTrackersCount(id: tracker.trackerId)
+        let isCompletedBefore = isCompletedBefore(for: tracker.trackerId)
         let model = TrackerCellModel(
             tracker: tracker,
             isCompletedToday: isCompletedToday,
             indexPath: indexPath,
             completedDays: completedDays,
-            currentDate: currentDate)
+            currentDate: selectedDate,
+        isCompletedBefore: isCompletedBefore)
         return model
     }
     
@@ -204,6 +225,3 @@ extension TrackerViewModel: TrackerUpdateViewControllerProtocol {
     }
 }
 
-extension TrackerViewModel: FilterViewControllerProtocol {
-
-}

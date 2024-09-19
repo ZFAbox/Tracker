@@ -14,8 +14,8 @@
             filePath = "Tracker/DataStores/TrackerStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "564"
-            endingLineNumber = "564"
+            startingLineNumber = "614"
+            endingLineNumber = "614"
             landmarkName = "controllerWillChangeContent(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "Tracker/DataStores/TrackerStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "553"
-            endingLineNumber = "553"
+            startingLineNumber = "603"
+            endingLineNumber = "603"
             landmarkName = "isTrackersExist()"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "Tracker/TrackercMainView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "399"
-            endingLineNumber = "399"
+            startingLineNumber = "407"
+            endingLineNumber = "407"
             landmarkName = "pinTracker(indexPath:)"
             landmarkType = "7">
             <Locations>
@@ -112,7 +112,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "268"
             endingLineNumber = "268"
-            landmarkName = "getPredicate(searchedText:currentDate:isFileterSelected:selectedFilter:)"
+            landmarkName = "getPredicate1(searchedText:currentDate:isFileterSelected:selectedFilter:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

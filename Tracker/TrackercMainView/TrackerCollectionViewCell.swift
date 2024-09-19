@@ -23,6 +23,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     var trackerId: UUID?
     var completedDays: Int = 0
     var indexPath: IndexPath?
+    var isCompletedBefore: Bool = false
     
     let cardView: UIView = {
         let cardView = UIView()
@@ -98,6 +99,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         let tracker = model.tracker
         let currentDate = model.currentDate
         self.isCompletedToday = model.isCompletedToday
+        self.isCompletedBefore = model.isCompletedBefore
         self.trackerId = tracker.trackerId
         self.completedDays = model.completedDays
         self.indexPath = model.indexPath
@@ -120,6 +122,11 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             } else {
                 dayMarkButton.isEnabled = true
             }
+        }
+        if !tracker.isRegular && isCompletedBefore {
+            dayMarkButton.isEnabled = false
+        } else {
+            dayMarkButton.isEnabled = true
         }
     }
     

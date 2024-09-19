@@ -10,7 +10,8 @@ import UIKit
 
 final class TabBarViewController: UITabBarController {
     
-    let trackerViewController = TrackerViewController(viewModel: TrackerViewModel())
+    let viewModel = TrackerViewModel()
+    lazy var trackerViewController = TrackerViewController(viewModel: self.viewModel, delegate: self.datePicker)
     let statisticViewController = StatisticViewController()
     
     private lazy var datePicker: UIDatePicker = {
@@ -46,6 +47,9 @@ final class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         setupTabBar()
         setupNavigationBar()
+        viewModel.todayDateBinding = { [weak self] date in
+            self?.datePicker.date = Date()
+        }
     }
     
     func setupTabBar(){
@@ -85,7 +89,7 @@ final class TabBarViewController: UITabBarController {
     @objc func datePickerChangeValue(_ sender: UIDatePicker){
         sender.layer.opacity = 1
         let selectedDate = sender.date
-        trackerViewController.viewModel.currentDate = selectedDate.removeTimeInfo
+        trackerViewController.viewModel.selectedDate = selectedDate.removeTimeInfo
     }
 }
 

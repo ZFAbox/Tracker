@@ -11,6 +11,8 @@ import UIKit
 protocol FilterViewControllerProtocol {
     var isFilterSelected: Bool { get set }
     var selectedFilter: String { get set }
+    var todayDate: Date? { get set }
+    var selectedDate: Date? { get set }
 }
 
 final class FilterViewController: UIViewController {
@@ -47,10 +49,7 @@ final class FilterViewController: UIViewController {
         tableView.delegate = self
         tableView.register(FilterTableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.rowHeight = 75
-//        tableView.separatorStyle = .none
-//        tableView.separatorInset.left = 16
-//        tableView.separatorInset.right = 16
-        tableView.isScrollEnabled = true
+        tableView.isScrollEnabled = false
         return tableView
     }()
     
@@ -74,6 +73,12 @@ final class FilterViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         delegate.isFilterSelected = isFilterSelected
         delegate.selectedFilter = selectedFilter
+
+        let trackerForToday = NSLocalizedString("trackerForToday", comment: "")
+        if selectedFilter == trackerForToday {
+            delegate.todayDate = Date.removeTimeStamp(fromDate: Date())
+        }
+        
     }
     
     private func addSubviews() {
