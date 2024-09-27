@@ -96,6 +96,47 @@ final class TrackerRecordStore{
         }
         return trackerRecordFound
     }
+    
+    func calculateTrackersCompleted() -> Int {
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        guard let trackerCompletedData = try? context.fetch(request) else { return 0}
+        return trackerCompletedData.count
+    }
+    
+    func calculateAverage() -> Int {
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        guard let trackerCompletedData = try? context.fetch(request) else { return 0}
+        let completedTrackersCount = trackerCompletedData.count
+        let dateCount = Set( trackerCompletedData.map { trackerRecord in
+            return trackerRecord.trackerDate
+        }).count
+        if dateCount == 0 { return 0 } else {
+            let averageTrackersCountPerDay = Int (completedTrackersCount / dateCount)
+            return averageTrackersCountPerDay
+        }
+    }
+    
+    func getCompletedDatesArray() -> [Date] {
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        guard let trackerCompletedData = try? context.fetch(request) else { return [] }
+        var dates = trackerCompletedData.map { trackerRecord in
+            guard let date = trackerRecord.trackerDate else { preconditionFailure() }
+            return date
+        }
+        let datesSet = Set(dates)
+        dates = Array(datesSet).sorted(by: { d1, d2 in
+            d1 < d2
+        })
+        return dates
+    }
+    
+    func getCompletedTrackersPerDay(date: Date) -> Int {
+        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        let predicate = NSPredicate(format: " %K == %@", #keyPath(TrackerRecordCoreData.trackerDate), date as NSDate)
+        request.predicate = predicate
+        guard let trackerCompletedData = try? context.fetch(request) else { return 0 }
+        return trackerCompletedData.count
+    }
 
     private func saveTrackerRecord(){
         do{

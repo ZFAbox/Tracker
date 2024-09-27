@@ -13,14 +13,48 @@ final class TrackerViewController: UIViewController{
     
     var viewModel: TrackerViewModel
     
-    var delegate: UIDatePicker
-    
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
 //MARK: - Views
-    
 
+    private lazy var addTracckerButton: UIButton = {
+        let button = UIButton()
+        let image = UIImage(named: "Tracker Add Plus")
+        button.setImage(image, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .trackerBlack
+        button.addTarget(self, action: #selector(addTarget), for: .touchUpInside)
+        return button
+        
+    }()
+
+    private lazy var datePicker: UIDatePicker = {
+      let datePicker = UIDatePicker(frame: .zero)
+        datePicker.isEnabled = true
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.datePickerMode = .date
+        let locale = Locale(identifier: "ru_CH")
+        datePicker.locale = locale
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
+      return datePicker
+    }()
     
+    private lazy var datePickerLable: UILabel = {
+        let trackerLabel = UILabel()
+        trackerLabel.translatesAutoresizingMaskIntoConstraints = false
+        trackerLabel.font = UIFont(name: "SFProDisplay-Regular", size: 17)
+        let trackerMainLable = DateFormatter().prepareDatePickerString(date: Date())
+        trackerLabel.text = trackerMainLable
+        trackerLabel.textColor = .trackerBlack
+        trackerLabel.backgroundColor = .trackerGray
+        trackerLabel.layer.cornerRadius = 8
+        trackerLabel.clipsToBounds = true
+        trackerLabel.textAlignment = .center
+        trackerLabel.isUserInteractionEnabled = false
+        return trackerLabel
+    }()
+
     private lazy var trackerLabel: UILabel = {
         let trackerLabel = UILabel()
         trackerLabel.font = UIFont(name: "SFProDisplay-Bold", size: 34)
@@ -31,15 +65,18 @@ final class TrackerViewController: UIViewController{
         return trackerLabel
     }()
     
+    let searchFieldPlaceholder = NSLocalizedString("searchFieldPlaceholder", comment: "search field placeholder")
+    
     private lazy var searchField: UISearchBar = {
         let searchField = UISearchBar()
         searchField.translatesAutoresizingMaskIntoConstraints = false
-        let searchFieldPlaceholder = NSLocalizedString("searchFieldPlaceholder", comment: "search field placeholder")
-        searchField.placeholder = searchFieldPlaceholder
+        searchField.searchTextField.attributedPlaceholder = NSAttributedString(string: searchFieldPlaceholder, attributes: [NSAttributedString.Key.foregroundColor : UIColor.trackerDarkGray])
         searchField.sizeToFit()
         searchField.searchTextField.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         searchField.layer.borderWidth = 1
-        searchField.layer.borderColor = UIColor.white.cgColor
+        searchField.isTranslucent = false
+        searchField.barTintColor = .trackerWhite
+        searchField.layer.borderColor = UIColor.trackerWhite.cgColor
         searchField.delegate = self
         return searchField
     }()
@@ -75,6 +112,7 @@ final class TrackerViewController: UIViewController{
         trackerCollectionView.translatesAutoresizingMaskIntoConstraints = false
         trackerCollectionView.register(TrackerCollectionViewCell.self, forCellWithReuseIdentifier: "trackerCell")
         trackerCollectionView.register(TrackerSupplementaryViewCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        trackerCollectionView.backgroundColor = .trackerWhite
         trackerCollectionView.dataSource = self
         trackerCollectionView.delegate = self
         return trackerCollectionView
@@ -93,10 +131,15 @@ final class TrackerViewController: UIViewController{
         return filterButton
     }()
     
-    init(viewModel: TrackerViewModel, delegate: UIDatePicker) {
+//    init(viewModel: TrackerViewModel, delegate: UIDatePicker) {
+//        self.viewModel = viewModel
+//        self.delegate = delegate
+//        super .init(nibName: nil, bundle: nil)
+//    }
+//    
+    init(viewModel: TrackerViewModel) {
         self.viewModel = viewModel
-        self.delegate = delegate
-        super .init(nibName: nil, bundle: nil)
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -104,18 +147,43 @@ final class TrackerViewController: UIViewController{
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        viewModel.performFetches()
+//        viewModel.performFetches()
         updateTrackerCollectionView()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .trackerWhite
         hideKeyboardWhenTappedAround()
         setSublayer()
         setConstrains()
         bindWithTrackerViewModel()
         updateTrackerCollectionView()
+        traitCollectionDidChange(.current)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.userInterfaceStyle == .dark {
+            view.backgroundColor = .trackerBlack
+            trackerCollectionView.backgroundColor = .trackerBlack
+            trackerLabel.textColor = .trackerWhite
+            searchField.tintColor = .trackerWhite
+            searchField.layer.borderColor = UIColor.trackerBlack.cgColor
+            searchField.layer.backgroundColor = UIColor.trackerBlack.cgColor
+            searchField.barTintColor = .trackerBlack
+            searchField.searchTextField.attributedPlaceholder = NSAttributedString(string: searchFieldPlaceholder, attributes: [NSAttributedString.Key.foregroundColor : UIColor.trackerWhite])
+            
+        } else {
+            view.backgroundColor = .trackerWhite
+            trackerCollectionView.backgroundColor = .trackerWhite
+            trackerLabel.textColor = .trackerBlack
+            searchField.barTintColor = .trackerWhite
+            searchField.layer.borderColor = UIColor.trackerWhite.cgColor
+            searchField.layer.backgroundColor = UIColor.trackerWhite.cgColor
+            searchField.searchTextField.attributedPlaceholder = NSAttributedString(string: searchFieldPlaceholder, attributes: [NSAttributedString.Key.foregroundColor : UIColor.trackerDarkGray])
+        }
     }
     
 //MARK: - Bindings
@@ -134,10 +202,29 @@ final class TrackerViewController: UIViewController{
             self?.updateTrackerCollectionView()
         }
         
+        viewModel.todayDateBinding = { [weak self] date in
+        self?.datePicker.date = Date()
+            self?.datePickerLable.text = DateFormatter().prepareDatePickerString(date: Date())
+        }
+    }
+    
+    @objc func addTarget(){
+        print("Добавить цель")
+        let viewController = TrackerTypeSelectViewController()
+        viewController.viewModel = viewModel
+        viewController.delegate = self
+        viewController.modalPresentationStyle = .popover
+        self.present(viewController, animated: true)
+    }
+    
+    @objc func datePickerChangeValue(_ sender: UIDatePicker){
+        let selectedDate = sender.date
+        datePickerLable.text = DateFormatter().prepareDatePickerString(date: selectedDate)
+        viewModel.selectedDate = selectedDate.removeTimeInfo
     }
     
     @objc func filterButtonTapped(){
-        let vc = FilterViewController(delegate: viewModel)
+        let vc = FilterViewController(delegate: viewModel, isFilterSelected: viewModel.isFilterSelected, selectedFilter: viewModel.selectedFilter)
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
     }
@@ -171,37 +258,68 @@ final class TrackerViewController: UIViewController{
     
 //MARK: - Add subview and constraints
     
-    func setSublayer(){
+    private func setSublayer(){
         view.addSubview(trackerLabel)
         view.addSubview(searchField)
         view.addSubview(dummyView)
         setDummySublayers()
         view.addSubview(trackerCollectionView)
         view.addSubview(filterButton)
+        view.addSubview(datePicker)
+        view.addSubview(datePickerLable)
+        view.addSubview(addTracckerButton)
     }
     
-    func setDummySublayers(){
+    private func setDummySublayers(){
         dummyView.addSubview(emptyTrackerListImage)
         dummyView.addSubview(emptyTrackerListText)
     }
     
-    func setConstrains(){
+    private func setConstrains(){
         setLableConstrains()
         setSearchFieldConstrains()
         dummyViewConstrains()
         setTrackerCollectionContraints()
         setFilterButtonContraints()
+        setDatepickerConstraints()
+        setAddTrackerButtonConstraints()
     }
+
     
-    func setLableConstrains(){
+    private func setLableConstrains(){
         NSLayoutConstraint.activate([
-            trackerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
+            trackerLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
             trackerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
     
-    func setSearchFieldConstrains (){
+    private func setDatepickerConstraints(){
+        NSLayoutConstraint.activate([
+            datePickerLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 49),
+            datePickerLable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            datePickerLable.heightAnchor.constraint(equalToConstant: 34),
+            datePickerLable.widthAnchor.constraint(equalToConstant: 77)
+        ])
+        
+        NSLayoutConstraint.activate([
+            datePicker.topAnchor.constraint(equalTo: view.topAnchor, constant: 49),
+            datePicker.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            datePicker.heightAnchor.constraint(equalToConstant: 34),
+            datePicker.widthAnchor.constraint(equalToConstant: 77)
+        ])
+    }
+    
+    private func setAddTrackerButtonConstraints() {
+        NSLayoutConstraint.activate([
+        addTracckerButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 49),
+        addTracckerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 18),
+        addTracckerButton.heightAnchor.constraint(equalToConstant: 18),
+        addTracckerButton.widthAnchor.constraint(equalToConstant: 18)
+        ])
+    }
+    
+    private func setSearchFieldConstrains (){
         NSLayoutConstraint.activate([
             searchField.topAnchor.constraint(equalTo: trackerLabel.bottomAnchor, constant: 16),
             searchField.leadingAnchor.constraint(equalTo: trackerLabel.leadingAnchor),
@@ -209,7 +327,7 @@ final class TrackerViewController: UIViewController{
         ])
     }
     
-    func dummyViewConstrains() {
+    private func dummyViewConstrains() {
         NSLayoutConstraint.activate([
             dummyView.topAnchor.constraint(equalTo: searchField.bottomAnchor),
             dummyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -220,7 +338,7 @@ final class TrackerViewController: UIViewController{
         emptyTrackerListTextConstrains()
     }
     
-    func emptyTrackerListImageConstrains(){
+    private func emptyTrackerListImageConstrains(){
         NSLayoutConstraint.activate([
             emptyTrackerListImage.centerXAnchor.constraint(equalTo: dummyView.centerXAnchor),
             emptyTrackerListImage.centerYAnchor.constraint(equalTo: dummyView.centerYAnchor, constant: -26),
@@ -229,23 +347,23 @@ final class TrackerViewController: UIViewController{
         ])
     }
     
-    func emptyTrackerListTextConstrains(){
+    private func emptyTrackerListTextConstrains(){
         NSLayoutConstraint.activate([
             emptyTrackerListText.centerXAnchor.constraint(equalTo: dummyView.centerXAnchor),
             emptyTrackerListText.topAnchor.constraint(equalTo: emptyTrackerListImage.bottomAnchor, constant: 8)
         ])
     }
     
-    func setTrackerCollectionContraints(){
+    private func setTrackerCollectionContraints(){
         NSLayoutConstraint.activate([
             trackerCollectionView.topAnchor.constraint(equalTo: searchField.bottomAnchor),
-            trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -35),
             trackerCollectionView.leadingAnchor.constraint(equalTo: searchField.leadingAnchor),
             trackerCollectionView.trailingAnchor.constraint(equalTo: searchField.trailingAnchor)
         ])
     }
     
-    func setFilterButtonContraints(){
+    private func setFilterButtonContraints(){
         NSLayoutConstraint.activate([
             filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),

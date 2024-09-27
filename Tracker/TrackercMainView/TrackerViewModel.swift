@@ -12,6 +12,7 @@ final class TrackerViewModel: FilterViewControllerProtocol {
     var todayDate: Date? {
         didSet {
             guard let todayDate = todayDate else { return }
+            selectedDate = todayDate
             todayDateBinding?(todayDate)
         }
     }
@@ -36,11 +37,18 @@ final class TrackerViewModel: FilterViewControllerProtocol {
     
     var selectedFilter: String = "" {
         didSet{
-            if isFilterSelected {
-                guard let selectedDate = selectedDate else { return }
-                updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
+//            let trackerForToday = NSLocalizedString("trackerForToday", comment: "")
+//            var filterDate = Date()
+//            if selectedFilter == trackerForToday {
+//                filterDate = todayDate ?? Date.removeTimeStamp(fromDate: Date())
+//            } else {
+//                guard let selectedDate = selectedDate else { return }
+//                filterDate = selectedDate
+//            }
+//                updateTrackersForCurrentDate(selectedDate: filterDate, searchedText: searchedText, selectedFilter: selectedFilter)
+            guard let selectedDate = selectedDate else { return }
+            updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
                 selectedFilterBinding?(selectedFilter)
-            }
         }
     }
 
@@ -53,7 +61,7 @@ final class TrackerViewModel: FilterViewControllerProtocol {
     
     //MARK: - CoreData Constants
     
-    private lazy var trackerStore = TrackerStore(delegate: self, currentDate: selectedDate, searchedText: searchedText)
+    private lazy var trackerStore = TrackerStore(delegate: self)//, currentDate: selectedDate, searchedText: searchedText)
     private var trackerRecordStore: TrackerRecordStore
     
     //MARK: - Bindings
@@ -222,6 +230,84 @@ extension TrackerViewModel: TrackerCreateViewControllerProtocol {
 extension TrackerViewModel: TrackerUpdateViewControllerProtocol {
     func updateTracker(category: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool) {
         trackerStore.updateRecord(categoryName: category, tracker: tracker, indexPath: indexPath, isPined: isPined)
+    }
+}
+
+
+extension TrackerViewModel {
+    
+    func calculateAverage() -> Int {
+        return trackerRecordStore.calculateAverage()
+    }
+    
+    func calculateTrackersCompleted() -> Int {
+        return trackerRecordStore.calculateTrackersCompleted()
+    }
+    
+    func calculatePerfectDays() -> Int {
+        let trackerDates = trackerRecordStore.getCompletedDatesArray()
+        var perfectDays = 0
+        if trackerDates.isEmpty {
+            return 0
+        } else {
+            for day in trackerDates {
+                let completedTrackersPerDay = trackerRecordStore.getCompletedTrackersPerDay(date: day)
+                let totalTrackersPerDay = trackerStore.getActiveTrackersPerDay(date: day)
+                if completedTrackersPerDay == totalTrackersPerDay {
+                    perfectDays += 1
+                }
+            }
+        }
+        return perfectDays
+    }
+    
+    func calculateBestPeriod() -> Int {
+        
+        let trackerDates = trackerRecordStore.getCompletedDatesArray()
+        var period = 1
+        var perfectDates: [Date] = []
+        if trackerDates.isEmpty {
+            return 0
+        } else {
+            for day in trackerDates {
+                let completedTrackersPerDay = trackerRecordStore.getCompletedTrackersPerDay(date: day)
+                let totalTrackersPerDay = trackerStore.getActiveTrackersPerDay(date: day)
+                if completedTrackersPerDay == totalTrackersPerDay {
+                    perfectDates.append(day)
+                }
+            }
+        }
+        print (perfectDates)
+        if perfectDates.count == 0 {
+            return 0
+        } else if perfectDates.count == 1 {
+            return 1
+        } else {
+            var periods: [Int] = []
+            for i in 0...(perfectDates.count - 2) {
+                let perfectDayComparison = daysBetweenDate(startDate: perfectDates[i], endDate: perfectDates[i + 1])
+                if perfectDayComparison == 1 {
+                    period += 1
+                    periods.append(period)
+                } else {
+                    period = 1
+                    periods.append(period)
+                }
+            }
+            guard let bestPeriod = periods.max() else { return 0 }
+            return bestPeriod
+        }
+    }
+    
+    
+    func daysBetweenDate(startDate: Date, endDate: Date) -> Int {
+
+        let calendar = Calendar.current
+
+        let components = calendar.dateComponents([.day], from: startDate, to: endDate)
+        
+        guard let period = components.day else { return 0}
+        return period
     }
 }
 

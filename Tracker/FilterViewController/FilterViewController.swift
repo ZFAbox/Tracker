@@ -28,8 +28,8 @@ final class FilterViewController: UIViewController {
         return filters
     }()
     
-    private var isFilterSelected: Bool = false
-    private var selectedFilter: String = ""
+    private var isFilterSelected: Bool
+    private var selectedFilter: String
     
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
@@ -53,8 +53,13 @@ final class FilterViewController: UIViewController {
         return tableView
     }()
     
-    init(delegate: FilterViewControllerProtocol) {
+    
+  
+    
+    init(delegate: FilterViewControllerProtocol, isFilterSelected: Bool, selectedFilter: String) {
         self.delegate = delegate
+        self.isFilterSelected = isFilterSelected
+        self.selectedFilter = selectedFilter
         super .init(nibName: nil, bundle: nil)
         
     }
@@ -67,18 +72,17 @@ final class FilterViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
         addSubviews()
-        setConstrints() 
+        setConstrints()
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        delegate.isFilterSelected = isFilterSelected
-        delegate.selectedFilter = selectedFilter
-
         let trackerForToday = NSLocalizedString("trackerForToday", comment: "")
         if selectedFilter == trackerForToday {
             delegate.todayDate = Date.removeTimeStamp(fromDate: Date())
         }
-        
+        delegate.isFilterSelected = isFilterSelected
+        delegate.selectedFilter = selectedFilter
     }
     
     private func addSubviews() {
@@ -97,7 +101,7 @@ final class FilterViewController: UIViewController {
             titleLable.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
-    
+
     private func setFilterTableViewConstraints() {
         NSLayoutConstraint.activate([
             filtertTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
@@ -118,6 +122,11 @@ extension FilterViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! FilterTableViewCell
         cell.filterName.text = filters[indexPath.row]
         cell.backgroundColor = .trackerBackgroundOpacityGray
+        if (isFilterSelected == true) && (filters[indexPath.row] == selectedFilter) {
+            cell.checkMark.isHidden = false
+        } else {
+            cell.checkMark.isHidden = true
+        }
         if indexPath.row == filters.count - 1 {
             cell.separatorView.isHidden = true
         } else {

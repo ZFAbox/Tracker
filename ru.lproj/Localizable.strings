@@ -38,6 +38,17 @@
 "habbitButtonText" = "Привычка";
 "notRegularButtonText" = "Нерегулярное событие";
 
+//MARK: - StatisticViewController
+
+"statisticMainLable" = "Статистика";
+
+"bestPeriod" = "Лучший период";
+"perfectDays" = "Идеальные дни";
+"trackersCompleted" = "Трекеров завершено";
+"averageValue" = "Среднее значение";
+
+"emtyStatisticsText" = "Анализировать пока нечего";
+
 //MARK: - RegularTrackerCreateViewController, NotRegularTrackerCreateViewController, RegularTrackerEditViewController
 
 "categorySelectMenu" = "Категория";
@@ -109,3 +120,12 @@
 "Thurs" = "Чт";
 "Fri" = "Пт";
 "Sat" = "Сб";
+
+//MARK: - FilterViewController
+
+"filterTitle" = "Фильтры";
+
+"allTrackers" = "Все трекеры";
+"trackerForToday" = "Трекеры на сегодня";
+"completedTrackers" = "Завершенные";
+"notCompletedTracker" = "Не завершенные";

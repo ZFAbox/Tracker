@@ -11,23 +11,44 @@ import UIKit
 final class TabBarViewController: UITabBarController {
     
     let viewModel = TrackerViewModel()
-    lazy var trackerViewController = TrackerViewController(viewModel: self.viewModel, delegate: self.datePicker)
-    let statisticViewController = StatisticViewController()
+//    lazy var trackerViewController = TrackerViewController(viewModel: self.viewModel, delegate: self.datePicker)
+    lazy var trackerViewController = TrackerViewController(viewModel: self.viewModel)
+    lazy var statisticViewController = StatisticViewController(viewModel: self.viewModel)
     
-    private lazy var datePicker: UIDatePicker = {
-      let datePicker = UIDatePicker(frame: .zero)
-        datePicker.isEnabled = true
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.datePickerMode = .date
-        let locale = Locale(identifier: "ru_CH")
-        datePicker.locale = locale
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
-        NSLayoutConstraint.activate([
-            datePicker.widthAnchor.constraint(equalToConstant: 85),
-            datePicker.heightAnchor.constraint(equalToConstant: 34)])
-      return datePicker
-    }()
+//    private lazy var datePicker: UIDatePicker = {
+//      let datePicker = UIDatePicker(frame: .zero)
+//        datePicker.isEnabled = true
+//        datePicker.preferredDatePickerStyle = .compact
+//        datePicker.datePickerMode = .date
+//        let locale = Locale(identifier: "ru_CH")
+//        datePicker.locale = locale
+//        datePicker.translatesAutoresizingMaskIntoConstraints = false
+//        datePicker.addTarget(self, action: #selector(datePickerChangeValue(_ :)), for: .valueChanged)
+//        NSLayoutConstraint.activate([
+//            datePicker.widthAnchor.constraint(equalToConstant: 85),
+//            datePicker.heightAnchor.constraint(equalToConstant: 34)])
+//      return datePicker
+//    }()
+//    
+//    private lazy var datePickerLable: UILabel = {
+//        let trackerLabel = UILabel()
+//        trackerLabel.translatesAutoresizingMaskIntoConstraints = false
+//        trackerLabel.font = UIFont(name: "SFProDisplay-Regular", size: 17)
+//        let trackerMainLable = "11.11.11"
+//        trackerLabel.text = trackerMainLable
+//        trackerLabel.translatesAutoresizingMaskIntoConstraints = false
+//        trackerLabel.textColor = .trackerBlack
+//        trackerLabel.backgroundColor = .trackerGray
+//        trackerLabel.layer.cornerRadius = 8
+//        trackerLabel.clipsToBounds = true
+//        trackerLabel.textAlignment = .center
+//        trackerLabel.heightAnchor.constraint(equalToConstant: 34).isActive = true
+//        trackerLabel.widthAnchor.constraint(equalToConstant: 77).isActive = true
+//        return trackerLabel
+//    }()
+    
+    @objc func tapPicker(){
+    }
     
     enum TabBars: String {
         case trackers
@@ -46,9 +67,38 @@ final class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBar()
-        setupNavigationBar()
-        viewModel.todayDateBinding = { [weak self] date in
-            self?.datePicker.date = Date()
+//        setupNavigationBar()
+//        viewModel.todayDateBinding = { [weak self] date in
+//            self?.datePicker.date = Date()
+//        }
+        traitCollectionDidChange(.current)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.userInterfaceStyle == .dark {
+            self.tabBar.layer.borderColor = UIColor.trackerBorderDark.cgColor
+            self.tabBar.backgroundColor = .trackerBlack
+//            self.navigationController?.navigationBar.backgroundColor = .trackerBlack
+//            self.navigationItem.leftBarButtonItem?.tintColor = .trackerWhite
+//            self.datePicker.tintColor = .trackerBlue
+//            self.datePicker.backgroundColor = .trackerBlack
+//            self.datePicker.tintColorDidChange()
+
+//            self.datePicker.layer.backgroundColor = UIColor.trackerWhite.cgColor
+//            view.backgroundColor = .trackerBlack
+            
+        } else {
+            self.tabBar.layer.borderColor = UIColor.trackerDarkGray.cgColor
+            self.tabBar.backgroundColor = . trackerWhite
+//            self.navigationController?.navigationBar.backgroundColor = .trackerWhite
+//            self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
+//            self.datePicker.tintColor = .trackerBlue
+//            self.datePicker.backgroundColor = .trackerWhite
+//            self.datePicker.tintColorDidChange()
+//            self.datePicker.layer. = UIColor.trackerBlack.cgColor
+//            view.backgroundColor = .trackerWhite
         }
     }
     
@@ -73,8 +123,10 @@ final class TabBarViewController: UITabBarController {
         let leftNavigationbuttonImage = UIImage(named: "Tracker Add Plus")
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
         self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-        self.navigationItem.rightBarButtonItem?.tintColor = .trackerBlack
+//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+//        self.navigationItem.rightBarButtonItem?.customView = datePickerLable
+//        self.navigationItem.rightBarButtonItem?.customView?.isUserInteractionEnabled = false
+//        self.navigationItem.rightBarButtonItem?.tintColor = .trackerBlack
     }
     
     @objc func addTarget(){

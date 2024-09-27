@@ -95,6 +95,19 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         setConstrains()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.userInterfaceStyle == .dark {
+            dayMarkButton.tintColor = .trackerBlack
+            dayMarkLable.textColor = .trackerWhite
+            
+        } else {
+            dayMarkButton.tintColor = .trackerWhite
+            dayMarkLable.textColor = .trackerBlack
+        }
+    }
+    
     func configure(with model: TrackerCellModel) {
         let tracker = model.tracker
         let currentDate = model.currentDate
@@ -116,6 +129,15 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         } else {
             trackerUndone()
         }
+        
+        if !tracker.isRegular && isCompletedBefore {
+            dayMarkButton.isEnabled = false
+            trackerDone()
+        }
+        else {
+            dayMarkButton.isEnabled = true
+        }
+        
         if let date = currentDate {
             if date > Date(){
                 dayMarkButton.isEnabled = false
@@ -123,11 +145,13 @@ class TrackerCollectionViewCell: UICollectionViewCell {
                 dayMarkButton.isEnabled = true
             }
         }
-        if !tracker.isRegular && isCompletedBefore {
-            dayMarkButton.isEnabled = false
-        } else {
-            dayMarkButton.isEnabled = true
-        }
+//        guard let date = currentDate else { return }
+//        if !tracker.isRegular && (tracker.createDate < date) {
+//            dayMarkButton.isEnabled = false
+//            trackerDone()
+//        }
+        
+
     }
     
     @objc func buttonTapped(){
@@ -137,9 +161,9 @@ class TrackerCollectionViewCell: UICollectionViewCell {
                 self.delegate?.uncompleteTracker(id: trackerId, at: indexPath)
                 self.completedDays -= 1
                 self.trackerUndone()
-
+                
             }
-           
+            
         }else {
             UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
@@ -152,21 +176,21 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     func trackerDone() {
-            let buttonImage = UIImage(named: "Tracker Done")
-            self.dayMarkButton.layer.opacity = 0.7
-            self.dayMarkButton.setImage(buttonImage, for: .normal)
-            let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
-    //        self.dayMarkLable.text = completedDays.daysEnding()
-            self.dayMarkLable.text = dayText
+        let buttonImage = UIImage(named: "Tracker Done")
+        self.dayMarkButton.layer.opacity = 0.7
+        self.dayMarkButton.setImage(buttonImage, for: .normal)
+        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
+        //        self.dayMarkLable.text = completedDays.daysEnding()
+        self.dayMarkLable.text = dayText
     }
     
     func trackerUndone() {
-            let buttonImage = UIImage(named: "Tracker Plus")
-            self.dayMarkButton.layer.opacity = 1
-            self.dayMarkButton.setImage(buttonImage, for: .normal)
-    //        self.dayMarkLable.text = completedDays.daysEnding()
-            let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
-            self.dayMarkLable.text = dayText
+        let buttonImage = UIImage(named: "Tracker Plus")
+        self.dayMarkButton.layer.opacity = 1
+        self.dayMarkButton.setImage(buttonImage, for: .normal)
+        //        self.dayMarkLable.text = completedDays.daysEnding()
+        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
+        self.dayMarkLable.text = dayText
     }
     
     func setSelectedView() -> UIView {
@@ -203,10 +227,10 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     
     func setTrackerViewConstrains(){
         NSLayoutConstraint.activate([
-        trackerView.topAnchor.constraint(equalTo: cardView.topAnchor),
-        trackerView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
-        trackerView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
-        trackerView.heightAnchor.constraint(equalToConstant: 90)
+            trackerView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            trackerView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            trackerView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            trackerView.heightAnchor.constraint(equalToConstant: 90)
         ])
     }
     
@@ -247,7 +271,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             dayMarkButton.heightAnchor.constraint(equalToConstant: 34),
             dayMarkButton.widthAnchor.constraint(equalToConstant: 34)
         ])
-
+        
     }
     
     required init?(coder: NSCoder) {
