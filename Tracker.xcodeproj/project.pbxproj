@@ -27,7 +27,7 @@
 		90704A442C0BBE2100C7CC57 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704A432C0BBE2100C7CC57 /* TabBarViewController.swift */; };
 		90704A462C0BBF6C00C7CC57 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */; };
 		908336A32C9E0A9900C8551B /* StatisticCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908336A22C9E0A9900C8551B /* StatisticCellView.swift */; };
-		90865E472CA8AAFC00F91E09 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 90865E462CA8AAFC00F91E09 /* .gitignore */; };
+		90865E492CA8AD5200F91E09 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 90865E482CA8AD5200F91E09 /* .gitignore */; };
 		909178062C530C0300C5C847 /* UIColor+Hex Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909178052C530C0300C5C847 /* UIColor+Hex Extension.swift */; };
 		9092E2EF2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092E2EE2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift */; };
 		90B557672C444EA900DF01B7 /* TrackerCreateViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */; };
@@ -92,7 +92,7 @@
 		90704A432C0BBE2100C7CC57 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
 		908336A22C9E0A9900C8551B /* StatisticCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticCellView.swift; sourceTree = "<group>"; };
-		90865E462CA8AAFC00F91E09 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		90865E482CA8AD5200F91E09 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		909178052C530C0300C5C847 /* UIColor+Hex Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex Extension.swift"; sourceTree = "<group>"; };
 		9092E2EE2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+hideKeyboard Extansion.swift"; sourceTree = "<group>"; };
 		90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCreateViewCell.swift; sourceTree = "<group>"; };
@@ -212,7 +212,7 @@
 		90DE58522C0A655400351750 = {
 			isa = PBXGroup;
 			children = (
-				90865E462CA8AAFC00F91E09 /* .gitignore */,
+				90865E482CA8AD5200F91E09 /* .gitignore */,
 				903E4AC82C8658ED00B604BB /* Localizable.strings */,
 				9F8F58CF2C4A49C700A2CA34 /* TrackerCoreData.xcdatamodeld */,
 				9F8F58D22C4A4F6700A2CA34 /* DaysValueTransformer.swift */,
@@ -431,7 +431,7 @@
 				904FC6042C0C439700A6E2DB /* SF-Pro-Display-Regular.otf in Resources */,
 				903E4ACF2C86597500B604BB /* Localizable.stringsdict in Resources */,
 				90DE58682C0A655600351750 /* Assets.xcassets in Resources */,
-				90865E472CA8AAFC00F91E09 /* .gitignore in Resources */,
+				90865E492CA8AD5200F91E09 /* .gitignore in Resources */,
 				90DE586B2C0A655600351750 /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
