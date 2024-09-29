@@ -95,6 +95,7 @@
 		90865E482CA8AD5200F91E09 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		909178052C530C0300C5C847 /* UIColor+Hex Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex Extension.swift"; sourceTree = "<group>"; };
 		9092E2EE2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+hideKeyboard Extansion.swift"; sourceTree = "<group>"; };
+		90A843BF2CA9F03600D9053D /* Metrica.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metrica.swift; sourceTree = "<group>"; };
 		90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCreateViewCell.swift; sourceTree = "<group>"; };
 		90D505942C6AA9B700C0C7BD /* OnboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardViewController.swift; sourceTree = "<group>"; };
 		90D505952C6AA9B700C0C7BD /* TrackerPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackerPageViewController.swift; sourceTree = "<group>"; };
@@ -199,6 +200,14 @@
 			path = TrackerCreateView;
 			sourceTree = "<group>";
 		};
+		90A843BE2CA9F02500D9053D /* Metrica */ = {
+			isa = PBXGroup;
+			children = (
+				90A843BF2CA9F03600D9053D /* Metrica.swift */,
+			);
+			path = Metrica;
+			sourceTree = "<group>";
+		};
 		90D505962C6AA9B700C0C7BD /* OnboardViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -237,6 +246,7 @@
 		90DE585D2C0A655400351750 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				90A843BE2CA9F02500D9053D /* Metrica */,
 				9F6CEA2F2C1311E8007BA364 /* Models */,
 				9F6D97332C4E5591000A57A4 /* DataStores */,
 				9FE74DBD2C219BD1007ACB54 /* Extensions */,
