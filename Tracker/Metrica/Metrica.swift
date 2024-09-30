@@ -1,9 +1,12 @@
 //
-//  Metrica.swift
+//  Metrics.swift
 //  Tracker
 //
-//  Created by Федор Завьялов on 29.09.2024.
+//  Created by Fedor on 30.09.2024.
 //
+
+import Foundation
+import YandexMobileMetrica
 
 final class Metrica {
     

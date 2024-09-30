@@ -147,8 +147,17 @@ final class TrackerViewController: UIViewController{
     }
     
     override func viewWillAppear(_ animated: Bool) {
-//        viewModel.performFetches()
+        viewModel.performFetches()
         updateTrackerCollectionView()
+
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        viewModel.screenOpenMetrica()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.screenClosedMetrica()
     }
     
     override func viewDidLoad() {
@@ -161,6 +170,8 @@ final class TrackerViewController: UIViewController{
         updateTrackerCollectionView()
         traitCollectionDidChange(.current)
     }
+    
+    
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -209,6 +220,7 @@ final class TrackerViewController: UIViewController{
     }
     
     @objc func addTarget(){
+        viewModel.addTrackerMetrica()
         print("Добавить цель")
         let viewController = TrackerTypeSelectViewController()
         viewController.viewModel = viewModel
@@ -224,6 +236,7 @@ final class TrackerViewController: UIViewController{
     }
     
     @objc func filterButtonTapped(){
+        viewModel.filterTrackerMetrica()
         let vc = FilterViewController(delegate: viewModel, isFilterSelected: viewModel.isFilterSelected, selectedFilter: viewModel.selectedFilter)
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
@@ -487,14 +500,28 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         })
         let deletText = NSLocalizedString("deletText", comment: "")
         let removeAction = UIAction(title: deletText, attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
+//            guard let self = self else { return }
+//            if let indexPath = indexPaths.first {
+//                if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
+//                    self.viewModel.removePinTracker(indexPath: indexPath)
+//                } else {
+//                    self.viewModel.removeTracker(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory()))
+//                }
+            //            }
             guard let self = self else { return }
-            if let indexPath = indexPaths.first {
-                if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
-                    self.viewModel.removePinTracker(indexPath: indexPath)
-                } else {
-                    self.viewModel.removeTracker(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory()))
+            let alert = UIAlertController(title: nil, message: "Эта категория точно не нужна?", preferredStyle: .actionSheet)
+            let alertDeleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+            
+                if let indexPath = indexPaths.first {
+                    self.removeTracker(indexPath: indexPath)
                 }
             }
+            let alertCancelAction = UIAlertAction(title: "Отменить", style: .cancel) { _ in
+                alert.dismiss(animated: true)
+            }
+            alert.addAction(alertDeleteAction)
+            alert.addAction(alertCancelAction)
+            self.present(alert, animated:  true)
         })
         let menuActions = UIMenu(children: [pinAction, editAction, removeAction])
         let contextMenu = UIContextMenuConfiguration(actionProvider:  { actions in
@@ -523,21 +550,26 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     
     func pinTracker(indexPath: IndexPath){
         viewModel.pinTracker(indexPath: indexPath)
-//        updateTrackerCollectionView()
     }
     
     func unPinTracker(indexPath: IndexPath){
         viewModel.unPinTracker(indexPath: indexPath)
-//        updateTrackerCollectionView()
     }
     
     func removeTracker(indexPath: IndexPath) {
-        viewModel.removeTracker(indexPath: indexPath)
+        //        viewModel.deleteTrackerMetrica()
+        //        viewModel.removeTracker(indexPath: indexPath)
         
-//        updateTrackerCollectionView()
+        
+        if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
+            self.viewModel.removePinTracker(indexPath: indexPath)
+        } else {
+            self.viewModel.removeTracker(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory()))
+        }
     }
     
     func editTracker(indexPath: IndexPath, isPined: Bool,tracker: Tracker, category: String, completedDays: Int) {
+        viewModel.editTrackerMetrica()
         if tracker.isRegular {
             let vc = RegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined, completedDays: completedDays)
             vc.modalPresentationStyle = .popover

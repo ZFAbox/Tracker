@@ -37,15 +37,6 @@ final class TrackerViewModel: FilterViewControllerProtocol {
     
     var selectedFilter: String = "" {
         didSet{
-//            let trackerForToday = NSLocalizedString("trackerForToday", comment: "")
-//            var filterDate = Date()
-//            if selectedFilter == trackerForToday {
-//                filterDate = todayDate ?? Date.removeTimeStamp(fromDate: Date())
-//            } else {
-//                guard let selectedDate = selectedDate else { return }
-//                filterDate = selectedDate
-//            }
-//                updateTrackersForCurrentDate(selectedDate: filterDate, searchedText: searchedText, selectedFilter: selectedFilter)
             guard let selectedDate = selectedDate else { return }
             updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
                 selectedFilterBinding?(selectedFilter)
@@ -72,9 +63,14 @@ final class TrackerViewModel: FilterViewControllerProtocol {
     var searchedTextBinding: Binding<String>?
     var selectedFilterBinding: Binding<String>?
     
+    //MARK: - Metrica
+    
+    private var metrica: Metrica
+    
     init() {
         self.selectedDate = Date().removeTimeInfo
         self.trackerRecordStore = TrackerRecordStore()
+        self.metrica = Metrica()
     }
 
     //MARK: - Collection View Update Methods
@@ -148,6 +144,36 @@ final class TrackerViewModel: FilterViewControllerProtocol {
     
     func isTrackerExists() -> Bool {
         trackerStore.isTrackersExist()
+    }
+    
+    //MARK: - Metrica Methods
+    
+    func screenOpenMetrica() {
+        metrica.screenOpen()
+    }
+    
+    func screenClosedMetrica() {
+        metrica.screenClosed()
+    }
+    
+    func addTrackerMetrica() {
+        metrica.addTracker()
+    }
+    
+    func completeTracker() {
+        metrica.completeTracker()
+    }
+    
+    func filterTrackerMetrica() {
+        metrica.filterTracker()
+    }
+    
+    func editTrackerMetrica() {
+        metrica.editTracker()
+    }
+    
+    func deleteTrackerMetrica() {
+        metrica.deleteTracker()
     }
 }
 
