@@ -163,7 +163,7 @@ final class TrackerViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
-        hideKeyboardWhenTappedAround()
+//        hideKeyboardWhenTappedAround()
         setSublayer()
         setConstrains()
         bindWithTrackerViewModel()
@@ -240,6 +240,13 @@ final class TrackerViewController: UIViewController{
         let vc = FilterViewController(delegate: viewModel, isFilterSelected: viewModel.isFilterSelected, selectedFilter: viewModel.selectedFilter)
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
+    }
+    
+    //MARK: - Test Method
+    
+    func setDatePickerDate(date: Date){
+        datePicker.date = date
+        datePickerLable.text = DateFormatter().prepareDatePickerString(date: date)
     }
     
     func updateTrackerCollectionView() {

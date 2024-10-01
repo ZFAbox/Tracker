@@ -103,7 +103,9 @@ final class TrackerStore: NSObject {
     
     func perform(){
         fetchedResultController.fetchRequest.predicate = getPredicate(searchedText: "", currentDate: DateFormatter.removeTime(date: Date()), isFileterSelected: false, selectedFilter: "")
+        fetchedResultControllerPinCategories.fetchRequest.predicate = getPinPredicate(searchedText: "", currentDate: DateFormatter.removeTime(date: Date()), isFileterSelected: false, selectedFilter: "")
         try? fetchedResultController.performFetch()
+        try? fetchedResultControllerPinCategories.performFetch()
     }
     
     func saveTrackerCategory(categoryName: String, tracker: Tracker) {

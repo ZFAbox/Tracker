@@ -15,17 +15,13 @@ final class TrackerTests: XCTestCase {
     func testViewController() {
         let viewModel = TrackerViewModel()
         
-        var dateComponents = DateComponents()
-        dateComponents.year = 1980
-        dateComponents.month = 7
-        dateComponents.day = 11
-        
-        let userCalendar = Calendar(identifier: .gregorian)
-        let date = userCalendar.date(from: dateComponents)
-        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        let date = dateFormatter.date(from: "01.01.2024")!
         let vc = TrackerViewController(viewModel: viewModel)
-        viewModel.selectedDate = date
-        assertSnapshot(of: vc, as: .image)
+        vc.setDatePickerDate(date: date)
+        
+        assertSnapshot(of: vc, as: .image, record: true)
     }
 
 }
