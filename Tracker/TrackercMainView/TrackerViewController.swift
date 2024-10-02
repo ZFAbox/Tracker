@@ -115,6 +115,7 @@ final class TrackerViewController: UIViewController{
         trackerCollectionView.backgroundColor = .trackerWhite
         trackerCollectionView.dataSource = self
         trackerCollectionView.delegate = self
+        trackerCollectionView.alwaysBounceVertical = true
         return trackerCollectionView
     }()
     
@@ -170,8 +171,6 @@ final class TrackerViewController: UIViewController{
         updateTrackerCollectionView()
         traitCollectionDidChange(.current)
     }
-    
-    
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -408,6 +407,7 @@ extension TrackerViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+ 
         if (viewModel.numberOfSectionsPinCategory() == 1) && (indexPath.section == 0) {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
             guard let cell = cell else { return UICollectionViewCell() }
@@ -421,6 +421,7 @@ extension TrackerViewController: UICollectionViewDataSource {
             guard let model = viewModel.model(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - viewModel.numberOfSectionsPinCategory())) else { return UICollectionViewCell() }
             cell.configure(with: model)
             cell.delegate = viewModel
+            
             return cell
         }
     }
@@ -463,6 +464,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         let height = CGFloat(trackerCellParameters.height)
         let width = (CGFloat(collectionView.frame.width) - CGFloat((trackerCellParameters.numberOfCellsInRow - 1)*trackerCellParameters.horizontalSpacing)) / CGFloat(trackerCellParameters.numberOfCellsInRow)
         let size = CGSize(width: width, height: height)
+        
         return size
     }
     
@@ -564,7 +566,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func removeTracker(indexPath: IndexPath) {
-        //        viewModel.deleteTrackerMetrica()
+                viewModel.deleteTrackerMetrica()
         //        viewModel.removeTracker(indexPath: indexPath)
         
         
