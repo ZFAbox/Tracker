@@ -13,6 +13,7 @@ import SnapshotTesting
 final class TrackerTests: XCTestCase {
 
     func testViewController() {
+        let record = false
         let viewModel = TrackerViewModel()
         
         let dateFormatter = DateFormatter()
@@ -21,51 +22,50 @@ final class TrackerTests: XCTestCase {
         let vc = TrackerViewController(viewModel: viewModel)
         vc.setDatePickerDate(date: date)
         
-        assertSnapshot(of: vc, as: .image)
+        assertSnapshot(of: vc, as: .image, record: record)
     }
-    
-//    func lightModeTestTrackerController() {
-//        let viewModel = TrackerViewModel()
-//        
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "dd.MM.yyyy"
-//        let date = dateFormatter.date(from: "01.01.2024")!
-//        viewModel.createFixedTrackerForTest()
-//        let vc = TrackerViewController(viewModel: viewModel)
-//        vc.setDatePickerDate(date: date)
-//        
-//        assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .light)), record: true)
-//    }
-    
-    
-//    func testDarkModeTestTrackerController() {
-//        let viewModel = TrackerViewModel()
-//        
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "dd.MM.yyyy"
-//        let date = dateFormatter.date(from: "01.01.2024")!
-//        viewModel.createFixedTrackerForTest()
-//        let vc = TrackerViewController(viewModel: viewModel)
-//        vc.setDatePickerDate(date: date)
-//        
-//        assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .dark)), record: true)
-//    }
-
-}
-
-final class TrackerLightModeTest: XCTestCase {
     
     func testLightModeTrackerController() {
-        let viewModel = TrackerViewModel()
         
+        let record = false
+        
+        let viewModel = TrackerViewModel()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
         let date = dateFormatter.date(from: "01.01.2024")!
-        viewModel.createFixedTrackerForTest()
+
         let vc = TrackerViewController(viewModel: viewModel)
         vc.setDatePickerDate(date: date)
         
-        assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .light)), record: true)
+        if record {
+            viewModel.createFixedTrackerForTest()
+            assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .light)), record: record)
+        } else {
+            assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .light)), record: record)
+        }
+
     }
+    
+    func testDarkModeTrackerController() {
+        
+        let record = false
+        
+        let viewModel = TrackerViewModel()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        let date = dateFormatter.date(from: "01.01.2024")!
+
+        let vc = TrackerViewController(viewModel: viewModel)
+        vc.setDatePickerDate(date: date)
+        
+        if record {
+            viewModel.createFixedTrackerForTest()
+            assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .dark)), record: record)
+        } else {
+            assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .dark)), record: record)
+        }
+
+    }
+
 }
 
