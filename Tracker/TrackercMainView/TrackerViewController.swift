@@ -11,7 +11,7 @@ final class TrackerViewController: UIViewController{
 
 //MARK: - Constants
     
-    var viewModel: TrackerViewModel
+    var viewModel: TrackerViewModelProtocol
     
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     

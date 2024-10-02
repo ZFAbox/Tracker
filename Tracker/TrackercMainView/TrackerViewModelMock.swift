@@ -7,7 +7,112 @@
 
 import Foundation
 
-final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
+protocol TrackerViewModelProtocol: FilterViewControllerProtocol, TrackerStoreUpdateDelegateProtocol, TrackerCreateViewControllerProtocol, TrackerUpdateViewControllerProtocol, TrackerStoreUpdateDelegateProtocol, TrackerCollectionViewCellProtocol {
+    
+    var todayDate: Date? { get set }
+    
+    var selectedDate: Date? { get set }
+    
+    var searchedText: String { get set }
+    
+    var isFilterSelected: Bool { get set }
+    
+    var selectedFilter: String { get set }
+    
+    //MARK: - Bindings
+    
+    var indexPathAndSectionBinding: Binding<IndexPathAndSection>? { get set }
+    var currentDateBinding: Binding<Date>? { get set }
+    var todayDateBinding: Binding<Date>? { get set }
+    var searchedTextBinding: Binding<String>? { get set }
+    var selectedFilterBinding: Binding<String>? { get set }
+
+    //MARK: - Collection View Update Methods
+    
+    func numberOfItemsIn(_ section: Int) -> Int
+    
+    func numberOfItemsInPinCategory(_ section: Int) -> Int
+    
+    func numberOfSections() -> Int
+    
+    func numberOfSectionsPinCategory() -> Int
+    
+    func getTracker(for indexPath: IndexPath) -> Tracker?
+    
+    func getPinTracker(for indexPath: IndexPath) -> Tracker?
+    
+    func isCompletedTracker(for id: UUID) -> Bool
+    
+    func isCompletedBefore(for id: UUID) -> Bool
+    
+    func isVisibalteTrackersEmpty() -> Bool
+    
+    func completedTrackersCount(id:UUID) -> Int
+    
+    func isTrackerCompletedToday(id: UUID) -> Bool
+    
+    func headerTitle(for indexPath: IndexPath) -> String
+    
+    func headerPinTitle(for indexPath: IndexPath) -> String
+    
+    func performFetches()
+    
+    func isTrackerExists() -> Bool
+    
+    //MARK: - Test Method CreateFixed Tracker
+    
+    //MARK: - Metrica Methods
+    
+    func screenOpenMetrica()
+    
+    func screenClosedMetrica()
+    
+    func addTrackerMetrica()
+    
+    func completeTracker()
+    
+    func filterTrackerMetrica()
+    
+    func editTrackerMetrica()
+    
+    func deleteTrackerMetrica()
+
+//MARK: - Protocols and extensinons
+
+    func updateTrackers(with indexPathAndSection: IndexPathAndSection)
+
+    func completeTracker(id: UUID, at indexPath: IndexPath)
+    
+    func uncompleteTracker(id: UUID, at indexPath: IndexPath)
+    
+    func model(indexPath: IndexPath) -> TrackerCellModel?
+    
+    func modelPinCategory(indexPath: IndexPath) -> TrackerCellModel?
+    
+    func pinTracker(indexPath: IndexPath)
+    
+    func unPinTracker(indexPath: IndexPath)
+
+    func removeTracker(indexPath: IndexPath)
+    
+    func removePinTracker(indexPath: IndexPath)
+
+    func createTracker(category: String, tracker: Tracker)
+
+    func updateTracker(category: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool)
+
+    func calculateAverage() -> Int
+
+    func calculateTrackersCompleted() -> Int
+    
+    func calculatePerfectDays() -> Int
+    
+    func calculateBestPeriod() -> Int
+    
+    func daysBetweenDate(startDate: Date, endDate: Date) -> Int
+}
+
+final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewControllerProtocol {
     
     var todayDate: Date? {
         didSet {
@@ -198,13 +303,13 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
 }
 
 //MARK: - Protocols and extensinons
-extension TrackerViewModel: TrackerStoreUpdateDelegateProtocol {
+extension TrackerViewModelMock: TrackerStoreUpdateDelegateProtocol {
     func updateTrackers(with indexPathAndSection: IndexPathAndSection) {
         self.indexPathAndSection = indexPathAndSection
     }
 }
 
-extension TrackerViewModel: TrackerCollectionViewCellProtocol {
+extension TrackerViewModelMock: TrackerCollectionViewCellProtocol {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         guard let date = selectedDate else {
             assertionFailure("Нет даты")
@@ -267,20 +372,20 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
     }
 }
 
-extension TrackerViewModel: TrackerCreateViewControllerProtocol {
+extension TrackerViewModelMock: TrackerCreateViewControllerProtocol {
     func createTracker(category: String, tracker: Tracker) {
         trackerStore.addRecord(categoryName: category, tracker: tracker)
     }
 }
 
-extension TrackerViewModel: TrackerUpdateViewControllerProtocol {
+extension TrackerViewModelMock: TrackerUpdateViewControllerProtocol {
     func updateTracker(category: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool) {
         trackerStore.updateRecord(categoryName: category, tracker: tracker, indexPath: indexPath, isPined: isPined)
     }
 }
 
 
-extension TrackerViewModel {
+extension TrackerViewModelMock {
     
     func calculateAverage() -> Int {
         return trackerRecordStore.calculateAverage()

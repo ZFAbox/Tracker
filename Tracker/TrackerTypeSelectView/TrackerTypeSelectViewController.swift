@@ -10,7 +10,7 @@ import UIKit
 
 final class TrackerTypeSelectViewController: UIViewController {
     
-    weak var viewModel: TrackerViewModel?
+    weak var viewModel: TrackerViewModelProtocol?
     weak var delegate: TrackerViewController?
     
     private var buttonsView: UIView = {

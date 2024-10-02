@@ -29,6 +29,7 @@
 		90704A462C0BBF6C00C7CC57 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */; };
 		908336A32C9E0A9900C8551B /* StatisticCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908336A22C9E0A9900C8551B /* StatisticCellView.swift */; };
 		90865E492CA8AD5200F91E09 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 90865E482CA8AD5200F91E09 /* .gitignore */; };
+		9089162A2CADE2CE00313E0B /* TrackerViewModelMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908916292CADE2CE00313E0B /* TrackerViewModelMock.swift */; };
 		909178062C530C0300C5C847 /* UIColor+Hex Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909178052C530C0300C5C847 /* UIColor+Hex Extension.swift */; };
 		9092E2EF2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9092E2EE2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift */; };
 		90B557672C444EA900DF01B7 /* TrackerCreateViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */; };
@@ -105,6 +106,7 @@
 		90704A452C0BBF6C00C7CC57 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
 		908336A22C9E0A9900C8551B /* StatisticCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticCellView.swift; sourceTree = "<group>"; };
 		90865E482CA8AD5200F91E09 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		908916292CADE2CE00313E0B /* TrackerViewModelMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerViewModelMock.swift; sourceTree = "<group>"; };
 		909178052C530C0300C5C847 /* UIColor+Hex Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex Extension.swift"; sourceTree = "<group>"; };
 		9092E2EE2C6D5A5F0003E1BB /* UIViewController+hideKeyboard Extansion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+hideKeyboard Extansion.swift"; sourceTree = "<group>"; };
 		90B557662C444EA900DF01B7 /* TrackerCreateViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCreateViewCell.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 			children = (
 				90DE58622C0A655400351750 /* TrackerViewController.swift */,
 				9FA950EB2C6B9E3800414C6F /* TrackerViewModel.swift */,
+				908916292CADE2CE00313E0B /* TrackerViewModelMock.swift */,
 				9F9ED0F02C1C545A0013D4D4 /* TrackerCollectionViewCell.swift */,
 				9061D3782C20E9D2008C84D5 /* TrackerSupplementaryViewCell.swift */,
 				9FA950ED2C6BA18000414C6F /* TrackerBinding.swift */,
@@ -605,6 +608,7 @@
 				9047451F2C768AAB0017209D /* TrackerCellModel.swift in Sources */,
 				9F6D973E2C4E568D000A57A4 /* DataStore.swift in Sources */,
 				902759512C3C933E00AC8F0D /* DateFormatter+weekday Extension.swift in Sources */,
+				9089162A2CADE2CE00313E0B /* TrackerViewModelMock.swift in Sources */,
 				90F8223F2C73C4AD0053DF20 /* TrackerCategoryEditor.swift in Sources */,
 				9F6D973C2C4E561E000A57A4 /* TrackerRecordStore.swift in Sources */,
 				9FA950EE2C6BA18000414C6F /* TrackerBinding.swift in Sources */,
