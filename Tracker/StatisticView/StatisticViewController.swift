@@ -22,15 +22,7 @@ final class StatisticViewController: UIViewController, UITableViewDelegate {
     private lazy var statisticSections: [String] = {
         return [bestPeriod, perfectDays, trackersCompleted, averageValue]
     }()
-    
-//    private lazy var statisticsValues: [Int] = {
-//      return [viewModel.calculateBestPeriod(),
-//        viewModel.calculatePerfectDays(),
-//        viewModel.calculateTrackersCompleted(),
-//        viewModel.calculateAverage()]
-//    }()
 
-    
     private lazy var staticsticLabel: UILabel = {
         let lable = UILabel()
         lable.font = UIFont(name: "SFProDisplay-Bold", size: 34)

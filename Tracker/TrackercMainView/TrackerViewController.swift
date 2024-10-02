@@ -132,12 +132,6 @@ final class TrackerViewController: UIViewController{
         return filterButton
     }()
     
-//    init(viewModel: TrackerViewModel, delegate: UIDatePicker) {
-//        self.viewModel = viewModel
-//        self.delegate = delegate
-//        super .init(nibName: nil, bundle: nil)
-//    }
-//    
     init(viewModel: TrackerViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -164,7 +158,7 @@ final class TrackerViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .trackerWhite
-//        hideKeyboardWhenTappedAround()
+        hideKeyboardWhenTappedAround()
         setSublayer()
         setConstrains()
         bindWithTrackerViewModel()
@@ -509,14 +503,6 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         })
         let deletText = NSLocalizedString("deletText", comment: "")
         let removeAction = UIAction(title: deletText, attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
-//            guard let self = self else { return }
-//            if let indexPath = indexPaths.first {
-//                if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
-//                    self.viewModel.removePinTracker(indexPath: indexPath)
-//                } else {
-//                    self.viewModel.removeTracker(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory()))
-//                }
-            //            }
             guard let self = self else { return }
             let alert = UIAlertController(title: nil, message: "Эта категория точно не нужна?", preferredStyle: .actionSheet)
             let alertDeleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
@@ -622,18 +608,6 @@ extension TrackerViewController {
 //            }
 //            
 //        }
-//
-//        if viewModel.isTrackerExists() {
-//            let image = UIImage(named: "NoTracker")
-//            emptyTrackerListImage.image = image
-//            emptyTrackerListText.text = "Ничего не найдено"
-//        } else {
-//            let image = UIImage(named: "Empty Tracker List")
-//            emptyTrackerListImage.image = image
-//            emptyTrackerListText.text = "Что будем отслеживать?"
-//        }
-//        trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
-//        filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
         updateTrackerCollectionView()
     }
 }
