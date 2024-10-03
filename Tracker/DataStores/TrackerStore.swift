@@ -542,6 +542,16 @@ final class TrackerStore: NSObject {
         }
     }
     
+    
+    func removeAllTrackers() {
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        guard let trackerCoreData = try? context.fetch(request) else { return }
+        for tracker in trackerCoreData {
+            context.delete(tracker)
+            saveContext()
+        }
+    }
+    
     func isTrackersExist() -> Bool {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         guard let trackerData = try? context.fetch(request) else { return false }

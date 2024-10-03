@@ -132,7 +132,7 @@ final class TrackerViewController: UIViewController{
         return filterButton
     }()
     
-    init(viewModel: TrackerViewModel) {
+    init(viewModel: TrackerViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

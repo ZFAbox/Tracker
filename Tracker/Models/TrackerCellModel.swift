@@ -14,4 +14,5 @@ struct TrackerCellModel {
     let completedDays: Int
     let currentDate: Date?
     let isCompletedBefore: Bool
+    let metrica: Metrica
 }

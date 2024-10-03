@@ -231,7 +231,8 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
             indexPath: indexPath,
             completedDays: completedDays,
             currentDate: selectedDate,
-            isCompletedBefore: isCompletedBefore)
+            isCompletedBefore: isCompletedBefore,
+            metrica: metrica)
         return model
     }
     
@@ -246,7 +247,8 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
             indexPath: indexPath,
             completedDays: completedDays,
             currentDate: selectedDate,
-        isCompletedBefore: isCompletedBefore)
+        isCompletedBefore: isCompletedBefore,
+            metrica: metrica)
         return model
     }
     

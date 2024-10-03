@@ -24,6 +24,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     var completedDays: Int = 0
     var indexPath: IndexPath?
     var isCompletedBefore: Bool = false
+    var metrica: Metrica?
     
     let cardView: UIView = {
         let cardView = UIView()
@@ -61,6 +62,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         trackerNameLable.translatesAutoresizingMaskIntoConstraints = false
         trackerNameLable.text = "Бегать по утрам"
         trackerNameLable.font = UIFont(name: "SFProDisplay-Medium", size: 12)
+        trackerNameLable.numberOfLines = 2
         trackerNameLable.textColor = .trackerWhite
         return trackerNameLable
     }()
@@ -101,7 +103,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         if traitCollection.userInterfaceStyle == .dark {
             dayMarkButton.tintColor = .trackerBlack
             dayMarkLable.textColor = .trackerWhite
-            
         } else {
             dayMarkButton.tintColor = .trackerWhite
             dayMarkLable.textColor = .trackerBlack
@@ -116,6 +117,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         self.trackerId = tracker.trackerId
         self.completedDays = model.completedDays
         self.indexPath = model.indexPath
+        self.metrica = model.metrica
         
         let color = tracker.color
         trackerView.backgroundColor = color
@@ -145,16 +147,12 @@ class TrackerCollectionViewCell: UICollectionViewCell {
                 dayMarkButton.isEnabled = true
             }
         }
-//        guard let date = currentDate else { return }
-//        if !tracker.isRegular && (tracker.createDate < date) {
-//            dayMarkButton.isEnabled = false
-//            trackerDone()
-//        }
-        
-
     }
     
     @objc func buttonTapped(){
+        if let metrica = metrica {
+            metrica.completeTracker()
+        }
         if isCompletedToday {
             UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
@@ -180,7 +178,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         self.dayMarkButton.layer.opacity = 0.7
         self.dayMarkButton.setImage(buttonImage, for: .normal)
         let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
-        //        self.dayMarkLable.text = completedDays.daysEnding()
         self.dayMarkLable.text = dayText
     }
     
@@ -188,7 +185,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         let buttonImage = UIImage(named: "Tracker Plus")
         self.dayMarkButton.layer.opacity = 1
         self.dayMarkButton.setImage(buttonImage, for: .normal)
-        //        self.dayMarkLable.text = completedDays.daysEnding()
         let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
         self.dayMarkLable.text = dayText
     }
@@ -271,7 +267,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             dayMarkButton.heightAnchor.constraint(equalToConstant: 34),
             dayMarkButton.widthAnchor.constraint(equalToConstant: 34)
         ])
-        
     }
     
     required init?(coder: NSCoder) {

@@ -157,7 +157,7 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
     
     //MARK: - CoreData Constants
     
-    private lazy var trackerStore = TrackerStore(delegate: self)//, currentDate: selectedDate, searchedText: searchedText)
+    private lazy var trackerStore = TrackerStore(delegate: self)
     private var trackerRecordStore: TrackerRecordStore
     
     //MARK: - Bindings
@@ -172,10 +172,12 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
     
     private var metrica: Metrica
     
-    init() {
+    init(selectedDate: Date, removeAllTrackers: Bool) {
         self.selectedDate = Date().removeTimeInfo
         self.trackerRecordStore = TrackerRecordStore()
         self.metrica = Metrica()
+        self.selectedDate = selectedDate
+        createFixedTrackerForTest(removeAllTrackers: removeAllTrackers)
     }
 
     //MARK: - Collection View Update Methods
@@ -253,22 +255,29 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
     //MARK: - Test Method CreateFixed Tracker
     
     
-    func createFixedTrackerForTest(){
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        let date = dateFormatter.date(from: "01.01.2024")!
-        let trackerSchedule = Weekdays.notRegularTrackerSchedule
-        let tracker = Tracker(
-            trackerId: UUID(),
-            name: "Игра в теннис",
-            emoji: "🏓",
-            color: Constants.colors[1],
-            schedule: trackerSchedule,
-            isRegular: false,
-            createDate: date)
-        
-        let category = "Спорт"
-        trackerStore.addRecord(categoryName: category, tracker: tracker)
+    func createFixedTrackerForTest(removeAllTrackers: Bool){
+        if removeAllTrackers {
+            trackerStore.removeAllTrackers()
+        } else {
+            guard let selectedDate = selectedDate else { return }
+            if trackerStore.isVisibalteTrackersEmpty(searchedText: "", currentDate: selectedDate) {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "dd.MM.yyyy"
+                let date = dateFormatter.date(from: "01.01.2024")!
+                let trackerSchedule = Weekdays.notRegularTrackerSchedule
+                let tracker = Tracker(
+                    trackerId: UUID(),
+                    name: "Игра в теннис",
+                    emoji: "🏓",
+                    color: Constants.colors[1],
+                    schedule: trackerSchedule,
+                    isRegular: false,
+                    createDate: date)
+                
+                let category = "Спорт"
+                trackerStore.addRecord(categoryName: category, tracker: tracker)
+            }
+        }
     }
     
     //MARK: - Metrica Methods
@@ -336,7 +345,8 @@ extension TrackerViewModelMock: TrackerCollectionViewCellProtocol {
             indexPath: indexPath,
             completedDays: completedDays,
             currentDate: selectedDate,
-            isCompletedBefore: isCompletedBefore)
+            isCompletedBefore: isCompletedBefore,
+            metrica: metrica)
         return model
     }
     
@@ -351,7 +361,8 @@ extension TrackerViewModelMock: TrackerCollectionViewCellProtocol {
             indexPath: indexPath,
             completedDays: completedDays,
             currentDate: selectedDate,
-        isCompletedBefore: isCompletedBefore)
+        isCompletedBefore: isCompletedBefore,
+            metrica: metrica)
         return model
     }
     
