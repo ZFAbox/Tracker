@@ -25,8 +25,6 @@ final class TrackerStore: NSObject {
     
     private var context: NSManagedObjectContext
     private var delegate: TrackerStoreUpdateDelegateProtocol?
-//    private var currentDate: Date?
-//    private var searchedText: String
     private var insertedIndexes: IndexPath? = nil
     private var deleteIndexes: IndexPath? = nil
     private var oldNumberOfSection: Int = 0
@@ -210,12 +208,12 @@ final class TrackerStore: NSObject {
             let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
             let isCompletedBeforeCurrentDate = NSPredicate(format: "Any %K < %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
             let neverCompleted = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let notVisibleBeforeCreate = NSPredicate(format: "%K <= %@",  #keyPath(TrackerCoreData.createDate), currentDate as NSDate)
+            //let notVisibleBeforeCreate = NSPredicate(format: "%K <= %@",  #keyPath(TrackerCoreData.createDate), currentDate as NSDate)
             let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedBeforeCurrentDate])
             let removeCompletednotRegular = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompleted])
             let notCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [neverCompleted, removeCompletednotRegular])
             
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ notVisibleBeforeCreate, notCompleted, predicate, datePredicate])
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ /*notVisibleBeforeCreate,*/ notCompleted, predicate, datePredicate])
         }
         
         if !searchedText.isEmpty {
@@ -266,12 +264,12 @@ final class TrackerStore: NSObject {
             let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
             let isCompletedBeforeCurrentDate = NSPredicate(format: "Any %K < %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
             let neverCompleted = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let notVisibleBeforeCreate = NSPredicate(format: "%K <= %@",  #keyPath(TrackerCoreData.createDate), currentDate as NSDate)
+            //let notVisibleBeforeCreate = NSPredicate(format: "%K <= %@",  #keyPath(TrackerCoreData.createDate), currentDate as NSDate)
             let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedBeforeCurrentDate])
             let removeCompletednotRegular = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompleted])
             let notCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [neverCompleted, removeCompletednotRegular])
             
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ notVisibleBeforeCreate, notCompleted, predicate, datePredicate])
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ /*notVisibleBeforeCreate,*/ notCompleted, predicate, datePredicate])
         }
         
         if !searchedText.isEmpty {

@@ -107,7 +107,7 @@ final class FilterViewController: UIViewController {
             filtertTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 87),
             filtertTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             filtertTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            filtertTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * filters.count - 1))
+            filtertTableView.heightAnchor.constraint(equalToConstant: CGFloat(75 * filters.count))
         ])
     }
 }
