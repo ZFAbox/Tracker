@@ -49,7 +49,7 @@ final class TrackerStore: NSObject {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let predicate = getPinPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
         fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryName), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         let fetchedResultController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
@@ -68,7 +68,7 @@ final class TrackerStore: NSObject {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
         fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.category), ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryName), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         let fetchedResultController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
