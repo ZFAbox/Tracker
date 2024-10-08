@@ -33,3 +33,9 @@ class EmojiAndColorsSupplementaryViewCell: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+class EmojiAndColorSupplementaryHeaderView {
+    
+    static let shared = EmojiAndColorsSupplementaryViewCell(frame: .zero)
+    
+}

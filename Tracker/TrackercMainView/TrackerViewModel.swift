@@ -145,26 +145,7 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
     func isTrackerExists() -> Bool {
         trackerStore.isTrackersExist()
     }
-    //MARK: - Test Method CreateFixed Tracker
-    
-    
-    func createFixedTrackerForTest(){
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        let date = dateFormatter.date(from: "01.01.2024")!
-        let trackerSchedule = Weekdays.notRegularTrackerSchedule
-        let tracker = Tracker(
-            trackerId: UUID(),
-            name: "Игра в теннис",
-            emoji: "🏓",
-            color: Constants.colors[1],
-            schedule: trackerSchedule,
-            isRegular: false,
-            createDate: date)
-        
-        let category = "Спорт"
-        trackerStore.addRecord(categoryName: category, tracker: tracker)
-    }
+
     
     //MARK: - Metrica Methods
     

@@ -68,7 +68,7 @@ final class TrackerStore: NSObject {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
         fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.name), ascending: false)
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.category), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         let fetchedResultController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
@@ -100,6 +100,7 @@ final class TrackerStore: NSObject {
         request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
         if let category = try? context.fetch(request).first {
             trackerData.category = category
+//            category.addToTrackersOfCategory(trackerData)
             print("Существующая категория category.categoryName: \(category.categoryName) = categoryName: \(categoryName)")
             //            category.addToTrackersOfCategory(trackerData)
         } else {
@@ -110,7 +111,7 @@ final class TrackerStore: NSObject {
             print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName) = categoryName: \(categoryName)")
         }
         saveContext()
-        try? fetchedResultController.performFetch()
+        performFetch()
     }
     
     

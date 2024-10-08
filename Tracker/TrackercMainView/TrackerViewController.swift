@@ -410,9 +410,10 @@ extension TrackerViewController: UICollectionViewDataSource {
             cell.delegate = viewModel
             return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: indexPath) as? TrackerCollectionViewCell
+            let mainSectionsIndexPath = IndexPath(row: indexPath.row, section: indexPath.section - viewModel.numberOfSectionsPinCategory())
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trackerCell", for: mainSectionsIndexPath) as? TrackerCollectionViewCell
             guard let cell = cell else { return UICollectionViewCell() }
-            guard let model = viewModel.model(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - viewModel.numberOfSectionsPinCategory())) else { return UICollectionViewCell() }
+            guard let model = viewModel.model(indexPath: mainSectionsIndexPath) else { return UICollectionViewCell() }
             cell.configure(with: model)
             cell.delegate = viewModel
             
@@ -475,17 +476,15 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 //        
 //        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
         
-        let headerView = TrackerSupplementaryViewCell(frame: .zero)
-        
+        let headerView = TrackerCollectionHeaderView.shared
         
         if (viewModel.numberOfSectionsPinCategory() == 1) && (section == 0) {
             let headerTitleText = viewModel.headerPinTitle(for: IndexPath(row:0, section: section))
-                headerView.titleLable.text = headerTitleText
+            headerView.titleLable.text = headerTitleText
         } else {
-                let headerTitleText = viewModel.headerTitle(for: IndexPath(row: 0, section: section - viewModel.numberOfSectionsPinCategory()))
-                headerView.titleLable.text = headerTitleText
-                print(headerTitleText)
-            }
+            let headerTitleText = viewModel.headerTitle(for: IndexPath(row: 0, section: (section - viewModel.numberOfSectionsPinCategory())))
+            headerView.titleLable.text = headerTitleText
+        }
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
     }
     

@@ -30,13 +30,21 @@ class NotRegularTrackerEditViewController: UIViewController {
             isCreateButtonEnable()
         }
     }
-    private var trackerColor: UIColor?
+    private var trackerColor: UIColor? {
+        didSet {
+            isCreateButtonEnable()
+        }
+    }
     private var trackerColorIsSelected = false {
         didSet{
             isCreateButtonEnable()
         }
     }
-    private var trackerEmoji: String?
+    private var trackerEmoji: String? {
+        didSet {
+            isCreateButtonEnable()
+        }
+    }
     
     init(delegate: TrackerUpdateViewControllerProtocol, tracker: Tracker, category: String, indexPath: IndexPath, isPined: Bool, completedDays: Int) {
         self.delegate = delegate
@@ -583,8 +591,12 @@ extension NotRegularTrackerEditViewController: UICollectionViewDelegateFlowLayou
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
-        let indexPath = IndexPath(row: 0, section: section)
-        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+//        let indexPath = IndexPath(row: 0, section: section)
+//        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        
+        let headerView = EmojiAndColorSupplementaryHeaderView.shared
+        
+        headerView.titleLable.text = sectionHeader[section]
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
     }

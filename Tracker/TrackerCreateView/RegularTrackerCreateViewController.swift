@@ -34,7 +34,11 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
             isCreateButtonEnable()
         }
     }
-    private var trackerEmoji: String?
+    private var trackerEmoji: String? {
+        didSet {
+            isCreateButtonEnable()
+        }
+    }
     var scheduleSubtitle: String?
     
     init(regular: Bool, trackerTypeSelectViewController: TrackerTypeSelectViewController) {
@@ -554,7 +558,8 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
 //        let indexPath = IndexPath(row: 0, section: section)
 //        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
 //        
-        let headerView = EmojiAndColorsSupplementaryViewCell(frame: .zero)
+        let headerView = EmojiAndColorSupplementaryHeaderView.shared
+        
         headerView.titleLable.text = sectionHeader[section]
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)

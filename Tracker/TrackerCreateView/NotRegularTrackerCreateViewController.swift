@@ -28,13 +28,22 @@ class NotRegularTrackerCreateViewController: UIViewController {
             isCreateButtonEnable()
         }
     }
-    private var trackerColor: UIColor?
+    private var trackerColor: UIColor? {
+        didSet {
+            isCreateButtonEnable()
+        }
+    }
+    
     private var trackerColorIsSelected = false {
         didSet{
             isCreateButtonEnable()
         }
     }
-    private var trackerEmoji: String?
+    private var trackerEmoji: String? {
+        didSet {
+            isCreateButtonEnable()
+        }
+    }
     var scheduleSubtitle: String?
     private lazy var categoryAndScheduleArray:[String] = {
         let categorySelectMenu = NSLocalizedString("categorySelectMenu", comment: "Catgory menu")
@@ -548,7 +557,8 @@ extension NotRegularTrackerCreateViewController: UICollectionViewDelegateFlowLay
 //        let indexPath = IndexPath(row: 0, section: section)
 //        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
 //
-        let headerView = EmojiAndColorsSupplementaryViewCell(frame: .zero)
+        let headerView = EmojiAndColorSupplementaryHeaderView.shared
+        
         headerView.titleLable.text = sectionHeader[section]
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)

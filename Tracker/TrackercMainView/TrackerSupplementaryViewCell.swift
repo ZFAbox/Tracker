@@ -10,6 +10,8 @@ import UIKit
 
 class TrackerSupplementaryViewCell: UICollectionReusableView {
     
+    
+    
     var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
@@ -32,3 +34,11 @@ class TrackerSupplementaryViewCell: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+class TrackerCollectionHeaderView {
+    
+    static let shared = TrackerSupplementaryViewCell(frame: .zero)
+}
+
+
+
