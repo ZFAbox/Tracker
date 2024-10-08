@@ -587,9 +587,17 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
-        let cell = collectionView.cellForItem(at: indexPath) as! TrackerCollectionViewCell
-        let selectedView = cell.setSelectedView()
-        return UITargetedPreview(view: selectedView)
+        if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
+            let cellIndex = indexPath
+            let cell = collectionView.cellForItem(at: cellIndex) as! TrackerCollectionViewCell
+            let selectedView = cell.setSelectedView()
+            return UITargetedPreview(view: selectedView)
+        } else {
+            let cellIndex = IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory())
+            let cell = collectionView.cellForItem(at: cellIndex) as! TrackerCollectionViewCell
+            let selectedView = cell.setSelectedView()
+            return UITargetedPreview(view: selectedView)
+        }
     }
 }
 
