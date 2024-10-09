@@ -38,6 +38,17 @@ Created by Fedor Zavyalov on 02.09.2024.
 "habbitButtonText" = "Habit";
 "notRegularButtonText" = "Irregular Event";
 
+//MARK: - StatisticViewController
+
+"statisticMainLable" = "Statistics";
+
+"bestPeriod" = "Best Period";
+"perfectDays" = "Perfect Days";
+"trackersCompleted" = "Trackers Completed";
+"averageValue" = "Average Value";
+
+"emtyStatisticsText" = "Nothing to analyze";
+
 //MARK: - RegularTrackerCreateViewController and NotRegularTrackerCreateViewController
 
 "categorySelectMenu" = "Category";
