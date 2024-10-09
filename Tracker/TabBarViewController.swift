@@ -53,15 +53,24 @@ final class TabBarViewController: UITabBarController {
         self.tabBar.layer.borderWidth = 0.5
         self.tabBar.layer.borderColor = UIColor.trackerDarkGray.cgColor
        
+//        trackerViewController.tabBarItem = UITabBarItem(
+//            title: TabBars.trackers.localizedText,
+//            image: UIImage(named: "Circle"),
+//            selectedImage: .none
+//        )
+//        statisticViewController.tabBarItem = UITabBarItem(
+//            title: TabBars.statistic.localizedText,
+//            image: UIImage(named: "Hare"),
+//            selectedImage: .none)
+        
         trackerViewController.tabBarItem = UITabBarItem(
             title: TabBars.trackers.localizedText,
-            image: UIImage(named: "Circle"),
-            selectedImage: nil
+            image: UIImage(named: "Circle"), tag: 1
         )
         statisticViewController.tabBarItem = UITabBarItem(
             title: TabBars.statistic.localizedText,
-            image: UIImage(named: "Hare"),
-            selectedImage: nil)
+            image: UIImage(named: "Hare"), tag: 2
+        )
         
         self.viewControllers = [trackerViewController, statisticViewController]
     }
