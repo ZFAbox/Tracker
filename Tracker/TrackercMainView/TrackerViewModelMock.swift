@@ -346,6 +346,7 @@ extension TrackerViewModelMock: TrackerCollectionViewCellProtocol {
             completedDays: completedDays,
             currentDate: selectedDate,
             isCompletedBefore: isCompletedBefore,
+            isPined: false,
             metrica: metrica)
         return model
     }
@@ -362,6 +363,7 @@ extension TrackerViewModelMock: TrackerCollectionViewCellProtocol {
             completedDays: completedDays,
             currentDate: selectedDate,
         isCompletedBefore: isCompletedBefore,
+            isPined: true,
             metrica: metrica)
         return model
     }

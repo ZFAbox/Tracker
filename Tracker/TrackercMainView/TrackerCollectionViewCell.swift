@@ -57,6 +57,15 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return emoji
     }()
     
+    let pinImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImage(named: "Pin")
+        imageView.image = image
+        imageView.tintColor = .trackerWhite
+        return imageView
+    }()
+    
     let trackerNameLable: UILabel = {
         let trackerNameLable = UILabel()
         trackerNameLable.translatesAutoresizingMaskIntoConstraints = false
@@ -119,6 +128,8 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         self.indexPath = model.indexPath
         self.metrica = model.metrica
         
+        pinImageView.isHidden =  model.isPined ? false : true
+        
         let color = tracker.color
         trackerView.backgroundColor = color
         dayMarkButton.backgroundColor = color
@@ -174,7 +185,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     func trackerDone() {
-        let buttonImage = UIImage(named: "Tracker-Done")
+        let buttonImage = UIImage(named: "Tracker Done")
         self.dayMarkButton.layer.opacity = 0.7
         self.dayMarkButton.setImage(buttonImage, for: .normal)
         let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
@@ -182,7 +193,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     func trackerUndone() {
-        let buttonImage = UIImage(named: "Tracker-Plus")
+        let buttonImage = UIImage(named: "Tracker Plus")
         self.dayMarkButton.layer.opacity = 1
         self.dayMarkButton.setImage(buttonImage, for: .normal)
         let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
@@ -198,6 +209,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         cardView.addSubview(trackerView)
         trackerView.addSubview(emojiView)
         trackerView.addSubview(emoji)
+        trackerView.addSubview(pinImageView)
         trackerView.addSubview(trackerNameLable)
         cardView.addSubview(dayMarkLable)
         self.addSubview(dayMarkButton)
@@ -208,6 +220,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         setTrackerViewConstrains()
         setEmojiViewConstrains()
         setEmojiConstrains()
+        setPinCnstraints()
         setTrackerNameConstrains()
         setDayMarkLable()
         setDayMarkButton()
@@ -243,6 +256,15 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             emoji.centerXAnchor.constraint(equalTo: emojiView.centerXAnchor),
             emoji.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor)
+        ])
+    }
+    
+    func setPinCnstraints() {
+        NSLayoutConstraint.activate([
+            pinImageView.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -4),
+            pinImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinImageView.widthAnchor.constraint(equalToConstant: 24)
         ])
     }
     

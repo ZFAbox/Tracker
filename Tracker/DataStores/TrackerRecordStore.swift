@@ -89,7 +89,7 @@ final class TrackerRecordStore{
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
         var trackerRecordFound = false
         request.predicate = NSPredicate(format: "%K == %@ AND %K < %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), currentDate as NSDate)
-        if let recordsData = try? context.fetch(request).isEmpty {
+        if (try? context.fetch(request).isEmpty) != nil {
             trackerRecordFound = false
         } else {
             trackerRecordFound = true

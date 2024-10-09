@@ -52,7 +52,7 @@ final class TrackerCategoryStore: NSObject{
         let predicate = NSPredicate(format: "%K == '\(category)'", #keyPath(TrackerCategoryCoreData.categoryName))
         request.predicate = predicate
         if let categoryData = try? context.fetch(request).first {
-            print("Существующая сategory: \(category) - categoryData.categoryName: \(categoryData.categoryName)")
+            print("Существующая сategory: \(category) - categoryData.categoryName: \(categoryData.categoryName ?? "Ошибка, категоря отсутствует")")
             return
         } else {
             let categoryCoreData = TrackerCategoryCoreData(context: context)

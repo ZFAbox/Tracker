@@ -100,15 +100,12 @@ final class TrackerStore: NSObject {
         request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
         if let category = try? context.fetch(request).first {
             trackerData.category = category
-//            category.addToTrackersOfCategory(trackerData)
-            print("Существующая категория category.categoryName: \(category.categoryName) = categoryName: \(categoryName)")
-            //            category.addToTrackersOfCategory(trackerData)
+            print("Существующая категория category.categoryName: \(category.categoryName ?? "Ошибка, категоря отсутствует") = categoryName: \(categoryName)")
         } else {
             let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
             trackerCategoryCoreData.categoryName = categoryName
-            //            trackerCategoryCoreData.addToTrackersOfCategory(trackerData)
             trackerData.category = trackerCategoryCoreData
-            print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName) = categoryName: \(categoryName)")
+            print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName ?? "Ошибка, категоря отсутствует") = categoryName: \(categoryName)")
         }
         saveContext()
         performFetch()
@@ -128,12 +125,12 @@ final class TrackerStore: NSObject {
             request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
             if let category = try? context.fetch(request).first {
                 trackerData.category = category
-                print("Существующая категория category.categoryName: \(category.categoryName) = categoryName: \(categoryName)")
+                print("Существующая категория category.categoryName: \(category.categoryName ?? "Ошибка, категоря отсутствует") = categoryName: \(categoryName)")
             } else {
                 let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
                 trackerCategoryCoreData.categoryName = categoryName
                 trackerData.category = trackerCategoryCoreData
-                print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName) = categoryName: \(categoryName)")
+                print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName ?? "Ошибка, категоря отсутствует") = categoryName: \(categoryName)")
             }
         } else {
             let trackerData = fetchedResultController.object(at: indexPath)
@@ -147,12 +144,12 @@ final class TrackerStore: NSObject {
             request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
             if let category = try? context.fetch(request).first {
                 trackerData.category = category
-                print("Существующая категория category.categoryName: \(category.categoryName) = categoryName: \(categoryName)")
+                print("Существующая категория category.categoryName: \(category.categoryName ?? "Ошибка, категоря отсутствует") = categoryName: \(categoryName)")
             } else {
                 let trackerCategoryCoreData = TrackerCategoryCoreData(context: context)
                 trackerCategoryCoreData.categoryName = categoryName
                 trackerData.category = trackerCategoryCoreData
-                print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName) = categoryName: \(categoryName)")
+                print("Добавление новой категории trackerCategoryCoreData.categoryName: \( trackerCategoryCoreData.categoryName ?? "Ошибка, категоря отсутствует") = categoryName: \(categoryName)")
             }
         }
         saveContext()

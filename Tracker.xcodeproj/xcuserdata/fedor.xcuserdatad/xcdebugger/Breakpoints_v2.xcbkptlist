@@ -14,8 +14,8 @@
             filePath = "Tracker/DataStores/TrackerStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "490"
-            endingLineNumber = "490"
+            startingLineNumber = "487"
+            endingLineNumber = "487"
             landmarkName = "loadVisibleTrackers(currentDate:searchedText:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "Tracker/DataStores/TrackerStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "479"
-            endingLineNumber = "479"
+            startingLineNumber = "476"
+            endingLineNumber = "476"
             landmarkName = "loadData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -95,15 +95,6 @@
             symbolName = "[UIImage imageNamed:]"
             moduleName = "">
             <Locations>
-               <Location
-                  uuid = "539BB21B-E75D-41A3-9ED8-8DEF6A3F6B78 - 9cc70c83f07c02e4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "+[UIImage imageNamed:]"
-                  moduleName = "UIKitCore"
-                  usesParentBreakpointCondition = "Yes">
-               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
