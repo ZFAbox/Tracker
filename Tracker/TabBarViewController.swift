@@ -52,16 +52,6 @@ final class TabBarViewController: UITabBarController {
     func setupTabBar(){
         self.tabBar.layer.borderWidth = 0.5
         self.tabBar.layer.borderColor = UIColor.trackerDarkGray.cgColor
-       
-//        trackerViewController.tabBarItem = UITabBarItem(
-//            title: TabBars.trackers.localizedText,
-//            image: UIImage(named: "Circle"),
-//            selectedImage: .none
-//        )
-//        statisticViewController.tabBarItem = UITabBarItem(
-//            title: TabBars.statistic.localizedText,
-//            image: UIImage(named: "Hare"),
-//            selectedImage: .none)
         
         trackerViewController.tabBarItem = UITabBarItem(
             title: TabBars.trackers.localizedText,

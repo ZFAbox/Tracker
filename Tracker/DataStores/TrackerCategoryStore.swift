@@ -62,25 +62,6 @@ final class TrackerCategoryStore: NSObject{
         }
     }
     
-//    func saveCategory(_ category: String) {
-//        print("Category: \(category)")
-////        let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
-//        let request = fetchResultController.fetchRequest
-//        let predicate = NSPredicate(format: "%K == '\(category)'", #keyPath(TrackerCategoryCoreData.categoryName))
-//        request.predicate = predicate
-//        try? fetchResultController.performFetch()
-//        if let categoryData = fetchResultController.fetchedObjects?.first {
-//            print("Категория уже существует \(categoryData.categoryName)")
-//            try? fetchResultController.performFetch()
-//            return
-//        } else {
-//            let categoryCoreData = TrackerCategoryCoreData(context: context)
-//            categoryCoreData.categoryName = category
-//            saveContext()
-//        }
-//        return
-//    }
-    
     private func saveContext(){
         do{
             try context.save()
@@ -146,14 +127,7 @@ final class TrackerCategoryStore: NSObject{
         }
         return categories.count
     }
-    
-//    func count() -> Int {
-//        let fetchRequest = fetchResultController.fetchRequest
-//        fetchRequest.resultType = .countResultType
-//        let categories = try! context.execute(fetchRequest) as! NSAsynchronousFetchResult<NSFetchRequestResult>
-//        guard let count = categories.finalResult?.first else { return 0}
-//        return count as! Int
-//    }
+
 }
 
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {

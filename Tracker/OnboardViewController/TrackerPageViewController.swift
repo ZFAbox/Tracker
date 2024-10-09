@@ -61,7 +61,6 @@ final class TrackerPageViewController: UIPageViewController {
     }
     
     @objc func startButtonTapped() {
-//        let vc = UINavigationController(rootViewController: TabBarViewController())
         let vc = TabBarViewController()
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
