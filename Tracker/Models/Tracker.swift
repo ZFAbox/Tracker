@@ -14,4 +14,6 @@ struct Tracker {
     let emoji: String
     let color: UIColor
     let schedule: [String]
+    let isRegular: Bool
+    let createDate: Date
 }

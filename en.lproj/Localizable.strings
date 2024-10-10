@@ -1,0 +1,118 @@
+/*
+Localizable.strings
+Tracker
+
+Created by Fedor Zavyalov on 02.09.2024.
+
+*/
+
+//MARK: - OnboardViewController
+
+"pageOneText" = "Track only what you want";
+"pageTwoText" = "Even if it's not liters of water and yoga";
+"startButtonText" = "This is technology!";
+
+//MARK: - TrackerViewController
+
+// Main Screen
+"trackMainLable" = "Trackers";
+"searchFieldPlaceholder" = "Search";
+"emtyTrackerPlaceholderText" = "What will we track?";
+"notFoundTrackerPlaceholderText" = "Nothing found";
+"filterButtonText" = "Filters";
+
+//Context Menu
+"pinText" = "Pin";
+"unpinText" = "Unpin";
+"editText" = "Edit";
+"deletText" = "Delete";
+
+//MARK: - TabBarViewController
+
+"trackers" = "Trackers";
+"statistic" = "Statistics";
+
+//MARK: - TrackerTypeSelectViewController
+
+"trackerTypeSelectTitle" = "Create Tracker";
+"habbitButtonText" = "Habit";
+"notRegularButtonText" = "Irregular Event";
+
+//MARK: - StatisticViewController
+
+"statisticMainLable" = "Statistics";
+
+"bestPeriod" = "Best Period";
+"perfectDays" = "Perfect Days";
+"trackersCompleted" = "Trackers Completed";
+"averageValue" = "Average Value";
+
+"emtyStatisticsText" = "Nothing to analyze";
+
+//MARK: - RegularTrackerCreateViewController and NotRegularTrackerCreateViewController
+
+"categorySelectMenu" = "Category";
+"scheduleSelectMenu" = "Schedule";
+
+"emojiSelectMenu" = "Emoji";
+"colorSelectMenu" = "Color";
+
+"regularTrackerTitle" = "New Habit";
+"notRegularTrackerTitle" = "New Irregular Event";
+
+"trackerNamePlaceholder" = "Enter tracker name";
+
+"textLimitMessage" = "38 characters limit";
+
+"createButtonText" = "Create";
+"cancelButtonText" = "Cancel";
+
+//MARK: - TrackerCategoriesList
+
+"categoryListTitle" = "Category";
+"createCategoryButtonText" = "Add Category";
+
+//MARK: - TrackerTableViewController
+
+"editCategory" = "Edit";
+"deleteCategory" = "Delete";
+
+// Alert presenter
+
+"alertMessage" = "Are you sure you don't need this category?";
+"deleteAlertButtonText" = "Delete";
+"cancelAlertButtonText" = "Cancel";
+
+//MARK: - TrackerCategoryCreate
+
+"categoryCreateTitleText" = "New Category";
+"categoryCreateTextFieldPlaceholderText" = "Enter Category Name";
+"confirmCreateButtonText" = "Done";
+
+//MARK: - TrackerCategoryEditor
+
+"categoryEditTitleText" = "Edit Category";
+"categoryEditTextFieldPlaceholderText" = "Enter Category Name";
+"confirmEditButtonText" = "Done";
+
+//MARK: - ScheduleViewController
+
+"scheduleTitle" = "Schedule";
+"confirmScheduleButtonText" = "Done";
+
+//Weekday enum
+"Sunday" = "Sunday";
+"Monday" = "Monday";
+"Tuesday" = "Tuesday";
+"Wednesday" = "Wednesday";
+"Thursday" = "Thursday";
+"Friday" = "Friday";
+"Saturday" = "Saturday";
+
+"Sun" = "Sun";
+"Mon" = "Mon";
+"Tues" = "Tue";
+"Wed" = "Wed";
+"Thurs" = "Thu";
+"Fri" = "Fri";
+"Sat" = "Sat";

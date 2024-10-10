@@ -26,4 +26,13 @@ extension DateFormatter {
         }
         return weekday
     }
+    
+    static let df = DateFormatter()
+    
+    func prepareDatePickerString(date: Date) -> String {
+        let dateFormatter = DateFormatter.df
+        dateFormatter.dateFormat = "dd.MM.yy"
+        let dateString = dateFormatter.string(from: date)
+        return dateString
+    }
 }
