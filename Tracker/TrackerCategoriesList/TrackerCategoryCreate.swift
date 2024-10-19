@@ -33,6 +33,7 @@ final class TrackerCategoryCreate: UIViewController {
         titleLable.translatesAutoresizingMaskIntoConstraints = false
         let categoryCreateTitleText = NSLocalizedString("categoryCreateTitleText", comment: "")
         titleLable.text = categoryCreateTitleText
+        titleLable.textColor = .titleTextColor
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
@@ -40,7 +41,7 @@ final class TrackerCategoryCreate: UIViewController {
     private lazy var layerTextFieldView: UIView = {
         let layerTextFieldView = UIView()
         layerTextFieldView.translatesAutoresizingMaskIntoConstraints = false
-        layerTextFieldView.backgroundColor = .trackerBackgroundOpacityGray
+        layerTextFieldView.backgroundColor = .textFiledColor
         layerTextFieldView.layer.cornerRadius = 16
         return layerTextFieldView
     }()
@@ -56,6 +57,7 @@ final class TrackerCategoryCreate: UIViewController {
         textField.attributedPlaceholder = NSAttributedString(string: categoryCreateTextFieldPlaceholderText, attributes:attributes)
         textField.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         textField.backgroundColor = .none
+        textField.textColor = .generalTextColor
         textField.addTarget(self, action: #selector(inputText(_ :)), for: .allEditingEvents)
         textField.delegate = self
         return textField
@@ -68,8 +70,9 @@ final class TrackerCategoryCreate: UIViewController {
         let confirmCreateButtonText = NSLocalizedString("confirmCreateButtonText", comment: "")
         button.setTitle(confirmCreateButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        button.backgroundColor = .trackerDarkGray
-        button.tintColor = .trackerWhite
+        button.backgroundColor = .disableButtonColor
+        button.tintColor = .disableButtonTextColor
+        button.isUserInteractionEnabled = false
         button.addTarget(self, action: #selector(createCategory), for: .touchUpInside)
         return button
     }()
@@ -78,8 +81,9 @@ final class TrackerCategoryCreate: UIViewController {
         let text = sender.text ?? ""
         categoryName = text
         UIView.animate(withDuration: 0.3) {
-            self.createCategoryButton.isEnabled = !text.isEmpty
-            self.createCategoryButton.backgroundColor = text.isEmpty ? .trackerDarkGray : .trackerBlack
+            self.createCategoryButton.isUserInteractionEnabled = !text.isEmpty
+            self.createCategoryButton.backgroundColor = text.isEmpty ? .disableButtonColor : .activeButtonColor
+            self.createCategoryButton.tintColor = text.isEmpty ? .disableButtonTextColor : .activeButtonTextColor
         }
     }
 
@@ -90,10 +94,11 @@ final class TrackerCategoryCreate: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .trackerWhite
+        view.backgroundColor = .applicationBackgroundColor
         hideKeyboardWhenTappedAround()
         addSubviews()
         setConstraints()
+        traitCollectionDidChange(.current)
     }
     
     private func addSubviews(){
@@ -143,7 +148,6 @@ final class TrackerCategoryCreate: UIViewController {
         ])
     }
 }
-
 
 extension TrackerCategoryCreate: UITextFieldDelegate {
     
