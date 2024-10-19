@@ -22,8 +22,9 @@ final class TrackerTypeSelectViewController: UIViewController {
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
         titleLable.translatesAutoresizingMaskIntoConstraints = false
-        let trackerTypeSelectTitle = NSLocalizedString("trackerTypeSelectTitle", comment: "Tracker type select screen title")
+        let trackerTypeSelectTitle = L10n.trackerTypeSelectTitle
         titleLable.text = trackerTypeSelectTitle
+        titleLable.textColor = .titleTextColor
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
@@ -32,11 +33,11 @@ final class TrackerTypeSelectViewController: UIViewController {
         let habbitButton = UIButton(type: .system)
         habbitButton.translatesAutoresizingMaskIntoConstraints = false
         habbitButton.layer.cornerRadius = 16
-        let habbitButtonText = NSLocalizedString("habbitButtonText", comment: "")
+        let habbitButtonText = L10n.habbitButtonText
         habbitButton.setTitle(habbitButtonText, for: .normal)
         habbitButton.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        habbitButton.backgroundColor = .trackerBlack
-        habbitButton.tintColor = .trackerWhite
+        habbitButton.backgroundColor = .darkButtonColor
+        habbitButton.tintColor = .darkButtonTextColor
         habbitButton.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         return habbitButton
     }()
@@ -45,18 +46,18 @@ final class TrackerTypeSelectViewController: UIViewController {
         let notRegularButton = UIButton(type: .system)
         notRegularButton.translatesAutoresizingMaskIntoConstraints = false
         notRegularButton.layer.cornerRadius = 16
-        let notRegularButtonText = NSLocalizedString("notRegularButtonText", comment: "")
+        let notRegularButtonText = L10n.notRegularButtonText
         notRegularButton.setTitle(notRegularButtonText, for: .normal)
         notRegularButton.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        notRegularButton.backgroundColor = .trackerBlack
-        notRegularButton.tintColor = .trackerWhite
+        notRegularButton.backgroundColor = .darkButtonColor
+        notRegularButton.tintColor = .darkButtonTextColor
         notRegularButton.addTarget(self, action: #selector(notRegularButtonTapped), for: .touchUpInside)
         return notRegularButton
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .trackerWhite
+        view.backgroundColor = .applicationBackgroundColor
         addSubviews()
         setConstrains()
     }
@@ -66,7 +67,6 @@ final class TrackerTypeSelectViewController: UIViewController {
     }
     
     @objc func habbitButtonTapped(){
-        //TODO: - move to habbit screen
         let viewController = RegularTrackerCreateViewController(regular: true, trackerTypeSelectViewController: self)
         viewController.delegate = viewModel
         viewController.modalPresentationStyle = .popover
@@ -74,7 +74,6 @@ final class TrackerTypeSelectViewController: UIViewController {
     }
     
     @objc func notRegularButtonTapped(){
-        //TODO: - move to notRegular screen
         let viewController = NotRegularTrackerCreateViewController(regular: false, trackerTypeSelectViewController: self)
         viewController.delegate = viewModel
         viewController.modalPresentationStyle = .popover

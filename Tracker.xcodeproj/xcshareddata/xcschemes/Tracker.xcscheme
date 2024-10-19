@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1540"
+   LastUpgradeVersion = "1600"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,7 +15,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "90DE585A2C0A655400351750"
+               BlueprintIdentifier = "9F8C90B22CB90735008879D9"
                BuildableName = "Tracker.app"
                BlueprintName = "Tracker"
                ReferencedContainer = "container:Tracker.xcodeproj">
@@ -40,20 +40,20 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "90524D652CAB48C500381D3B"
+               BlueprintIdentifier = "9F8C90C82CB90737008879D9"
                BuildableName = "TrackerTests.xctest"
                BlueprintName = "TrackerTests"
                ReferencedContainer = "container:Tracker.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO"
+            skipped = "YES"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "901752952CAC95AA00855A93"
-               BuildableName = "TrackerTestsLightMode.xctest"
-               BlueprintName = "TrackerTestsLightMode"
+               BlueprintIdentifier = "9F8C90D22CB90737008879D9"
+               BuildableName = "TrackerUITests.xctest"
+               BlueprintName = "TrackerUITests"
                ReferencedContainer = "container:Tracker.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -63,7 +63,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = "en"
+      language = "ru"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -74,19 +74,12 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "90DE585A2C0A655400351750"
+            BlueprintIdentifier = "9F8C90B22CB90735008879D9"
             BuildableName = "Tracker.app"
             BlueprintName = "Tracker"
             ReferencedContainer = "container:Tracker.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "IDEPreferLogStreaming"
-            value = "YES"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -98,7 +91,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "90DE585A2C0A655400351750"
+            BlueprintIdentifier = "9F8C90B22CB90735008879D9"
             BuildableName = "Tracker.app"
             BlueprintName = "Tracker"
             ReferencedContainer = "container:Tracker.xcodeproj">

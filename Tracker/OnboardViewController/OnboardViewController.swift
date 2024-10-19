@@ -26,6 +26,7 @@ final class OnboardViewController: UIViewController{
         lable.font = UIFont(name: "SFProDisplay-Bold", size: 32)
         lable.text = "Отслеживайте только то, что хотите"
         lable.textAlignment = .center
+        lable.textColor = .trackerBlack
         return lable
     }()
     

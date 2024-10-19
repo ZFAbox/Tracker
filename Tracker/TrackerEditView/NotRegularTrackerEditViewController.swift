@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class NotRegularTrackerEditViewController: UIViewController {
+final class NotRegularTrackerEditViewController: UIViewController {
 
     var delegate: TrackerUpdateViewControllerProtocol
     private var category: String? {
@@ -129,7 +129,7 @@ class NotRegularTrackerEditViewController: UIViewController {
         let daysLableText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), completedDays)
         lable.text = daysLableText
         lable.textAlignment = .center
-        lable.tintColor = .trackerBlack
+        lable.tintColor = .daysLableColor
         lable.font = UIFont(name: "SFProDisplay-Bold", size: 32)
         return lable
     }()
@@ -167,7 +167,7 @@ class NotRegularTrackerEditViewController: UIViewController {
         trackerName.translatesAutoresizingMaskIntoConstraints = false
         trackerName.text = ""
         trackerName.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-        trackerName.textColor = .trackerBlack
+        trackerName.textColor = .generalTextColor
         trackerName.backgroundColor = .none
         trackerName.textContainerInset = UIEdgeInsets(top: 27, left: 0, bottom: 0, right: 0)
         trackerName.delegate = self
@@ -246,10 +246,10 @@ class NotRegularTrackerEditViewController: UIViewController {
         let createButtonText = NSLocalizedString("saveButtonText", comment: "")
         button.setTitle(createButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        button.tintColor = .trackerWhite
-        button.backgroundColor = .trackerDarkGray
+        button.tintColor = .disableButtonTextColor
+        button.backgroundColor = .disableButtonColor
         button.addTarget(self, action: #selector(createTracker), for: .touchUpInside)
-        button.isEnabled = false
+        button.isUserInteractionEnabled = false
         return button
     }()
     
@@ -262,13 +262,12 @@ class NotRegularTrackerEditViewController: UIViewController {
         button.setTitle(cancelButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.tintColor = .trackerPink
-        button.backgroundColor = .trackerWhite
+        button.backgroundColor = .none
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.trackerPink.cgColor
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         return button
     }()
-    
     
     override func viewDidLoad(){
         super.viewDidLoad()
@@ -280,10 +279,24 @@ class NotRegularTrackerEditViewController: UIViewController {
         textFieldLimitationMessage.removeFromSuperview()
         trackerNameTextField.text = tracker.name
         placeholderLableView.isHidden = true
+        traitCollectionDidChange(.current)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        let isDarkStyle = traitCollection.userInterfaceStyle == .dark
+        view.backgroundColor = isDarkStyle ? . trackerBlack : .trackerWhite
+        titleLable.textColor = isDarkStyle ? .trackerWhite : .trackerBlack
+        layerTextFieldView.backgroundColor = isDarkStyle ? .trackerBackgroundOpacityDarkGray : .trackerBackgroundOpacityGray
+        placeholderLableView.textColor = isDarkStyle ? .trackerDarkGray : .trackerDarkGray
+        emojiAndColors.backgroundColor = isDarkStyle ? . trackerBlack : . trackerWhite
+        categoryAndScheduleTableView.backgroundColor = isDarkStyle ? . trackerBlack : . trackerWhite
+        cancelButton.backgroundColor = isDarkStyle ? .none : .none
     }
     
     @objc func clearText(){
         trackerNameTextField.text = ""
+        trackerName = ""
         UIView.animate(withDuration: 0.3) { [self] in
             self.placeholderLableView.isHidden = false
             hideClearButton()
@@ -322,11 +335,13 @@ class NotRegularTrackerEditViewController: UIViewController {
     
     private func isCreateButtonEnable() {
         if createIsCompleted() {
-            createButton.backgroundColor = .trackerBlack
-            createButton.isEnabled = true
+            createButton.backgroundColor = .activeButtonColor
+            createButton.tintColor = .activeButtonTextColor
+            createButton.isUserInteractionEnabled = true
         } else {
-            createButton.backgroundColor = .trackerDarkGray
-            createButton.isEnabled = false
+            createButton.backgroundColor = .disableButtonColor
+            createButton.tintColor = .disableButtonTextColor
+            createButton.isUserInteractionEnabled = false
         }
     }
     
@@ -497,8 +512,7 @@ extension NotRegularTrackerEditViewController: UITableViewDataSource {
                 cell.lableStackView.addArrangedSubview(cell.additionalTitle)
                 cell.additionalTitle.text = category
             }
-        cell.backgroundColor = .trackerBackgroundOpacityGray
-        cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = .tableCellBackgoundColor
         return cell
     }
 }
@@ -590,12 +604,8 @@ extension NotRegularTrackerEditViewController: UICollectionViewDelegateFlowLayou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        
-//        let indexPath = IndexPath(row: 0, section: section)
-//        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        
+
         let headerView = EmojiAndColorSupplementaryHeaderView.shared
-        
         headerView.titleLable.text = sectionHeader[section]
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
@@ -610,7 +620,7 @@ extension NotRegularTrackerEditViewController: UICollectionViewDelegateFlowLayou
             }
             let selectedCell = collectionView.cellForItem(at: IndexPath(row: index ?? 0, section: indexPath.section)) as? EmojiAndColorCollectionViewCell
             UIView.animate(withDuration: 0.3) {
-                selectedCell?.backgroundColor = .trackerWhite
+                selectedCell?.backgroundColor = .applicationBackgroundColor
             }
         }
         
@@ -674,15 +684,21 @@ extension NotRegularTrackerEditViewController: UITextViewDelegate {
         
         trackerName = text
         textView.text = text
-        
+    
         if text != "" {
             UIView.animate(withDuration: 0.3) { [self] in
                 self.placeholderLableView.isHidden = true
                 if trackerName.count <= 38 {
+                    UIView.animate(withDuration: 0.3) {
+                        self.textFieldLimitationMessage.layer.opacity = 0
+                    }
                     self.textFieldLimitationMessage.removeFromSuperview()
                 } else {
                     trackerNameTextField.text = String(trackerName.dropLast())
                     self.textFieldVStack.addArrangedSubview(textFieldLimitationMessage)
+                    UIView.animate(withDuration: 0.3) {
+                        self.textFieldLimitationMessage.layer.opacity = 1
+                    }
                 }
                 if isEnterButtonTapped {
                     hideClearButton()

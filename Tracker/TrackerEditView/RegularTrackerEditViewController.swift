@@ -13,7 +13,7 @@ protocol TrackerUpdateViewControllerProtocol{
     func updateTracker(category: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool)
 }
 
-class RegularTrackerEditViewController: UIViewController, ScheduleViewControllerProtocol {
+final class RegularTrackerEditViewController: UIViewController, ScheduleViewControllerProtocol {
     
     var delegate: TrackerUpdateViewControllerProtocol
     private var category: String? {
@@ -141,7 +141,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         let daysLableText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), completedDays)
         lable.text = daysLableText
         lable.textAlignment = .center
-        lable.tintColor = .trackerBlack
+        lable.tintColor = .daysLableColor
         lable.font = UIFont(name: "SFProDisplay-Bold", size: 32)
         return lable
     }()
@@ -179,7 +179,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         trackerName.translatesAutoresizingMaskIntoConstraints = false
         trackerName.text = ""
         trackerName.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-        trackerName.textColor = .trackerBlack
+        trackerName.textColor = .generalTextColor
         trackerName.backgroundColor = .none
         trackerName.textContainerInset = UIEdgeInsets(top: 27, left: 0, bottom: 0, right: 0)
         trackerName.delegate = self
@@ -258,10 +258,10 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         let createButtonText = NSLocalizedString("saveButtonText", comment: "")
         button.setTitle(createButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        button.tintColor = .trackerWhite
-        button.backgroundColor = .trackerDarkGray
+        button.tintColor = .disableButtonTextColor
+        button.backgroundColor = .disableButtonColor
         button.addTarget(self, action: #selector(createTracker), for: .touchUpInside)
-        button.isEnabled = false
+        button.isUserInteractionEnabled = false
         return button
     }()
     
@@ -274,7 +274,7 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         button.setTitle(cancelButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.tintColor = .trackerPink
-        button.backgroundColor = .trackerWhite
+        button.backgroundColor = .none
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.trackerPink.cgColor
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
@@ -292,10 +292,23 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
         textFieldLimitationMessage.removeFromSuperview()
         trackerNameTextField.text = tracker.name
         placeholderLableView.isHidden = true
+        traitCollectionDidChange(.current)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        let isDarkStyle = traitCollection.userInterfaceStyle == .dark
+        view.backgroundColor = isDarkStyle ? . trackerBlack : .trackerWhite
+        titleLable.textColor = isDarkStyle ? .trackerWhite : .trackerBlack
+        layerTextFieldView.backgroundColor = isDarkStyle ? .trackerBackgroundOpacityDarkGray : .trackerBackgroundOpacityGray
+        placeholderLableView.textColor = isDarkStyle ? .trackerDarkGray : .trackerDarkGray
+        emojiAndColors.backgroundColor = isDarkStyle ? . trackerBlack : . trackerWhite
+        categoryAndScheduleTableView.backgroundColor = isDarkStyle ? . trackerBlack : . trackerWhite
     }
     
     @objc func clearText(){
         trackerNameTextField.text = ""
+        trackerName = ""
         UIView.animate(withDuration: 0.3) { [self] in
             self.placeholderLableView.isHidden = false
             hideClearButton()
@@ -335,11 +348,13 @@ class RegularTrackerEditViewController: UIViewController, ScheduleViewController
     
     private func isCreateButtonEnable() {
         if createIsCompleted() {
-            createButton.backgroundColor = .trackerBlack
-            createButton.isEnabled = true
+            createButton.backgroundColor = .activeButtonColor
+            createButton.tintColor = .activeButtonTextColor
+            createButton.isUserInteractionEnabled = true
         } else {
-            createButton.backgroundColor = .trackerDarkGray
-            createButton.isEnabled = false
+            createButton.backgroundColor = .disableButtonColor
+            createButton.tintColor = .disableButtonTextColor
+            createButton.isUserInteractionEnabled = false
         }
     }
     
@@ -517,8 +532,7 @@ extension RegularTrackerEditViewController: UITableViewDataSource {
                 cell.additionalTitle.text = category
             }
         }
-        cell.backgroundColor = .trackerBackgroundOpacityGray
-        cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = .tableCellBackgoundColor
         return cell
     }
 }
@@ -528,7 +542,6 @@ extension RegularTrackerEditViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 1 {
             let viewController = ScheduleViewController(delegate: self)
-//            viewController.delegate = self
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
         } else {
@@ -618,11 +631,7 @@ extension RegularTrackerEditViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
-//        let indexPath = IndexPath(row: 0, section: section)
-//        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        
         let headerView = EmojiAndColorSupplementaryHeaderView.shared
-        
         headerView.titleLable.text = sectionHeader[section]
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width, height: collectionView.frame.height), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
@@ -637,7 +646,7 @@ extension RegularTrackerEditViewController: UICollectionViewDelegateFlowLayout {
             }
             let selectedCell = collectionView.cellForItem(at: IndexPath(row: index ?? 0, section: indexPath.section)) as? EmojiAndColorCollectionViewCell
             UIView.animate(withDuration: 0.3) {
-                selectedCell?.backgroundColor = .trackerWhite
+                selectedCell?.backgroundColor = .applicationBackgroundColor
             }
         }
         

@@ -8,12 +8,10 @@
 import Foundation
 import UIKit
 
-
 final class StatisticCellView: UITableViewCell {
     
     lazy var statisticCountValue: UILabel = {
         let lable = UILabel()
-        lable.translatesAutoresizingMaskIntoConstraints = false
         lable.font = UIFont(name: "SFProDisplay-Bold", size: 34)
         lable.text = "1"
         lable.textColor = .trackerBlack
@@ -24,16 +22,12 @@ final class StatisticCellView: UITableViewCell {
         let lable = UILabel()
         lable.font = UIFont(name: "SFProDisplay-Medium", size: 12)
         lable.text = ""
-        lable.translatesAutoresizingMaskIntoConstraints = false
         lable.textColor = .trackerBlack
         return lable
-        
     }()
     
     private lazy var gradientView: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.backgroundColor = .lightGray
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
         return view
@@ -41,7 +35,6 @@ final class StatisticCellView: UITableViewCell {
     
     private lazy var textView: UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .trackerWhite
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
@@ -62,41 +55,33 @@ final class StatisticCellView: UITableViewCell {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        let isDarkStyle = traitCollection.userInterfaceStyle == .dark
         
-        if traitCollection.userInterfaceStyle == .dark {
-            textView.backgroundColor = .trackerBlack
-            contentView.backgroundColor = .trackerBlack
-            statisticCountValue.textColor = .trackerWhite
-            statisticSectionName.textColor = .trackerWhite
-        } else {
-            textView.backgroundColor = .trackerWhite
-            contentView.backgroundColor = .trackerWhite
-            statisticCountValue.textColor = .trackerBlack
-            statisticSectionName.textColor = .trackerBlack
-        }
+        textView.backgroundColor = isDarkStyle ? .trackerBlack : .trackerWhite
+        contentView.backgroundColor = isDarkStyle ? .trackerBlack : .trackerWhite
+        statisticCountValue.textColor = isDarkStyle ? .trackerWhite : .trackerBlack
+        statisticSectionName.textColor = isDarkStyle ? .trackerWhite : .trackerBlack
     }
     
     func setGradientBackground(view: UIView) {
         let colorLeft =  UIColor.rgbColors(red: 253, green: 76, blue: 73, alpha: 1).cgColor
         let colorCenter = UIColor.rgbColors(red: 70, green: 230, blue: 157, alpha: 1).cgColor
         let colorRight = UIColor.rgbColors(red: 0, green: 123, blue: 250, alpha: 1).cgColor
-                    
+        
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [colorLeft, colorCenter, colorRight]
         gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
         gradientLayer.frame = CGRect(x: 0, y: 0, width: view.frame.width - 32, height: 102)
-                
-//        self.gradientView.layer.insertSublayer(gradientLayer, at:0)
+        
         self.gradientView.layer.addSublayer(gradientLayer)
     }
     
-    
     private func addSubviews() {
-        contentView.addSubview(gradientView)
-        contentView.addSubview(textView)
-        contentView.addSubview(statisticSectionName)
-        contentView.addSubview(statisticCountValue)
+        [gradientView, textView, statisticSectionName, statisticCountValue].forEach { subView in
+            subView.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(subView)
+        }
     }
     
     private func setConstraints(){

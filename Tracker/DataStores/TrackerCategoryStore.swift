@@ -25,8 +25,7 @@ final class TrackerCategoryStore: NSObject{
         self.context = context
         self.delegate = delegate
     }
-    
-    
+
     convenience init(delegate: TrackerCategoryStoreProtocol) {
         self.init(context: DataStore.shared.viewContext, delegate: delegate)
     }
@@ -52,12 +51,10 @@ final class TrackerCategoryStore: NSObject{
         let predicate = NSPredicate(format: "%K == '\(category)'", #keyPath(TrackerCategoryCoreData.categoryName))
         request.predicate = predicate
         if let categoryData = try? context.fetch(request).first {
-            print("Существующая сategory: \(category) - categoryData.categoryName: \(categoryData.categoryName ?? "Ошибка, категоря отсутствует")")
             return
         } else {
             let categoryCoreData = TrackerCategoryCoreData(context: context)
             categoryCoreData.categoryName = category
-            print("Сохраненная сategory: \(category)")
             saveContext()
         }
     }
@@ -81,7 +78,6 @@ final class TrackerCategoryStore: NSObject{
     func object(at indexPath: IndexPath) -> String {
         let categoryCoreData = fetchResultController.object(at: indexPath)
         guard let categoryName = categoryCoreData.categoryName else { return ""}
-        print("Получение объекта категории: \(categoryName)")
         return categoryName
     }
     
@@ -100,6 +96,12 @@ final class TrackerCategoryStore: NSObject{
         categoryCoreData.categoryName = categoryName
         saveContext()
         try? fetchResultController.performFetch()
+    }
+    
+    func getCategoryName(at indexPath: IndexPath) -> String {
+        let categoryCoreData = fetchResultController.object(at: indexPath)
+        guard let categoryName = categoryCoreData.categoryName else { return "" }
+        return categoryName
     }
     
     func isEmpty() -> Bool {
@@ -127,7 +129,6 @@ final class TrackerCategoryStore: NSObject{
         }
         return categories.count
     }
-
 }
 
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {

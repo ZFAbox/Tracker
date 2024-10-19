@@ -35,7 +35,6 @@ final class TrackerCategoriesViewModel {
             print("Кактегория не выбрана")
             return }
             delegate?.setSelectedCategory(selectedCategory)
-            print(selectedCategory)
     }
     
     func isCategoriesEmpty() -> Bool {
@@ -69,6 +68,10 @@ final class TrackerCategoriesViewModel {
         if isCategorySelected {
             selectedCategory = category
         }
+    }
+    
+    func getSelectedCategoryName(at indexPath: IndexPath) -> String {
+        return categoryStore.getCategoryName(at: indexPath)
     }
 }
 

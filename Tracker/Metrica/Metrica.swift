@@ -10,52 +10,17 @@ import YandexMobileMetrica
 
 final class Metrica {
     
-    func screenOpen(){
-        let params : [AnyHashable : Any] = ["event": "open", "screen": "Main"]
-        YMMYandexMetrica.reportEvent("open_main", parameters: params, onFailure: { error in
-            print("REPORT ERROR: %@", error.localizedDescription)
-        })
-    }
-    
-    func screenClosed(){
-        let params : [AnyHashable : Any] = ["event": "close", "screen": "Main"]
-        YMMYandexMetrica.reportEvent("close_main", parameters: params, onFailure: { error in
-            print("REPORT ERROR: %@", error.localizedDescription)
-        })
-    }
-    
-    func addTracker(){
-        let params : [AnyHashable : Any] = ["event": "click", "screen": "Main", "item": "add_track"]
-        YMMYandexMetrica.reportEvent("addTracker", parameters: params, onFailure: { error in
-            print("REPORT ERROR: %@", error.localizedDescription)
-        })
-    }
-    
-    func completeTracker(){
-        let params : [AnyHashable : Any] = ["event": "click", "screen": "Main", "item": "track"]
-        YMMYandexMetrica.reportEvent("completeTracker", parameters: params, onFailure: { error in
-            print("REPORT ERROR: %@", error.localizedDescription)
-        })
-    }
-    
-    func filterTracker(){
-        let params : [AnyHashable : Any] = ["event": "click", "screen": "Main", "item": "filter"]
-        YMMYandexMetrica.reportEvent("filterTrackers", parameters: params, onFailure: { error in
-            print("REPORT ERROR: %@", error.localizedDescription)
-        })
-    }
-    
-    func editTracker(){
-        let params : [AnyHashable : Any] = ["event": "click", "screen": "Main", "item": "edit"]
-        YMMYandexMetrica.reportEvent("editTracker", parameters: params, onFailure: { error in
-            print("REPORT ERROR: %@", error.localizedDescription)
-        })
-    }
-    
-    
-    func deleteTracker(){
-        let params : [AnyHashable : Any] = ["event": "click", "screen": "Main", "item": "delete"]
-        YMMYandexMetrica.reportEvent("deleteTracker", parameters: params, onFailure: { error in
+    func report (event: Event, screen: Screen, item: Item? ) {
+        var params: [AnyHashable : Any] = [ : ]
+        var message = ""
+        if let item = item {
+            params = ["event": event.rawValue, "screen": screen.rawValue, "item": item.rawValue]
+            message = "\(event.rawValue)_\(screen.rawValue)_\(item.rawValue)".lowercased()
+        } else {
+            params = ["event": event.rawValue, "screen": screen.rawValue]
+            message = "\(event.rawValue)_\(screen.rawValue)".lowercased()
+        }
+        YMMYandexMetrica.reportEvent(message, parameters: params, onFailure: { error in
             print("REPORT ERROR: %@", error.localizedDescription)
         })
     }

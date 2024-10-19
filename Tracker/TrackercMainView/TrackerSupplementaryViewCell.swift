@@ -8,9 +8,7 @@
 import Foundation
 import UIKit
 
-class TrackerSupplementaryViewCell: UICollectionReusableView {
-    
-    
+final class TrackerSupplementaryViewCell: UICollectionReusableView {
     
     var titleLable: UILabel = {
         let titleLable = UILabel()
@@ -35,9 +33,11 @@ class TrackerSupplementaryViewCell: UICollectionReusableView {
     }
 }
 
-class TrackerCollectionHeaderView {
+final class TrackerCollectionHeaderView {
     
     static let shared = TrackerSupplementaryViewCell(frame: .zero)
+    private init() {}
+    
 }
 
 

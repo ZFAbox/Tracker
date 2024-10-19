@@ -142,7 +142,7 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
         trackerName.translatesAutoresizingMaskIntoConstraints = false
         trackerName.text = ""
         trackerName.font = UIFont(name: "SFProDisplay-Regular", size: 17)
-        trackerName.textColor = .trackerBlack
+        trackerName.textColor = .generalTextColor
         trackerName.backgroundColor = .none
         trackerName.textContainerInset = UIEdgeInsets(top: 27, left: 0, bottom: 0, right: 0)
         trackerName.delegate = self
@@ -221,10 +221,10 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
         let createButtonText = NSLocalizedString("createButtonText", comment: "")
         button.setTitle(createButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        button.tintColor = .trackerWhite
-        button.backgroundColor = .trackerDarkGray
+        button.tintColor = .disableButtonTextColor
+        button.backgroundColor = .disableButtonColor
         button.addTarget(self, action: #selector(createTracker), for: .touchUpInside)
-        button.isEnabled = false
+        button.isUserInteractionEnabled = false
         return button
     }()
     
@@ -237,7 +237,7 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
         button.setTitle(cancelButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         button.tintColor = .trackerPink
-        button.backgroundColor = .trackerWhite
+        button.backgroundColor = .none
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.trackerPink.cgColor
         button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
@@ -253,10 +253,23 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
         addSubviews()
         setConstraints()
         textFieldLimitationMessage.removeFromSuperview()
+        traitCollectionDidChange(.current)
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        let isDarkStyle = traitCollection.userInterfaceStyle == .dark
+        view.backgroundColor = isDarkStyle ? . trackerBlack : .trackerWhite
+        titleLable.textColor = isDarkStyle ? .trackerWhite : .trackerBlack
+        layerTextFieldView.backgroundColor = isDarkStyle ? .trackerBackgroundOpacityDarkGray : .trackerBackgroundOpacityGray
+        placeholderLableView.textColor = isDarkStyle ? .trackerDarkGray : .trackerDarkGray
+        emojiAndColors.backgroundColor = isDarkStyle ? . trackerBlack : . trackerWhite
+        categoryAndScheduleTableView.backgroundColor = isDarkStyle ? . trackerBlack : . trackerWhite
+        cancelButton.backgroundColor = isDarkStyle ? .none : .none
     }
     
     @objc func clearText(){
         trackerNameTextField.text = ""
+        trackerName = ""
         UIView.animate(withDuration: 0.3) { [self] in
             self.placeholderLableView.isHidden = false
             hideClearButton()
@@ -297,11 +310,13 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
     
     private func isCreateButtonEnable() {
         if createIsCompleted() {
-            createButton.backgroundColor = .trackerBlack
-            createButton.isEnabled = true
+            createButton.backgroundColor = .activeButtonColor
+            createButton.tintColor = .activeButtonTextColor
+            createButton.isUserInteractionEnabled = true
         } else {
-            createButton.backgroundColor = .trackerDarkGray
-            createButton.isEnabled = false
+            createButton.backgroundColor = .disableButtonColor
+            createButton.tintColor = .disableButtonTextColor
+            createButton.isUserInteractionEnabled = false
         }
     }
     
@@ -469,8 +484,7 @@ extension RegularTrackerCreateViewController: UITableViewDataSource {
                 cell.additionalTitle.text = category
             }
         }
-        cell.backgroundColor = .trackerBackgroundOpacityGray
-        cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = .tableCellBackgoundColor
         return cell
     }
 }
@@ -480,7 +494,6 @@ extension RegularTrackerCreateViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 1 {
             let viewController = ScheduleViewController(delegate: self)
-//            viewController.delegate = self
             viewController.modalPresentationStyle = .popover
             self.present(viewController, animated: true)
         } else {
@@ -574,7 +587,7 @@ extension RegularTrackerCreateViewController: UICollectionViewDelegateFlowLayout
             }
             let selectedCell = collectionView.cellForItem(at: IndexPath(row: index ?? 0, section: indexPath.section)) as? EmojiAndColorCollectionViewCell
             UIView.animate(withDuration: 0.3) {
-                selectedCell?.backgroundColor = .trackerWhite
+                selectedCell?.backgroundColor = .applicationBackgroundColor
             }
         }
         

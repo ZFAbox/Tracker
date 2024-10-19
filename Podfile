@@ -5,6 +5,7 @@ target 'Tracker' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 pod 'YandexMobileMetrica/Dynamic', '4.5.0'
+pod 'SwiftGen', '~> 6.0'
   # Pods for Tracker
 
 end

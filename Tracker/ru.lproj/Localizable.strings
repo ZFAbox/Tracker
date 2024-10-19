@@ -1,0 +1,131 @@
+/*
+  Localizable.strings
+  Tracker
+
+  Created by Федор Завьялов on 02.09.2024.
+  
+*/
+
+//MARK: - OnboardViewController
+
+"pageOneText" = "Отслеживайте только то, что хотите";
+"pageTwoText" = "Даже если это не литры воды и йога";
+"startButtonText" = "Вот это технологии!";
+
+//MARK: - TrackerViewController
+
+// Main Screen
+"trackMainLable" = "Трэкеры";
+"searchFieldPlaceholder" = "Поиск";
+"emtyTrackerPlaceholderText" = "Что будем отслеживать?";
+"notFoundTrackerPlaceholderText" = "Ничего не найдено";
+"filterButtonText" = "Фильтры";
+"pinHeaderText" = "Закрепленные";
+
+//Context Menu
+"pinText" = "Закрепить";
+"unpinText" = "Открепить";
+"editText" = "Редактировать";
+"deletText" = "Удалить";
+
+//MARK: - TabBarViewController
+
+"trackers" = "Трэкеры";
+"statistic" = "Статистика";
+
+//MARK: - TrackerTypeSelectViewController
+
+"trackerTypeSelectTitle" = "Создание трекера";
+"habbitButtonText" = "Привычка";
+"notRegularButtonText" = "Нерегулярное событие";
+
+//MARK: - StatisticViewController
+
+"statisticMainLable" = "Статистика";
+
+"bestPeriod" = "Лучший период";
+"perfectDays" = "Идеальные дни";
+"trackersCompleted" = "Трекеров завершено";
+"averageValue" = "Среднее значение";
+"emtyStatisticsText" = "Анализировать пока нечего";
+
+//MARK: - RegularTrackerCreateViewController, NotRegularTrackerCreateViewController, RegularTrackerEditViewController
+
+"categorySelectMenu" = "Категория";
+"scheduleSelectMenu" = "Расписание";
+
+"emojiSelectMenu" = "Emoji";
+"colorSelectMenu" = "Цвет";
+
+"regularTrackerTitle" = "Новая привычка";
+"notRegularTrackerTitle" = "Новое нерегулярное событие";
+"regularTrackerEditTitle" = "Редактирование привычки";
+"notRegularTrackerEditTitle" = "Редактирование нерегулярного события";
+
+"trackerNamePlaceholder" = "Введите название трекера";
+
+"textLimitMessage" = "Ограничение 38 символов";
+
+"createButtonText" = "Создать";
+"cancelButtonText" = "Отменить";
+"saveButtonText" = "Сохранить";
+
+//MARK: - TrackerCategoriesList
+
+"categoryListTitle" = "Категория";
+"createCategoryButtonText" = "Добавить категорию";
+
+//MARK: - TrackerTableViewController
+
+"editCategory" = "Редактировать";
+"deleteCategory" = "Удалить";
+
+// Alert presenter
+
+"alertMessage" = "Эта категория точно не нужна?";
+"deleteAlertButtonText" = "Удалить";
+"cancelAlertButtonText" = "Отмена";
+
+//MARK: - TrackerCategoryCreate
+
+"categoryCreateTitleText" = "Новая категория";
+"categoryCreateTextFieldPlaceholderText" = "Введите название категории";
+"confirmCreateButtonText" = "Готово";
+
+//MARK: - TrackerCategoryEditor
+
+"categoryEditTitleText" = "Редактирование категории";
+"categoryEditTextFieldPlaceholderText" = "Введите название категории";
+"confirmEditButtonText" = "Готово";
+
+
+//MARK: - ScheduleViewController
+
+"scheduleTitle" = "Расписание";
+"confirmScheduleButtonText" = "Готово";
+
+//Weekday enum
+"Sunday" = "Воскресенье";
+"Monday" = "Понедельник";
+"Tuesday" = "Вторник";
+"Wednesday" = "Среда";
+"Thursday" = "Четверг";
+"Friday" = "Пятница";
+"Saturday" = "Суббота";
+
+"Sun" = "Вс";
+"Mon" = "Пн";
+"Tues" = "Вт";
+"Wed" = "Ср";
+"Thurs" = "Чт";
+"Fri" = "Пт";
+"Sat" = "Сб";
+
+//MARK: - FilterViewController
+
+"filterTitle" = "Фильтры";
+
+"allTrackers" = "Все трекеры";
+"trackerForToday" = "Трекеры на сегодня";
+"completedTrackers" = "Завершенные";
+"notCompletedTracker" = "Не завершенные";

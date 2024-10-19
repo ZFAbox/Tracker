@@ -8,21 +8,18 @@
 import Foundation
 import UIKit
 
-
 final class StatisticViewController: UIViewController, UITableViewDelegate {
     
     let bestPeriod = NSLocalizedString("bestPeriod", comment: "")
     let perfectDays = NSLocalizedString("perfectDays", comment: "")
     let trackersCompleted = NSLocalizedString("trackersCompleted", comment: "")
     let averageValue = NSLocalizedString("averageValue", comment: "")
-    
-    
     let viewModel: TrackerViewModel
     
     private lazy var statisticSections: [String] = {
         return [bestPeriod, perfectDays, trackersCompleted, averageValue]
     }()
-
+    
     private lazy var staticsticLabel: UILabel = {
         let lable = UILabel()
         lable.font = UIFont(name: "SFProDisplay-Bold", size: 34)
@@ -46,7 +43,6 @@ final class StatisticViewController: UIViewController, UITableViewDelegate {
         table.dataSource = self
         return table
     }()
-    
     
     private lazy var emptyStatisticImage: UIImageView = {
         let imageView = UIImageView()
@@ -72,7 +68,7 @@ final class StatisticViewController: UIViewController, UITableViewDelegate {
         placeholderView.sizeToFit()
         return placeholderView
     }()
-
+    
     init(viewModel: TrackerViewModel) {
         self.viewModel = viewModel
         super .init(nibName: nil, bundle: nil)
@@ -88,11 +84,11 @@ final class StatisticViewController: UIViewController, UITableViewDelegate {
         addSubviews()
         setConstraints()
         let statisticsValues: [Int] = {
-              return [viewModel.calculateBestPeriod(),
-                viewModel.calculatePerfectDays(),
-                viewModel.calculateTrackersCompleted(),
-                viewModel.calculateAverage()]
-            }()
+            return [viewModel.calculateBestPeriod(),
+                    viewModel.calculatePerfectDays(),
+                    viewModel.calculateTrackersCompleted(),
+                    viewModel.calculateAverage()]
+        }()
         let statisticsSum = statisticsValues.reduce(0, +)
         statisticTableView.isHidden = statisticsSum == 0 ? true : false
         traitCollectionDidChange(.current)
@@ -100,11 +96,11 @@ final class StatisticViewController: UIViewController, UITableViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         let statisticsValues: [Int] = {
-              return [viewModel.calculateBestPeriod(),
-                viewModel.calculatePerfectDays(),
-                viewModel.calculateTrackersCompleted(),
-                viewModel.calculateAverage()]
-            }()
+            return [viewModel.calculateBestPeriod(),
+                    viewModel.calculatePerfectDays(),
+                    viewModel.calculateTrackersCompleted(),
+                    viewModel.calculateAverage()]
+        }()
         let statisticsSum = statisticsValues.reduce(0, +)
         statisticTableView.isHidden = statisticsSum == 0 ? true : false
         statisticTableView.reloadData()
@@ -117,8 +113,6 @@ final class StatisticViewController: UIViewController, UITableViewDelegate {
             view.backgroundColor = .trackerBlack
             statisticTableView.backgroundColor = .trackerBlack
             staticsticLabel.textColor = .trackerWhite
-
-            
         } else {
             view.backgroundColor = .trackerWhite
             statisticTableView.backgroundColor = .trackerWhite
@@ -144,9 +138,9 @@ final class StatisticViewController: UIViewController, UITableViewDelegate {
     
     private func setTitleConstraints(){
         NSLayoutConstraint.activate([
-        staticsticLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
-        staticsticLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-        staticsticLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            staticsticLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
+            staticsticLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            staticsticLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
     

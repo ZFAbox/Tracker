@@ -10,13 +10,9 @@ import Foundation
 protocol TrackerViewModelProtocol: FilterViewControllerProtocol, TrackerStoreUpdateDelegateProtocol, TrackerCreateViewControllerProtocol, TrackerUpdateViewControllerProtocol, TrackerStoreUpdateDelegateProtocol, TrackerCollectionViewCellProtocol {
     
     var todayDate: Date? { get set }
-    
     var selectedDate: Date? { get set }
-    
     var searchedText: String { get set }
-    
     var isFilterSelected: Bool { get set }
-    
     var selectedFilter: String { get set }
     
     //MARK: - Bindings
@@ -63,19 +59,21 @@ protocol TrackerViewModelProtocol: FilterViewControllerProtocol, TrackerStoreUpd
     
     //MARK: - Metrica Methods
     
-    func screenOpenMetrica()
+    func report(event: Event, screen: Screen, item: Item?)
     
-    func screenClosedMetrica()
-    
-    func addTrackerMetrica()
-    
-    func completeTracker()
-    
-    func filterTrackerMetrica()
-    
-    func editTrackerMetrica()
-    
-    func deleteTrackerMetrica()
+//    func screenOpenMetrica()
+//    
+//    func screenClosedMetrica()
+//    
+//    func addTrackerMetrica()
+//    
+//    func completeTracker()
+//    
+//    func filterTrackerMetrica()
+//    
+//    func editTrackerMetrica()
+//    
+//    func deleteTrackerMetrica()
 
 //MARK: - Protocols and extensinons
 
@@ -259,6 +257,7 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
         if removeAllTrackers {
             trackerStore.removeAllTrackers()
         } else {
+            trackerStore.removeAllTrackers()
             guard let selectedDate = selectedDate else { return }
             if trackerStore.isVisibalteTrackersEmpty(searchedText: "", currentDate: selectedDate) {
                 let dateFormatter = DateFormatter()
@@ -282,32 +281,8 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
     
     //MARK: - Metrica Methods
     
-    func screenOpenMetrica() {
-        metrica.screenOpen()
-    }
-    
-    func screenClosedMetrica() {
-        metrica.screenClosed()
-    }
-    
-    func addTrackerMetrica() {
-        metrica.addTracker()
-    }
-    
-    func completeTracker() {
-        metrica.completeTracker()
-    }
-    
-    func filterTrackerMetrica() {
-        metrica.filterTracker()
-    }
-    
-    func editTrackerMetrica() {
-        metrica.editTracker()
-    }
-    
-    func deleteTrackerMetrica() {
-        metrica.deleteTracker()
+    func report (event: Event, screen: Screen, item: Item?) {
+        metrica.report(event: event, screen: screen, item: item)
     }
 }
 
@@ -474,4 +449,3 @@ extension TrackerViewModelMock {
         return period
     }
 }
-

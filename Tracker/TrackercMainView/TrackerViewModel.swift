@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
+class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
     
     var todayDate: Date? {
         didSet {
@@ -118,7 +118,8 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
     }
     
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date())
+        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date()) && trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date())
+        
     }
     
     func completedTrackersCount(id:UUID) -> Int {
@@ -149,32 +150,8 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
     
     //MARK: - Metrica Methods
     
-    func screenOpenMetrica() {
-        metrica.screenOpen()
-    }
-    
-    func screenClosedMetrica() {
-        metrica.screenClosed()
-    }
-    
-    func addTrackerMetrica() {
-        metrica.addTracker()
-    }
-    
-    func completeTracker() {
-        metrica.completeTracker()
-    }
-    
-    func filterTrackerMetrica() {
-        metrica.filterTracker()
-    }
-    
-    func editTrackerMetrica() {
-        metrica.editTracker()
-    }
-    
-    func deleteTrackerMetrica() {
-        metrica.deleteTracker()
+    func report (event: Event, screen: Screen, item: Item?) {
+        metrica.report(event: event, screen: screen, item: item)
     }
 }
 
@@ -308,7 +285,6 @@ extension TrackerViewModel {
                 }
             }
         }
-        print (perfectDates)
         if perfectDates.count == 0 {
             return 0
         } else if perfectDates.count == 1 {

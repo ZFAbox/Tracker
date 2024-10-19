@@ -14,9 +14,6 @@ final class TabBarViewController: UITabBarController {
     lazy var trackerViewController = TrackerViewController(viewModel: self.viewModel)
     lazy var statisticViewController = StatisticViewController(viewModel: self.viewModel)
     
-    @objc func tapPicker(){
-    }
-    
     enum TabBars: String {
         case trackers
         case statistic
@@ -39,14 +36,9 @@ final class TabBarViewController: UITabBarController {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        
-        if traitCollection.userInterfaceStyle == .dark {
-            self.tabBar.layer.borderColor = UIColor.trackerBorderDark.cgColor
-            self.tabBar.backgroundColor = .trackerBlack
-        } else {
-            self.tabBar.layer.borderColor = UIColor.trackerDarkGray.cgColor
-            self.tabBar.backgroundColor = . trackerWhite
-        }
+        let isDarkStryle = traitCollection.userInterfaceStyle == .dark
+        self.tabBar.layer.borderColor = isDarkStryle ? UIColor.trackerBorderDark.cgColor : UIColor.trackerDarkGray.cgColor
+        self.tabBar.backgroundColor = isDarkStryle ? .trackerBlack : .trackerWhite
     }
     
     func setupTabBar(){
@@ -63,27 +55,6 @@ final class TabBarViewController: UITabBarController {
         )
         
         self.viewControllers = [trackerViewController, statisticViewController]
-    }
-    
-    func setupNavigationBar(){
-        let leftNavigationbuttonImage = UIImage(named: "Tracker Add Plus")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftNavigationbuttonImage, style: .plain, target: self, action: #selector(addTarget))
-        self.navigationItem.leftBarButtonItem?.tintColor = .trackerBlack
-    }
-    
-    @objc func addTarget(){
-        print("Добавить цель")
-        let viewController = TrackerTypeSelectViewController()
-        viewController.viewModel = trackerViewController.viewModel
-        viewController.delegate = trackerViewController
-        viewController.modalPresentationStyle = .popover
-        self.present(viewController, animated: true)
-    }
-    
-    @objc func datePickerChangeValue(_ sender: UIDatePicker){
-        sender.layer.opacity = 1
-        let selectedDate = sender.date
-        trackerViewController.viewModel.selectedDate = selectedDate.removeTimeInfo
     }
 }
 

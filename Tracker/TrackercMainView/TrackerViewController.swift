@@ -7,25 +7,23 @@
 import Foundation
 import UIKit
 
-final class TrackerViewController: UIViewController{
+final class TrackerViewController: UIViewController, UIGestureRecognizerDelegate {
 
 //MARK: - Constants
     
     var viewModel: TrackerViewModelProtocol
-    
     private var trackerCellParameters = TrackerCellPrameters(numberOfCellsInRow: 2, height: 148, horizontalSpacing: 10, verticalSpacing: 0)
     
 //MARK: - Views
 
-    private lazy var addTracckerButton: UIButton = {
+    private lazy var addTrackerButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: "Tracker Add Plus")
+        let image = Asset.Images.trackerAddPlus.image
         button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .trackerBlack
         button.addTarget(self, action: #selector(addTarget), for: .touchUpInside)
         return button
-        
     }()
 
     private lazy var datePicker: UIDatePicker = {
@@ -54,18 +52,18 @@ final class TrackerViewController: UIViewController{
         trackerLabel.isUserInteractionEnabled = false
         return trackerLabel
     }()
-
+    
     private lazy var trackerLabel: UILabel = {
         let trackerLabel = UILabel()
         trackerLabel.font = UIFont(name: "SFProDisplay-Bold", size: 34)
-        let trackerMainLable = NSLocalizedString("trackMainLable", comment: "Main Lable")
+        let trackerMainLable = L10n.trackMainLable
         trackerLabel.text = trackerMainLable
         trackerLabel.translatesAutoresizingMaskIntoConstraints = false
         trackerLabel.textColor = .trackerBlack
         return trackerLabel
     }()
     
-    let searchFieldPlaceholder = NSLocalizedString("searchFieldPlaceholder", comment: "search field placeholder")
+    let searchFieldPlaceholder = L10n.searchFieldPlaceholder
     
     private lazy var searchField: UISearchBar = {
         let searchField = UISearchBar()
@@ -84,7 +82,7 @@ final class TrackerViewController: UIViewController{
     private lazy var emptyTrackerListImage: UIImageView = {
         let emptyTrackerListImage = UIImageView()
         emptyTrackerListImage.translatesAutoresizingMaskIntoConstraints = false
-        let image = UIImage(named: "Empty Tracker List") ?? UIImage()
+        let image = Asset.Images.emptyTrackerList.image
         emptyTrackerListImage.image = image
         return emptyTrackerListImage
     }()
@@ -92,7 +90,7 @@ final class TrackerViewController: UIViewController{
     private lazy var emptyTrackerListText: UILabel = {
         let emptyTrackerListText = UILabel()
         emptyTrackerListText.translatesAutoresizingMaskIntoConstraints = false
-        let emtyTrackerPlaceholderText = NSLocalizedString("emtyTrackerPlaceholderText", comment: "Text of empty placeholder")
+        let emtyTrackerPlaceholderText = L10n.emtyTrackerPlaceholderText
         emptyTrackerListText.text = emtyTrackerPlaceholderText
         emptyTrackerListText.font = UIFont(name: "SFProDisplay-Medium", size: 12)
         emptyTrackerListText.tintColor = .trackerBlack
@@ -124,7 +122,7 @@ final class TrackerViewController: UIViewController{
         filterButton.translatesAutoresizingMaskIntoConstraints = false
         filterButton.backgroundColor = .trackerBlue
         filterButton.layer.cornerRadius = 17
-        let filterButtonText = NSLocalizedString("filterButtonText", comment: "Text of filter button")
+        let filterButtonText = L10n.filterButtonText
         filterButton.setTitle(filterButtonText, for: .normal)
         filterButton.titleLabel?.font = UIFont(name: "SFProDisplay-Regular", size: 16)
         filterButton.titleLabel?.tintColor = .trackerWhite
@@ -144,15 +142,14 @@ final class TrackerViewController: UIViewController{
     override func viewWillAppear(_ animated: Bool) {
         viewModel.performFetches()
         updateTrackerCollectionView()
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        viewModel.screenOpenMetrica()
+        viewModel.report(event: Event.open, screen: Screen.main, item: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        viewModel.screenClosedMetrica()
+        viewModel.report(event: Event.close, screen: Screen.main, item: nil)
     }
     
     override func viewDidLoad() {
@@ -213,8 +210,7 @@ final class TrackerViewController: UIViewController{
     }
     
     @objc func addTarget(){
-        viewModel.addTrackerMetrica()
-        print("Добавить цель")
+        viewModel.report(event: Event.click, screen: Screen.main, item: Item.addTracker)
         let viewController = TrackerTypeSelectViewController()
         viewController.viewModel = viewModel
         viewController.delegate = self
@@ -229,7 +225,7 @@ final class TrackerViewController: UIViewController{
     }
     
     @objc func filterButtonTapped(){
-        viewModel.filterTrackerMetrica()
+        viewModel.report(event: Event.click, screen: Screen.main, item: Item.filterTracker)
         let vc = FilterViewController(delegate: viewModel, isFilterSelected: viewModel.isFilterSelected, selectedFilter: viewModel.selectedFilter)
         vc.modalPresentationStyle = .popover
         self.present(vc, animated: true)
@@ -247,26 +243,21 @@ final class TrackerViewController: UIViewController{
         trackerCollectionView.reloadData()
         
         if viewModel.isTrackerExists() {
-            let image = UIImage(named: "NoTracker")
+            let image = Asset.Images.noTracker.image
+//            let image = UIImage(named: "NoTracker")
             emptyTrackerListImage.image = image
-            let notFoundTrackerPlaceholderText = NSLocalizedString("notFoundTrackerPlaceholderText", comment: "Text of placeholder when trackers not found")
+            let notFoundTrackerPlaceholderText = L10n.notFoundTrackerPlaceholderText
             emptyTrackerListText.text = notFoundTrackerPlaceholderText
         } else {
-            let image = UIImage(named: "Empty Tracker List")
+            let image = Asset.Images.emptyTrackerList.image
+//            let image = UIImage(named: "Empty Tracker List")
             emptyTrackerListImage.image = image
-            let emtyTrackerPlaceholderText = NSLocalizedString("emtyTrackerPlaceholderText", comment: "Text of empty placeholder")
+            let emtyTrackerPlaceholderText = L10n.emtyTrackerPlaceholderText
             emptyTrackerListText.text = emtyTrackerPlaceholderText
         }
         
         trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
         filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
-    }
-    
-    func fontNames(){
-        for family in UIFont.familyNames.sorted() {
-            let names = UIFont.fontNames(forFamilyName: family)
-            print("Family: \(family) Font names: \(names)")
-        }
     }
     
 //MARK: - Add subview and constraints
@@ -280,7 +271,7 @@ final class TrackerViewController: UIViewController{
         view.addSubview(filterButton)
         view.addSubview(datePicker)
         view.addSubview(datePickerLable)
-        view.addSubview(addTracckerButton)
+        view.addSubview(addTrackerButton)
     }
     
     private func setDummySublayers(){
@@ -325,10 +316,10 @@ final class TrackerViewController: UIViewController{
     
     private func setAddTrackerButtonConstraints() {
         NSLayoutConstraint.activate([
-        addTracckerButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 49),
-        addTracckerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 18),
-        addTracckerButton.heightAnchor.constraint(equalToConstant: 18),
-        addTracckerButton.widthAnchor.constraint(equalToConstant: 18)
+        addTrackerButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 57),
+        addTrackerButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 18),
+        addTrackerButton.heightAnchor.constraint(equalToConstant: 18),
+        addTrackerButton.widthAnchor.constraint(equalToConstant: 18)
         ])
     }
     
@@ -434,9 +425,9 @@ extension TrackerViewController: UICollectionViewDataSource {
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerSupplementaryViewCell
         if (viewModel.numberOfSectionsPinCategory() == 1) && (indexPath.section == 0) {
             if id == "header" {
-                let headerTitleText = viewModel.headerPinTitle(for: indexPath)
-                headerView.titleLable.text = headerTitleText
-                print(headerTitleText)
+                let pinHeaderText = L10n.pinHeaderText
+//                let headerTitleText = viewModel.headerPinTitle(for: indexPath)
+                headerView.titleLable.text = pinHeaderText
             } else {
                 headerView.titleLable.text = ""
             }
@@ -444,7 +435,6 @@ extension TrackerViewController: UICollectionViewDataSource {
             if id == "header" {
                 let headerTitleText = viewModel.headerTitle(for: IndexPath(row: indexPath.row, section: indexPath.section - viewModel.numberOfSectionsPinCategory()))
                 headerView.titleLable.text = headerTitleText
-                print(headerTitleText)
             } else {
                 headerView.titleLable.text = ""
             }
@@ -459,7 +449,6 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         let height = CGFloat(trackerCellParameters.height)
         let width = (CGFloat(collectionView.frame.width) - CGFloat((trackerCellParameters.numberOfCellsInRow - 1)*trackerCellParameters.horizontalSpacing)) / CGFloat(trackerCellParameters.numberOfCellsInRow)
         let size = CGSize(width: width, height: height)
-        
         return size
     }
     
@@ -511,14 +500,17 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         let deletText = NSLocalizedString("deletText", comment: "")
         let removeAction = UIAction(title: deletText, attributes: UIMenuElement.Attributes.destructive, handler: { [weak self] _ in
             guard let self = self else { return }
-            let alert = UIAlertController(title: nil, message: "Эта категория точно не нужна?", preferredStyle: .actionSheet)
-            let alertDeleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+            let alertMessage = L10n.alertMessage
+            let deleteAlertButtonText = L10n.deleteAlertButtonText
+            let alert = UIAlertController(title: nil, message: alertMessage, preferredStyle: .actionSheet)
+            let alertDeleteAction = UIAlertAction(title: deleteAlertButtonText, style: .destructive) { _ in
             
                 if let indexPath = indexPaths.first {
                     self.removeTracker(indexPath: indexPath)
                 }
             }
-            let alertCancelAction = UIAlertAction(title: "Отменить", style: .cancel) { _ in
+            let cancelAlertButtonText = L10n.cancelAlertButtonText
+            let alertCancelAction = UIAlertAction(title: cancelAlertButtonText, style: .cancel) { _ in
                 alert.dismiss(animated: true)
             }
             alert.addAction(alertDeleteAction)
@@ -534,14 +526,14 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     
     func getPinAction(indexPath: IndexPath) -> UIAction {
         if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
-            let pinText = NSLocalizedString("unpinText", comment: "")
-            let unPinAction = UIAction(title: pinText, handler: { [weak self] _ in
+            let unpinText = L10n.unpinText
+            let unPinAction = UIAction(title: unpinText, handler: { [weak self] _ in
                 guard let self = self else { return }
                 self.unPinTracker(indexPath: indexPath)
             })
             return unPinAction
         } else {
-            let pinText = NSLocalizedString("pinText", comment: "")
+            let pinText = L10n.pinText
             let pinAction = UIAction(title: pinText, handler: { [weak self] _ in
                 guard let self = self else { return }
                     self.pinTracker(indexPath: IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory()))
@@ -559,10 +551,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func removeTracker(indexPath: IndexPath) {
-                viewModel.deleteTrackerMetrica()
-        //        viewModel.removeTracker(indexPath: indexPath)
-        
-        
+        viewModel.report(event: Event.click, screen: Screen.main, item: Item.deleteTracker)
         if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
             self.viewModel.removePinTracker(indexPath: indexPath)
         } else {
@@ -571,7 +560,7 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func editTracker(indexPath: IndexPath, isPined: Bool,tracker: Tracker, category: String, completedDays: Int) {
-        viewModel.editTrackerMetrica()
+        viewModel.report(event: Event.click, screen: Screen.main, item: Item.editTracker)
         if tracker.isRegular {
             let vc = RegularTrackerEditViewController(delegate: viewModel, tracker: tracker, category: category, indexPath: indexPath, isPined: isPined, completedDays: completedDays)
             vc.modalPresentationStyle = .popover
@@ -584,17 +573,10 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
-        if (self.viewModel.numberOfSectionsPinCategory() == 1 ) && (indexPath.section == 0) {
             let cellIndex = indexPath
             let cell = collectionView.cellForItem(at: cellIndex) as! TrackerCollectionViewCell
             let selectedView = cell.setSelectedView()
             return UITargetedPreview(view: selectedView)
-        } else {
-            let cellIndex = IndexPath(row: indexPath.row, section: indexPath.section - self.viewModel.numberOfSectionsPinCategory())
-            let cell = collectionView.cellForItem(at: cellIndex) as! TrackerCollectionViewCell
-            let selectedView = cell.setSelectedView()
-            return UITargetedPreview(view: selectedView)
-        }
     }
 }
 

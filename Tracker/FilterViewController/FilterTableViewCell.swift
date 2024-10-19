@@ -10,26 +10,23 @@ import UIKit
 
 final class FilterTableViewCell: UITableViewCell {
     
-    lazy var filterName: UILabel = {
+    private lazy var filterName: UILabel = {
         let lable = UILabel()
-        lable.translatesAutoresizingMaskIntoConstraints = false
         lable.text = "Категория"
-        lable.textColor = .trackerBlack
+        lable.textColor = .generalTextColor
         lable.font = UIFont(name: "SFProDisplay-Regular", size: 17)
         return lable
     }()
     
-    lazy var checkMark: UIImageView = {
+    private lazy var checkMark: UIImageView = {
         let  image = UIImage(named: "Check Mark")
         let  imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.tintColor = .trackerBlue
         return imageView
     }()
     
-    lazy var separatorView: UIView = {
+    private lazy var separatorView: UIView = {
         let separator = UIView()
-        separator.translatesAutoresizingMaskIntoConstraints = false
         separator.backgroundColor = .trackerDarkGrayOpacity70
         return separator
     }()
@@ -45,19 +42,40 @@ final class FilterTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func addSubiews(){
-        contentView.addSubview(filterName)
-        contentView.addSubview(separatorView)
-        contentView.addSubview(checkMark)
+    func setFilterNameText(_ filterNameText: String) {
+        self.filterName.text = filterNameText
     }
     
-    func setConstraints(){
+    func getFilterNameText() -> String {
+        guard let filterNameText = self.filterName.text else { return "" }
+        return filterNameText
+    }
+    func checkMarkIsHidden(_ isHidden: Bool){
+        self.checkMark.isHidden = isHidden
+    }
+    
+    func separateViewIsHidden(_ isHidden: Bool){
+        self.separatorView.isHidden = isHidden
+    }
+    
+    func isCheckMarkHidden() -> Bool{
+        return self.checkMark.isHidden
+    }
+    
+    private func addSubiews(){
+        [filterName, separatorView, checkMark].forEach { subView in
+            subView.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(subView)
+        }
+    }
+    
+    private func setConstraints(){
         setCategoryNameConstraints()
         setSeparatorConstraints()
         setCheckMarkConstraints()
     }
     
-    func setCategoryNameConstraints (){
+    private func setCategoryNameConstraints (){
         NSLayoutConstraint.activate([
             filterName.topAnchor.constraint(equalTo: contentView.topAnchor),
             filterName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -65,7 +83,7 @@ final class FilterTableViewCell: UITableViewCell {
         ])
     }
     
-    func setCheckMarkConstraints (){
+    private func setCheckMarkConstraints (){
         NSLayoutConstraint.activate([
             checkMark.centerYAnchor.constraint(equalTo: filterName.centerYAnchor),
             checkMark.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -21),
@@ -82,6 +100,5 @@ final class FilterTableViewCell: UITableViewCell {
             separatorView.heightAnchor.constraint(equalToConstant: 1)
         ])
     }
-    
 }
 

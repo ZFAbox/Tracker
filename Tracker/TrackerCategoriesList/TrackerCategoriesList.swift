@@ -15,27 +15,25 @@ protocol SelectCategoryForTrackerProtocl {
 final class TrackerCategoriesList: UIViewController {
     
     var trackerCategoriesViewModel: TrackerCategoriesViewModel
-    
     private var trackerTableViewController: TrackerTableViewController?
     
     private lazy var titleLable: UILabel = {
         let titleLable = UILabel()
-        titleLable.translatesAutoresizingMaskIntoConstraints = false
         let categoryListTitle = NSLocalizedString("categoryListTitle", comment: "")
         titleLable.text = categoryListTitle
+        titleLable.textColor = .titleTextColor
         titleLable.font = UIFont(name: "SFProDisplay-Medium", size: 16)
         return titleLable
     }()
     
     private lazy var createCategoryButton: UIButton = {
         let button = UIButton(type: .system)
-        button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
         let createCategoryButtonText = NSLocalizedString("createCategoryButtonText", comment: "")
         button.setTitle(createCategoryButtonText, for: .normal)
         button.titleLabel?.font = UIFont(name: "SFProDisplay-Medium", size: 16)
-        button.backgroundColor = .trackerBlack
-        button.tintColor = .trackerWhite
+        button.backgroundColor = .darkButtonColor
+        button.tintColor = .darkButtonTextColor
         button.addTarget(self, action: #selector(createCategory), for: .touchUpInside)
         return button
     }()
@@ -51,7 +49,7 @@ final class TrackerCategoriesList: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .trackerWhite
+        view.backgroundColor = .applicationBackgroundColor
         addSubviews()
         setConstraints()
         setTableView()
@@ -70,8 +68,10 @@ final class TrackerCategoriesList: UIViewController {
     }
         
     private func addSubviews(){
-        view.addSubview(titleLable)
-        view.addSubview(createCategoryButton)
+        [titleLable, createCategoryButton].forEach { subView in
+            subView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(subView)
+        }
     }
     
     private func setConstraints(){
