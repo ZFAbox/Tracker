@@ -24,7 +24,7 @@ final class TrackerTests: XCTestCase {
         
         assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .light)))
     }
-    
+
     func testEmptyViewControllerDark() {
         
         let dateFormatter = DateFormatter()
