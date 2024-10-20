@@ -47,17 +47,14 @@ final class TrackerPageViewController: UIPageViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         dataSource = self
         delegate = self
         
         if let firstPage = onboardPages.first {
             setViewControllers([firstPage], direction: .forward, animated: true)
         }
-        
         addSubviews()
         setConstraints()
-        
     }
     
     @objc func startButtonTapped() {
@@ -65,7 +62,6 @@ final class TrackerPageViewController: UIPageViewController {
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
-    
     
     private func addSubviews(){
         view.addSubview(startButton)

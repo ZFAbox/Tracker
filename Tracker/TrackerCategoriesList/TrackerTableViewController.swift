@@ -34,10 +34,7 @@ final class TrackerTableViewController: UIViewController {
     private lazy var emptyCategoryListText: UILabel = {
         let text = UILabel()
         text.translatesAutoresizingMaskIntoConstraints = false
-        text.text = """
-        Привычки и события можно
-        объединить по смыслу
-        """
+        text.text = L10n.emptyCategoryListText
         text.numberOfLines = 2
         text.textAlignment = .center
         text.font = UIFont(name: "SFProDisplay-Medium", size: 12)

@@ -37,10 +37,7 @@ final class ScheduleViewController: UIViewController {
         table.delegate = self
         table.register(ScheduleTableViewCell.self, forCellReuseIdentifier: "cell")
         table.rowHeight = 75
-//        table.separatorInset.right = 16
-//        table.separatorInset.left = 16
         table.separatorStyle = .none
-//        table.separatorColor = .trackerDarkGray
         table.isScrollEnabled = true
         return table
     }()
@@ -131,10 +128,10 @@ extension ScheduleViewController: UITableViewDataSource {
             cell.layer.cornerRadius = 16
             cell.clipsToBounds = true
             cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-            cell.separatorView.isHidden = true
+            cell.setSeparatorHidden(true)
         } else {
             cell.layer.cornerRadius = 0
-            cell.separatorView.isHidden = false
+            cell.setSeparatorHidden(false)
         }
         return cell
     }
@@ -168,6 +165,5 @@ extension ScheduleViewController: UITableViewDataSource {
 }
 
 extension ScheduleViewController: UITableViewDelegate {
-    
 }
 

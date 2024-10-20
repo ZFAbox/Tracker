@@ -52,7 +52,6 @@ extension UIColor {
                 }
                 numbers.append(number)
             }
-            //        print(numbers)
             r = CGFloat( numbers[0] * 16 + numbers[1] * 1)
             g = CGFloat( numbers[2] * 16 + numbers[3] * 1)
             b = CGFloat( numbers[4] * 16 + numbers[5] * 1)

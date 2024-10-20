@@ -60,20 +60,6 @@ protocol TrackerViewModelProtocol: FilterViewControllerProtocol, TrackerStoreUpd
     //MARK: - Metrica Methods
     
     func report(event: Event, screen: Screen, item: Item?)
-    
-//    func screenOpenMetrica()
-//    
-//    func screenClosedMetrica()
-//    
-//    func addTrackerMetrica()
-//    
-//    func completeTracker()
-//    
-//    func filterTrackerMetrica()
-//    
-//    func editTrackerMetrica()
-//    
-//    func deleteTrackerMetrica()
 
 //MARK: - Protocols and extensinons
 
@@ -223,7 +209,7 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
     }
     
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date())
+        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
     }
     
     func completedTrackersCount(id:UUID) -> Int {
@@ -244,7 +230,7 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
     }
     
     func performFetches() {
-        trackerStore.perform()
+        trackerStore.perform(searchedText: searchedText, selectedDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
     }
     
     func isTrackerExists() -> Bool {
@@ -259,7 +245,7 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
         } else {
             trackerStore.removeAllTrackers()
             guard let selectedDate = selectedDate else { return }
-            if trackerStore.isVisibalteTrackersEmpty(searchedText: "", currentDate: selectedDate) {
+            if trackerStore.isVisibalteTrackersEmpty(searchedText: "", currentDate: selectedDate, isFilterSelected: isFilterSelected, selectedFilter: selectedFilter) {
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "dd.MM.yyyy"
                 let date = dateFormatter.date(from: "01.01.2024")!

@@ -10,11 +10,8 @@ import Foundation
 final class TrackerCategoriesViewModel {
 
     var delegate: SelectCategoryForTrackerProtocl?
-    
     var isCategorySelected: Bool = false
-    
     private lazy var categoryStore = TrackerCategoryStore(delegate: self)
-    
     private var selectedCategory: String?
     
     private(set) var insertedTableIndexes: IndexPath? {

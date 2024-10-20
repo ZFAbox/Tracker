@@ -59,7 +59,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         let image = Asset.Images.pin.image
-//        let image = UIImage(named: "Pin")
         imageView.image = image
         imageView.tintColor = .trackerWhite
         return imageView
@@ -84,16 +83,14 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return dayMarkLable
     }()
     
-    
     let dayMarkButton: UIButton = {
         let dayMarkButton = UIButton(type: .system)
         dayMarkButton.translatesAutoresizingMaskIntoConstraints = false
         dayMarkButton.backgroundColor = .trackerGreen
         dayMarkButton.layer.cornerRadius = 17
         let buttonImage = Asset.Images.trackerPlus.image
-//        let buttonImage = UIImage(named: "Tracker Plus")
         dayMarkButton.setImage(buttonImage, for: .normal)
-        dayMarkButton.tintColor = .trackerWhite
+        dayMarkButton.tintColor = .applicationBackgroundColor
         dayMarkButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         return dayMarkButton
     }()
@@ -104,18 +101,13 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         addSubviews()
         setConstrains()
+        traitCollectionDidChange(.current)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        
-        if traitCollection.userInterfaceStyle == .dark {
-            dayMarkButton.tintColor = .trackerBlack
-            dayMarkLable.textColor = .trackerWhite
-        } else {
-            dayMarkButton.tintColor = .trackerWhite
-            dayMarkLable.textColor = .trackerBlack
-        }
+        let isDarkMode = traitCollection.userInterfaceStyle == .dark
+        dayMarkLable.textColor = isDarkMode ? .trackerWhite : .trackerBlack
     }
     
     func configure(with model: TrackerCellModel) {
@@ -134,7 +126,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         trackerView.backgroundColor = color
         dayMarkButton.backgroundColor = color
         
-        
         trackerNameLable.text = tracker.name
         emoji.text = tracker.emoji
         
@@ -145,25 +136,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         }
         
         if let selectedDate = currentDate {
-            if selectedDate > Date(){
-                dayMarkButton.isEnabled = false
-            } else {
-                dayMarkButton.isEnabled = true
-            }
-            let currentDate = DateFormatter.removeTime(date: Date())
-            if (!tracker.isRegular) && (completedDays > 0) && (selectedDate < currentDate) {
-                dayMarkButton.isEnabled = false
-                trackerDone()
-            }
-            if (selectedDate < currentDate) && isCompletedToday && (!tracker.isRegular) {
-                dayMarkButton.isEnabled = true
-                trackerDone()
-            }
-        }
-        
-        if (!tracker.isRegular) && isCompletedBefore {
-            dayMarkButton.isEnabled = false
-            trackerDone()
+            dayMarkButton.isEnabled = selectedDate > Date() ? false : true
         }
     }
     
@@ -191,21 +164,17 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     func trackerDone() {
         let buttonImage = Asset.Images.trackerDone.image
-//        let buttonImage = UIImage(named: "Tracker Done")
         self.dayMarkButton.layer.opacity = 0.7
         self.dayMarkButton.setImage(buttonImage, for: .normal)
         let dayText = L10n.numberOfDays(self.completedDays)
-//        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
         self.dayMarkLable.text = dayText
     }
     
     func trackerUndone() {
         let buttonImage = Asset.Images.trackerPlus.image
-//        let buttonImage = UIImage(named: "Tracker Plus")
         self.dayMarkButton.layer.opacity = 1
         self.dayMarkButton.setImage(buttonImage, for: .normal)
         let dayText = L10n.numberOfDays(self.completedDays)
-//        let dayText = String.localizedStringWithFormat(NSLocalizedString("numberOfDays", comment: "number of complited trackers"), self.completedDays)
         self.dayMarkLable.text = dayText
     }
     

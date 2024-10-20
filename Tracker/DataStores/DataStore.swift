@@ -11,7 +11,7 @@ import CoreData
 final class DataStore{
     
     static var shared = DataStore().persistentContainer
-    
+
     private init() {}
     
     lazy var persistentContainer: NSPersistentContainer = {

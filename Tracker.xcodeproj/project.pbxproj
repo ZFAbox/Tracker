@@ -44,7 +44,6 @@
 		900AB3CB2CB9CC7B00A28B12 /* RegularTrackerCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900AB3992CB9CC7B00A28B12 /* RegularTrackerCreateViewController.swift */; };
 		900AB3CC2CB9CC7B00A28B12 /* TrackerCategoriesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900AB3862CB9CC7B00A28B12 /* TrackerCategoriesList.swift */; };
 		900AB3CD2CB9CC7B00A28B12 /* TrackerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900AB38B2CB9CC7B00A28B12 /* TrackerTableViewController.swift */; };
-		900AB3CE2CB9CC7B00A28B12 /* Int+Days Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900AB3632CB9CC7B00A28B12 /* Int+Days Extension.swift */; };
 		900AB3CF2CB9CC7B00A28B12 /* RegularTrackerEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900AB3A02CB9CC7B00A28B12 /* RegularTrackerEditViewController.swift */; };
 		900AB3D02CB9CC7B00A28B12 /* UIViewController+hideKeyboard Extansion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900AB3652CB9CC7B00A28B12 /* UIViewController+hideKeyboard Extansion.swift */; };
 		900AB3D12CB9CC7B00A28B12 /* Array+Reoder Extendion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900AB3602CB9CC7B00A28B12 /* Array+Reoder Extendion.swift */; };
@@ -69,6 +68,8 @@
 		903398E02CB9C84B00F05A63 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 903398DF2CB9C84B00F05A63 /* SnapshotTesting */; };
 		90D928A02CB9D8B900E3B830 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 90D9289E2CB9D8B900E3B830 /* Localizable.stringsdict */; };
 		90D928A32CB9EB0F00E3B830 /* Weekdays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90D928A22CB9EB0F00E3B830 /* Weekdays.swift */; };
+		90EB0FDA2CC5B336007BEA42 /* TrackerCollectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90EB0FD92CC5B336007BEA42 /* TrackerCollectionHeaderView.swift */; };
+		90EB0FDC2CC5B37A007BEA42 /* EmojiAndColorSupplementaryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90EB0FDB2CC5B37A007BEA42 /* EmojiAndColorSupplementaryHeaderView.swift */; };
 		9F9EAEE82CBD1D1A00C1A08B /* Metrica Parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F9EAEE72CBD1D1900C1A08B /* Metrica Parameters.swift */; };
 		9FA3F5C62CC0F63700BF46A7 /* Strings+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FA3F5C52CC0F63700BF46A7 /* Strings+Generated.swift */; };
 		9FA3F5C82CC0F9FC00BF46A7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9FA3F5C72CC0F9FC00BF46A7 /* LaunchScreen.storyboard */; };
@@ -95,7 +96,6 @@
 		900AB3602CB9CC7B00A28B12 /* Array+Reoder Extendion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Reoder Extendion.swift"; sourceTree = "<group>"; };
 		900AB3612CB9CC7B00A28B12 /* Date+Remove Time Day Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Remove Time Day Extension.swift"; sourceTree = "<group>"; };
 		900AB3622CB9CC7B00A28B12 /* DateFormatter+weekday Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+weekday Extension.swift"; sourceTree = "<group>"; };
-		900AB3632CB9CC7B00A28B12 /* Int+Days Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Days Extension.swift"; sourceTree = "<group>"; };
 		900AB3642CB9CC7B00A28B12 /* UIColor+Hex Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex Extension.swift"; sourceTree = "<group>"; };
 		900AB3652CB9CC7B00A28B12 /* UIViewController+hideKeyboard Extansion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+hideKeyboard Extansion.swift"; sourceTree = "<group>"; };
 		900AB3672CB9CC7B00A28B12 /* FilterTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTableViewCell.swift; sourceTree = "<group>"; };
@@ -150,6 +150,8 @@
 		90D9289F2CB9D8B900E3B830 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		90D928A12CB9D8BF00E3B830 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		90D928A22CB9EB0F00E3B830 /* Weekdays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weekdays.swift; sourceTree = "<group>"; };
+		90EB0FD92CC5B336007BEA42 /* TrackerCollectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCollectionHeaderView.swift; sourceTree = "<group>"; };
+		90EB0FDB2CC5B37A007BEA42 /* EmojiAndColorSupplementaryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiAndColorSupplementaryHeaderView.swift; sourceTree = "<group>"; };
 		9F8C90B32CB90735008879D9 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F8C90C92CB90737008879D9 /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F9EAEE72CBD1D1900C1A08B /* Metrica Parameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Metrica Parameters.swift"; sourceTree = "<group>"; };
@@ -206,7 +208,6 @@
 				900AB3602CB9CC7B00A28B12 /* Array+Reoder Extendion.swift */,
 				900AB3612CB9CC7B00A28B12 /* Date+Remove Time Day Extension.swift */,
 				900AB3622CB9CC7B00A28B12 /* DateFormatter+weekday Extension.swift */,
-				900AB3632CB9CC7B00A28B12 /* Int+Days Extension.swift */,
 				900AB3642CB9CC7B00A28B12 /* UIColor+Hex Extension.swift */,
 				900AB3652CB9CC7B00A28B12 /* UIViewController+hideKeyboard Extansion.swift */,
 			);
@@ -313,6 +314,7 @@
 				900AB38F2CB9CC7B00A28B12 /* TrackerCollectionViewCell.swift */,
 				900AB3902CB9CC7B00A28B12 /* TrackerSupplementaryViewCell.swift */,
 				900AB3932CB9CC7B00A28B12 /* TrackerViewModelMock.swift */,
+				90EB0FD92CC5B336007BEA42 /* TrackerCollectionHeaderView.swift */,
 			);
 			path = TrackercMainView;
 			sourceTree = "<group>";
@@ -325,6 +327,7 @@
 				900AB3982CB9CC7B00A28B12 /* NotRegularTrackerCreateViewController.swift */,
 				900AB3992CB9CC7B00A28B12 /* RegularTrackerCreateViewController.swift */,
 				900AB39A2CB9CC7B00A28B12 /* TrackerCreateViewCell.swift */,
+				90EB0FDB2CC5B37A007BEA42 /* EmojiAndColorSupplementaryHeaderView.swift */,
 			);
 			path = TrackerCreateView;
 			sourceTree = "<group>";
@@ -598,6 +601,7 @@
 				900AB3B82CB9CC7B00A28B12 /* TrackerSupplementaryViewCell.swift in Sources */,
 				900AB3B92CB9CC7B00A28B12 /* TrackerViewController.swift in Sources */,
 				900AB3BA2CB9CC7B00A28B12 /* TrackerCreateViewCell.swift in Sources */,
+				90EB0FDA2CC5B336007BEA42 /* TrackerCollectionHeaderView.swift in Sources */,
 				902521A42CC3082800EBA578 /* ScheduleTableViewCell.swift in Sources */,
 				9FA3F5C62CC0F63700BF46A7 /* Strings+Generated.swift in Sources */,
 				900AB3BB2CB9CC7B00A28B12 /* DateFormatter+weekday Extension.swift in Sources */,
@@ -609,6 +613,7 @@
 				900AB3C12CB9CC7B00A28B12 /* TrackerViewModelMock.swift in Sources */,
 				900AB3C22CB9CC7B00A28B12 /* TrackerStore.swift in Sources */,
 				900AB3C32CB9CC7B00A28B12 /* Date+Remove Time Day Extension.swift in Sources */,
+				90EB0FDC2CC5B37A007BEA42 /* EmojiAndColorSupplementaryHeaderView.swift in Sources */,
 				900AB3C42CB9CC7B00A28B12 /* UIColors+Tracker Colors Extension.swift in Sources */,
 				900AB3C52CB9CC7B00A28B12 /* StatisticViewController.swift in Sources */,
 				900AB3C62CB9CC7B00A28B12 /* FilterTableViewCell.swift in Sources */,
@@ -619,7 +624,6 @@
 				900AB3CB2CB9CC7B00A28B12 /* RegularTrackerCreateViewController.swift in Sources */,
 				900AB3CC2CB9CC7B00A28B12 /* TrackerCategoriesList.swift in Sources */,
 				900AB3CD2CB9CC7B00A28B12 /* TrackerTableViewController.swift in Sources */,
-				900AB3CE2CB9CC7B00A28B12 /* Int+Days Extension.swift in Sources */,
 				900AB3CF2CB9CC7B00A28B12 /* RegularTrackerEditViewController.swift in Sources */,
 				900AB3D02CB9CC7B00A28B12 /* UIViewController+hideKeyboard Extansion.swift in Sources */,
 				900AB3D12CB9CC7B00A28B12 /* Array+Reoder Extendion.swift in Sources */,

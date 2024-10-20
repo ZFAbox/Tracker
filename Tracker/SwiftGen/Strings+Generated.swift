@@ -60,6 +60,9 @@ internal enum L10n {
   internal static let editText = L10n.tr("Localizable", "editText", fallback: "Редактировать")
   /// Emoji
   internal static let emojiSelectMenu = L10n.tr("Localizable", "emojiSelectMenu", fallback: "Emoji")
+  /// Привычки и события можно
+  /// объединить по смыслу
+  internal static let emptyCategoryListText = L10n.tr("Localizable", "emptyCategoryListText", fallback: "Привычки и события можно\nобъединить по смыслу")
   /// Анализировать пока нечего
   internal static let emtyStatisticsText = L10n.tr("Localizable", "emtyStatisticsText", fallback: "Анализировать пока нечего")
   /// Что будем отслеживать?

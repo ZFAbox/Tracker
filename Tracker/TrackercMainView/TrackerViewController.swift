@@ -175,7 +175,6 @@ final class TrackerViewController: UIViewController, UIGestureRecognizerDelegate
             searchField.layer.backgroundColor = UIColor.trackerBlack.cgColor
             searchField.barTintColor = .trackerBlack
             searchField.searchTextField.attributedPlaceholder = NSAttributedString(string: searchFieldPlaceholder, attributes: [NSAttributedString.Key.foregroundColor : UIColor.trackerWhite])
-            
         } else {
             view.backgroundColor = .trackerWhite
             trackerCollectionView.backgroundColor = .trackerWhite
@@ -244,20 +243,18 @@ final class TrackerViewController: UIViewController, UIGestureRecognizerDelegate
         
         if viewModel.isTrackerExists() {
             let image = Asset.Images.noTracker.image
-//            let image = UIImage(named: "NoTracker")
             emptyTrackerListImage.image = image
             let notFoundTrackerPlaceholderText = L10n.notFoundTrackerPlaceholderText
             emptyTrackerListText.text = notFoundTrackerPlaceholderText
         } else {
             let image = Asset.Images.emptyTrackerList.image
-//            let image = UIImage(named: "Empty Tracker List")
             emptyTrackerListImage.image = image
             let emtyTrackerPlaceholderText = L10n.emtyTrackerPlaceholderText
             emptyTrackerListText.text = emtyTrackerPlaceholderText
         }
         
         trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
-        filterButton.isHidden = viewModel.isVisibalteTrackersEmpty()
+        filterButton.isHidden = !viewModel.isTrackerExists()
     }
     
 //MARK: - Add subview and constraints
@@ -426,7 +423,6 @@ extension TrackerViewController: UICollectionViewDataSource {
         if (viewModel.numberOfSectionsPinCategory() == 1) && (indexPath.section == 0) {
             if id == "header" {
                 let pinHeaderText = L10n.pinHeaderText
-//                let headerTitleText = viewModel.headerPinTitle(for: indexPath)
                 headerView.titleLable.text = pinHeaderText
             } else {
                 headerView.titleLable.text = ""
@@ -440,7 +436,6 @@ extension TrackerViewController: UICollectionViewDataSource {
             }
         }
         return headerView
-            
     }
 }
 

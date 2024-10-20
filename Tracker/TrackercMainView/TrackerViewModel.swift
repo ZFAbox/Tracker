@@ -7,7 +7,7 @@
 
 import Foundation
 
-class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
+final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
     
     var todayDate: Date? {
         didSet {
@@ -20,6 +20,9 @@ class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
     var selectedDate: Date? {
         didSet {
             let selectedDate = selectedDate ?? DateFormatter.removeTime(date: Date())
+            if (selectedFilter == L10n.trackerForToday) && (selectedDate != todayDate) {
+                selectedFilter = L10n.allTrackers
+            }
             updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
             currentDateBinding?(selectedDate)
         }
@@ -33,9 +36,9 @@ class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
         }
     }
     
-    var isFilterSelected: Bool = false
+    var isFilterSelected: Bool = true
     
-    var selectedFilter: String = "" {
+    var selectedFilter: String = L10n.allTrackers {
         didSet{
             guard let selectedDate = selectedDate else { return }
             updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
@@ -52,7 +55,7 @@ class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
     
     //MARK: - CoreData Constants
     
-    private lazy var trackerStore = TrackerStore(delegate: self)//, currentDate: selectedDate, searchedText: searchedText)
+    private lazy var trackerStore = TrackerStore(delegate: self)
     private var trackerRecordStore: TrackerRecordStore
     
     //MARK: - Bindings
@@ -118,7 +121,7 @@ class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
     }
     
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date()) && trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date())
+        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter) && trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
         
     }
     
@@ -140,13 +143,12 @@ class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProtocol {
     }
     
     func performFetches() {
-        trackerStore.perform()
+        trackerStore.perform(searchedText: searchedText, selectedDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
     }
     
     func isTrackerExists() -> Bool {
         trackerStore.isTrackersExist()
     }
-
     
     //MARK: - Metrica Methods
     
@@ -241,7 +243,6 @@ extension TrackerViewModel: TrackerUpdateViewControllerProtocol {
     }
 }
 
-
 extension TrackerViewModel {
     
     func calculateAverage() -> Int {
@@ -270,7 +271,6 @@ extension TrackerViewModel {
     }
     
     func calculateBestPeriod() -> Int {
-        
         let trackerDates = trackerRecordStore.getCompletedDatesArray()
         var period = 1
         var perfectDates: [Date] = []
@@ -306,13 +306,9 @@ extension TrackerViewModel {
         }
     }
     
-    
     func daysBetweenDate(startDate: Date, endDate: Date) -> Int {
-
         let calendar = Calendar.current
-
         let components = calendar.dateComponents([.day], from: startDate, to: endDate)
-        
         guard let period = components.day else { return 0}
         return period
     }

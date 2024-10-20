@@ -71,9 +71,7 @@ final class FilterViewController: UIViewController {
         setConstrints()
         traitCollectionDidChange(.current)
     }
-    
-    
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         let trackerForToday = NSLocalizedString("trackerForToday", comment: "")
         if selectedFilter == trackerForToday {
@@ -135,11 +133,12 @@ extension FilterViewController: UITableViewDelegate {
         let cell = tableView.cellForRow(at: indexPath) as! FilterTableViewCell
         if !cell.isCheckMarkHidden()  {
             cell.checkMarkIsHidden(true)
-            isFilterSelected = false
-            selectedFilter = ""
+            isFilterSelected = true
+            selectedFilter = L10n.allTrackers
         } else {
             cell.checkMarkIsHidden(false)
             selectedFilter = cell.getFilterNameText()
+            print(selectedFilter) // Remove
             isFilterSelected = true
             for cellIndex in 0...filters.count - 1 {
                 if cellIndex != indexPath.row {
@@ -147,6 +146,7 @@ extension FilterViewController: UITableViewDelegate {
                     otherCell.checkMarkIsHidden(true)
                 }
             }
+            self.dismiss(animated: true)
         }
     }
 }

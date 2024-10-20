@@ -79,6 +79,7 @@ Created by Fedor Zavyalov on 02.09.2024.
 
 "categoryListTitle" = "Category";
 "createCategoryButtonText" = "Add Category";
+"emptyCategoryListText" = "Habits and events can be\ncombine by meaning";
 
 //MARK: - TrackerTableViewController
 
@@ -124,3 +125,12 @@ Created by Fedor Zavyalov on 02.09.2024.
 "Thurs" = "Thu";
 "Fri" = "Fri";
 "Sat" = "Sat";
+
+//MARK: - Filter View Controller
+
+"filterTitle" = "Filters";
+
+"allTrackers" = "All trackers";
+"trackerForToday" = "Trackers for today";
+"completedTrackers" = "Completed";
+"notCompletedTracker" = "Not completed";

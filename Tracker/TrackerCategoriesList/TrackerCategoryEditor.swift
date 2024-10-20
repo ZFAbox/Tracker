@@ -140,7 +140,6 @@ final class TrackerCategoryEditor: UIViewController {
     }
 }
 
-
 extension TrackerCategoryEditor: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

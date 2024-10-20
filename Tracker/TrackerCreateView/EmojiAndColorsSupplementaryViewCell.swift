@@ -34,8 +34,3 @@ class EmojiAndColorsSupplementaryViewCell: UICollectionReusableView {
     }
 }
 
-class EmojiAndColorSupplementaryHeaderView {
-    
-    static let shared = EmojiAndColorsSupplementaryViewCell(frame: .zero)
-    private init() {}
-}

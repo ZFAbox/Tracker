@@ -10,7 +10,7 @@ import UIKit
 
 final class ScheduleTableViewCell: UITableViewCell {
     
-    lazy var separatorView: UIView = {
+    private lazy var separatorView: UIView = {
         let separator = UIView()
         separator.backgroundColor = .trackerDarkGrayOpacity70
         return separator
@@ -30,6 +30,10 @@ final class ScheduleTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setSeparatorHidden(_ isHidden: Bool){
+        separatorView.isHidden = isHidden
     }
     
     func addSubiews(){
@@ -60,5 +64,4 @@ final class ScheduleTableViewCell: UITableViewCell {
             switchButton.heightAnchor.constraint(equalToConstant: 31)
         ])
     }
-    
 }

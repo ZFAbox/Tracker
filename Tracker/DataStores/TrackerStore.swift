@@ -46,7 +46,7 @@ final class TrackerStore: NSObject {
         let currentDate = DateFormatter.removeTime(date: Date())
         let searchedText = ""
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        let predicate = getPinPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
+        let predicate = getPinPredicate(searchedText: searchedText, selectedDate: currentDate, isFileterSelected: false, selectedFilter: "")
         fetchRequest.predicate = predicate
         let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryName), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
@@ -64,7 +64,7 @@ final class TrackerStore: NSObject {
         let currentDate = DateFormatter.removeTime(date: Date())
         let searchedText = ""
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
+        let predicate = getPredicate(searchedText: searchedText, selectedDate: currentDate, isFileterSelected: false, selectedFilter: "")
         fetchRequest.predicate = predicate
         let sortDescriptor = NSSortDescriptor(key: #keyPath(TrackerCoreData.category.categoryName), ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
@@ -78,9 +78,9 @@ final class TrackerStore: NSObject {
         return fetchedResultController
     }()
     
-    func perform(){
-        fetchedResultController.fetchRequest.predicate = getPredicate(searchedText: "", currentDate: DateFormatter.removeTime(date: Date()), isFileterSelected: false, selectedFilter: "")
-        fetchedResultControllerPinCategories.fetchRequest.predicate = getPinPredicate(searchedText: "", currentDate: DateFormatter.removeTime(date: Date()), isFileterSelected: false, selectedFilter: "")
+    func perform(searchedText: String, selectedDate: Date, isFilterSelected: Bool, selectedFilter: String){
+        fetchedResultController.fetchRequest.predicate = getPredicate(searchedText: searchedText, selectedDate: selectedDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
+        fetchedResultControllerPinCategories.fetchRequest.predicate = getPinPredicate(searchedText: searchedText, selectedDate: selectedDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
         try? fetchedResultController.performFetch()
         try? fetchedResultControllerPinCategories.performFetch()
     }
@@ -107,7 +107,6 @@ final class TrackerStore: NSObject {
         performFetch()
     }
     
-    
     func updateRecord(categoryName: String, tracker: Tracker, indexPath: IndexPath, isPined: Bool) {
         if isPined {
             let trackerData = fetchedResultControllerPinCategories.object(at: indexPath)
@@ -133,7 +132,6 @@ final class TrackerStore: NSObject {
             trackerData.emoji = tracker.emoji
             trackerData.color = UIColor.getHexColor(from: tracker.color)
             trackerData.schedule = tracker.schedule.joined(separator: ",")
-            
             let request = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
             request.predicate = NSPredicate(format: "%K == '\(categoryName)'", #keyPath(TrackerCategoryCoreData.categoryName))
             if let category = try? context.fetch(request).first {
@@ -148,130 +146,93 @@ final class TrackerStore: NSObject {
         performFetch()
     }
     
-    
     func updateTrackerList(currentDate: Date, searchedText: String, isFilterSelected: Bool, selectedFilter: String) {
-        let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
-        let pinPredicate = getPinPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
+        let predicate = getPredicate(searchedText: searchedText, selectedDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
+        let pinPredicate = getPinPredicate(searchedText: searchedText, selectedDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
         fetchedResultController.fetchRequest.predicate = predicate
         fetchedResultControllerPinCategories.fetchRequest.predicate = pinPredicate
         performFetch()
     }
     
-    func getPinPredicate(searchedText: String, currentDate: Date, isFileterSelected: Bool, selectedFilter: String) -> NSPredicate {
+    func getPinPredicate(searchedText: String, selectedDate: Date, isFileterSelected: Bool, selectedFilter: String) -> NSPredicate {
         let allTrackers = NSLocalizedString("allTrackers", comment: "")
         let trackerForToday = NSLocalizedString("trackerForToday", comment: "")
         let completedTrackers = NSLocalizedString("completedTrackers", comment: "")
         let notCompletedTracker = NSLocalizedString("notCompletedTracker", comment: "")
-        let weekday = DateFormatter.weekday(date: currentDate)
-        
-        var predicate = NSPredicate(format: "%K == 'Закрепленные'", #keyPath(TrackerCoreData.category.categoryName))
+        let weekday = DateFormatter.weekday(date: selectedDate)
     
+        var predicate = NSPredicate(format: "%K == 'Закрепленные'", #keyPath(TrackerCoreData.category.categoryName))
         let datePredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
-
         let textPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.name.lowercased), searchedText)
         
         if isFileterSelected && (selectedFilter == allTrackers) {
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate])
-            
+            let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ setAllTrackersForSelectedDate, predicate, datePredicate])
         } else if isFileterSelected && (selectedFilter == trackerForToday) {
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate])
-            
+            let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ setAllTrackersForSelectedDate, predicate, datePredicate])
         } else if isFileterSelected && (selectedFilter == completedTrackers) {
-            let completed = NSPredicate(format: "Any %K == %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+            let completed = NSPredicate(format: "Any %K == %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate)
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate, completed])
-            
         } else if isFileterSelected && (selectedFilter == notCompletedTracker) {
-            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
-            let notComppletedBeforeCurrentDate = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate))
-            
-            let notRegularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, notComppletedBeforeCurrentDate])
-            
-            let regular = NSPredicate(format: "%K == true", #keyPath(TrackerCoreData.isRegular))
-            let notCompleted = NSPredicate(format: "Any %K != %@ OR Any %K == nil" ,  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate )
-            
-            let regularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [regular, notCompleted])
-            
-            let notCompletedTrackers = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [notRegularAndNotCompleted, regularAndNotCompleted])
+            let notCompletedTrackers = NSPredicate(format: "Any %K != %@ OR Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate))
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate, datePredicate, notCompletedTrackers])
         } else {
-
-            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
-            let isCompletedBeforeCurrentDate = NSPredicate(format: "Any %K < %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let isCompletedAfterCurrentDate = NSPredicate(format: "Any %K > %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let neverCompleted = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedBeforeCurrentDate])
-            let notRegularAndCompletedAfter = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedAfterCurrentDate])
-            let removeCompletednotRegular = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompleted])
-            let removeCompletednotRegularAfter = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompletedAfter])
-            let notregularAndCompletedExcluded = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [removeCompletednotRegular, removeCompletednotRegularAfter])
-            let notCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [neverCompleted, notregularAndCompletedExcluded])
-            
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ notCompleted, predicate, datePredicate])
+            let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ setAllTrackersForSelectedDate, predicate, datePredicate])
         }
-        
         if !searchedText.isEmpty {
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate, textPredicate])
         }
         return predicate
     }
     
-    func getPredicate (searchedText: String, currentDate: Date, isFileterSelected: Bool, selectedFilter: String) -> NSPredicate {
-        
+    func getPredicate (searchedText: String, selectedDate: Date, isFileterSelected: Bool, selectedFilter: String) -> NSPredicate {
         let allTrackers = NSLocalizedString("allTrackers", comment: "")
         let trackerForToday = NSLocalizedString("trackerForToday", comment: "")
         let completedTrackers = NSLocalizedString("completedTrackers", comment: "")
         let notCompletedTracker = NSLocalizedString("notCompletedTracker", comment: "")
-        let weekday = DateFormatter.weekday(date: currentDate)
+        let weekday = DateFormatter.weekday(date: selectedDate)
         
         var predicate = NSPredicate(format: "%K != 'Закрепленные'", #keyPath(TrackerCoreData.category.categoryName))
     
         let datePredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
-        
         let textPredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.name.lowercased), searchedText)
-        
+    
         if isFileterSelected && (selectedFilter == allTrackers) {
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate])
-            
+            let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ setAllTrackersForSelectedDate, predicate, datePredicate])
         } else if isFileterSelected && (selectedFilter == trackerForToday) {
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate])
-            
+            let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ setAllTrackersForSelectedDate, predicate, datePredicate])
         } else if isFileterSelected && (selectedFilter == completedTrackers) {
-            let completed = NSPredicate(format: "Any %K == %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
+            let completed = NSPredicate(format: "Any %K == %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate)
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate, completed])
-            
         } else if isFileterSelected && (selectedFilter == notCompletedTracker) {
-            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
-            let notComppletedBeforeCurrentDate = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate))
-            
-            let notRegularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, notComppletedBeforeCurrentDate])
-            
-            let regular = NSPredicate(format: "%K == true", #keyPath(TrackerCoreData.isRegular))
-            let notCompleted = NSPredicate(format: "Any %K != %@ OR Any %K == nil" ,  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate )
-            
-            let regularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [regular, notCompleted])
-            
-            let notCompletedTrackers = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [notRegularAndNotCompleted, regularAndNotCompleted])
+            let notCompletedTrackers = NSPredicate(format: "Any %K != %@ OR Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate))
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate, datePredicate, notCompletedTrackers])
         } else {
-            
-            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
-            let isCompletedBeforeCurrentDate = NSPredicate(format: "Any %K < %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let isCompletedAfterCurrentDate = NSPredicate(format: "Any %K > %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let neverCompleted = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), currentDate as NSDate)
-            let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedBeforeCurrentDate])
-            let notRegularAndCompletedAfter = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedAfterCurrentDate])
-            let removeCompletednotRegular = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompleted])
-            let removeCompletednotRegularAfter = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompletedAfter])
-            let notregularAndCompletedExcluded = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [removeCompletednotRegular, removeCompletednotRegularAfter])
-            let notCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [neverCompleted, notregularAndCompletedExcluded])
-            
-            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ notCompleted, predicate, datePredicate])
+            let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
+            predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ setAllTrackersForSelectedDate, predicate, datePredicate])
         }
-        
         if !searchedText.isEmpty {
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate, textPredicate])
         }
         return predicate
+    }
+    
+    func setAllTrackersForSelectedDatePredicate(selectedDate: Date) -> NSPredicate {
+        let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
+        let isCompletedBeforeCurrentDate = NSPredicate(format: "Any %K < %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate)
+        let isCompletedAfterCurrentDate = NSPredicate(format: "Any %K > %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate)
+        let neverCompleted = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate)
+        let notRegularAndCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedBeforeCurrentDate])
+        let notRegularAndCompletedAfter = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, isCompletedAfterCurrentDate])
+        let removeCompletednotRegular = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompleted])
+        let removeCompletednotRegularAfter = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.not, subpredicates: [notRegularAndCompletedAfter])
+        let notregularAndCompletedExcluded = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [removeCompletednotRegular, removeCompletednotRegularAfter])
+        let allTrackersForSelectedDate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [neverCompleted, notregularAndCompletedExcluded])
+        return allTrackersForSelectedDate
     }
     
     var numberOfSections: Int {
@@ -397,9 +358,9 @@ final class TrackerStore: NSObject {
         }
     }
     
-    func isVisibalteTrackersEmpty(searchedText: String, currentDate: Date) -> Bool {
+    func isVisibalteTrackersEmpty(searchedText: String, currentDate: Date, isFilterSelected: Bool, selectedFilter: String) -> Bool {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        let predicate = getPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
+        let predicate = getPredicate(searchedText: searchedText, selectedDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
         request.predicate = predicate
         guard let trackerCoreData = try? context.fetch(request) else { return true}
         if trackerCoreData.isEmpty {
@@ -409,9 +370,9 @@ final class TrackerStore: NSObject {
         }
     }
     
-    func isVisibaltePinTrackersEmpty(searchedText: String, currentDate: Date) -> Bool {
+    func isVisibaltePinTrackersEmpty(searchedText: String, currentDate: Date, isFilterSelected: Bool, selectedFilter: String) -> Bool {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-        let predicate = getPinPredicate(searchedText: searchedText, currentDate: currentDate, isFileterSelected: false, selectedFilter: "")
+        let predicate = getPinPredicate(searchedText: searchedText, selectedDate: currentDate, isFileterSelected: isFilterSelected, selectedFilter: selectedFilter)
         request.predicate = predicate
         guard let trackerCoreData = try? context.fetch(request) else { return true}
         if trackerCoreData.isEmpty {
@@ -465,16 +426,12 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         insertedIndexes = IndexPath()
         deleteIndexes = IndexPath()
         oldNumberOfSection = fetchedResultController.sections?.count ?? 0
-        //        numberOfItems = fetchedResultController.sections
         oldNumberOfPinSection = fetchedResultControllerPinCategories.sections?.count ?? 0
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        //        if let indexPath = insertedIndexes {
-        //            delegate?.addTracker(indexPath: indexPath, insetedSections: insertedSections)
         let indexPathAndSection = IndexPathAndSection(insertIndexPath: insertedIndexes, section: insertedSections, deleteIndexPath: deleteIndexes, deletedSection: deletedSections)
         delegate?.updateTrackers(with: indexPathAndSection)
-        //        }
         insertedIndexes = nil
         insertedSections = nil
         deleteIndexes = nil

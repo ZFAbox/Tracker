@@ -74,6 +74,7 @@
 
 "categoryListTitle" = "Категория";
 "createCategoryButtonText" = "Добавить категорию";
+"emptyCategoryListText" = "Привычки и события можно\nобъединить по смыслу";
 
 //MARK: - TrackerTableViewController
 
