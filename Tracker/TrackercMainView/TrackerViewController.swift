@@ -254,7 +254,7 @@ final class TrackerViewController: UIViewController, UIGestureRecognizerDelegate
         }
         
         trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
-        filterButton.isHidden = !viewModel.isTrackerExists()
+        filterButton.isHidden = viewModel.isTrackersExistsForSelectedDate()
     }
     
 //MARK: - Add subview and constraints

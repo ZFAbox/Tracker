@@ -382,6 +382,30 @@ final class TrackerStore: NSObject {
         }
     }
     
+    func isTrackersExistForSelectedDay(searchedText: String, selectedDate: Date) -> Bool {
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let predicate = getPredicate(searchedText: searchedText, selectedDate: selectedDate, isFileterSelected: false, selectedFilter: "")
+        request.predicate = predicate
+        guard let trackerCoreData = try? context.fetch(request) else { return true}
+        if trackerCoreData.isEmpty {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func isPinTrackersExistForSelectedDay(searchedText: String, selectedDate: Date) -> Bool {
+        let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let predicate = getPinPredicate(searchedText: searchedText, selectedDate: selectedDate, isFileterSelected: false, selectedFilter: "")
+        request.predicate = predicate
+        guard let trackerCoreData = try? context.fetch(request) else { return true}
+        if trackerCoreData.isEmpty {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     func removeAllTrackers() {
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         guard let trackerCoreData = try? context.fetch(request) else { return }

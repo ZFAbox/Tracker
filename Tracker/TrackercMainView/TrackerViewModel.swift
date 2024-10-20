@@ -121,8 +121,13 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
     }
     
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter) && trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
-        
+        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter) &&
+        trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
+    }
+    
+    func isTrackersExistsForSelectedDate() -> Bool {
+        trackerStore.isTrackersExistForSelectedDay(searchedText: searchedText, selectedDate: selectedDate ?? DateFormatter.removeTime(date: Date())) &&
+        trackerStore.isPinTrackersExistForSelectedDay(searchedText: searchedText, selectedDate: selectedDate ?? DateFormatter.removeTime(date: Date()))
     }
     
     func completedTrackersCount(id:UUID) -> Int {

@@ -124,5 +124,4 @@ final class TrackerTypeSelectViewController: UIViewController {
             titleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             titleLable.centerXAnchor.constraint(equalTo: view.centerXAnchor)])
     }
-    
 }

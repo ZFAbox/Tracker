@@ -43,6 +43,8 @@ protocol TrackerViewModelProtocol: FilterViewControllerProtocol, TrackerStoreUpd
     
     func isVisibalteTrackersEmpty() -> Bool
     
+    func isTrackersExistsForSelectedDate() -> Bool
+    
     func completedTrackersCount(id:UUID) -> Int
     
     func isTrackerCompletedToday(id: UUID) -> Bool
@@ -209,7 +211,13 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
     }
     
     func isVisibalteTrackersEmpty() -> Bool {
-        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? Date(), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
+        trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter) &&
+        trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
+    }
+    
+    func isTrackersExistsForSelectedDate() -> Bool {
+        trackerStore.isTrackersExistForSelectedDay(searchedText: searchedText, selectedDate: selectedDate ?? DateFormatter.removeTime(date: Date())) &&
+        trackerStore.isPinTrackersExistForSelectedDay(searchedText: searchedText, selectedDate: selectedDate ?? DateFormatter.removeTime(date: Date()))
     }
     
     func completedTrackersCount(id:UUID) -> Int {
