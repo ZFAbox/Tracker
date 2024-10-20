@@ -255,6 +255,9 @@ final class TrackerViewController: UIViewController, UIGestureRecognizerDelegate
         
         trackerCollectionView.isHidden = viewModel.isVisibalteTrackersEmpty()
         filterButton.isHidden = viewModel.isTrackersExistsForSelectedDate()
+        UIView.animate(withDuration: 0.3) {
+            self.filterButton.backgroundColor = self.viewModel.isFilterStateSelected() ? .trackerPink : .trackerBlue
+        }
     }
     
 //MARK: - Add subview and constraints

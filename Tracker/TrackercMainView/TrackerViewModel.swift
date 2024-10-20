@@ -120,6 +120,10 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
         return trackerRecordStore.isCompletedTrackerBefore(id: id, date: date)
     }
     
+    func isFilterStateSelected() -> Bool {
+        selectedFilter != L10n.allTrackers
+    }
+    
     func isVisibalteTrackersEmpty() -> Bool {
         trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter) &&
         trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)

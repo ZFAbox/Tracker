@@ -41,6 +41,8 @@ protocol TrackerViewModelProtocol: FilterViewControllerProtocol, TrackerStoreUpd
     
     func isCompletedBefore(for id: UUID) -> Bool
     
+    func isFilterStateSelected() -> Bool
+    
     func isVisibalteTrackersEmpty() -> Bool
     
     func isTrackersExistsForSelectedDate() -> Bool
@@ -124,9 +126,9 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
         }
     }
     
-    var isFilterSelected: Bool = false
+    var isFilterSelected: Bool = true
     
-    var selectedFilter: String = "" {
+    var selectedFilter: String = L10n.allTrackers {
         didSet{
             guard let selectedDate = selectedDate else { return }
             updateTrackersForCurrentDate(selectedDate: selectedDate, searchedText: searchedText, selectedFilter: selectedFilter)
@@ -210,6 +212,10 @@ final class TrackerViewModelMock: TrackerViewModelProtocol, FilterViewController
         return trackerRecordStore.isCompletedTrackerBefore(id: id, date: date)
     }
     
+    func isFilterStateSelected() -> Bool {
+        selectedFilter != L10n.allTrackers
+    }
+
     func isVisibalteTrackersEmpty() -> Bool {
         trackerStore.isVisibalteTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter) &&
         trackerStore.isVisibaltePinTrackersEmpty(searchedText: searchedText, currentDate: selectedDate ?? DateFormatter.removeTime(date: Date()), isFilterSelected: isFilterSelected, selectedFilter: selectedFilter)
