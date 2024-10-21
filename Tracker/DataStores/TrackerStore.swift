@@ -426,19 +426,12 @@ final class TrackerStore: NSObject {
     }
     
     func getActiveTrackersPerDay(date: Date) -> Int {
+ 
         let weekday = DateFormatter.weekday(date: date)
         let request = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         let datePredicate = NSPredicate(format: "%K CONTAINS[n] %@", #keyPath(TrackerCoreData.schedule), weekday)
-        let trackersCreatedBeforeDate = NSPredicate(format: " %K <= %@" , #keyPath(TrackerCoreData.createDate), date as NSDate)
-        let regular = NSPredicate(format: "%K == true" , #keyPath(TrackerCoreData.isRegular))
-        let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
-        let notComppletedBeforeCurrentDate = NSPredicate(format: "Any %K >= %@ OR Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), date as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate))
-        
-        let notRegularCompletedLater = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, notComppletedBeforeCurrentDate])
-        
-        let trackersToSelect = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [regular, notRegularCompletedLater])
-        
-        let predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [trackersCreatedBeforeDate, trackersToSelect, datePredicate])
+        let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: date)
+        let predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ setAllTrackersForSelectedDate, datePredicate])
         request.predicate = predicate
         guard let trackerCoreData = try? context.fetch(request) else { return 0}
         return trackerCoreData.count
