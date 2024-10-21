@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class TrackerSupplementaryViewCell: UICollectionReusableView {
+final class TrackerSupplementaryViewCell: UICollectionReusableView {
     
     var titleLable: UILabel = {
         let titleLable = UILabel()
@@ -32,3 +32,7 @@ class TrackerSupplementaryViewCell: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+
+
+

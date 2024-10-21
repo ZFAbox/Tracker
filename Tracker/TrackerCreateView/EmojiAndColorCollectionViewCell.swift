@@ -30,6 +30,7 @@ class EmojiAndColorCollectionViewCell:UICollectionViewCell {
         super.init(frame: frame)
         addSubViews()
         setConstrains()
+        traitCollectionDidChange(.current)
     }
     
     func addSubViews(){
