@@ -175,7 +175,19 @@ final class TrackerStore: NSObject {
             let completed = NSPredicate(format: "Any %K == %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate)
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate, completed])
         } else if isFileterSelected && (selectedFilter == notCompletedTracker) {
-            let notCompletedTrackers = NSPredicate(format: "Any %K != %@ OR Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate))
+            
+            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
+            let notComppletedBeforeCurrentDate = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate))
+            
+            let notRegularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, notComppletedBeforeCurrentDate])
+            
+            let regular = NSPredicate(format: "%K == true", #keyPath(TrackerCoreData.isRegular))
+            let notCompleted = NSPredicate(format: "Any %K != %@ OR Any %K == nil" ,  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate))
+            
+            let regularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [regular, notCompleted])
+            
+            let notCompletedTrackers = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [notRegularAndNotCompleted, regularAndNotCompleted])
+            
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate, datePredicate, notCompletedTrackers])
         } else {
             let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
@@ -209,7 +221,18 @@ final class TrackerStore: NSObject {
             let completed = NSPredicate(format: "Any %K == %@",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate)
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [ predicate, datePredicate, completed])
         } else if isFileterSelected && (selectedFilter == notCompletedTracker) {
-            let notCompletedTrackers = NSPredicate(format: "Any %K != %@ OR Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate))
+            let notRegular = NSPredicate(format: "%K == false", #keyPath(TrackerCoreData.isRegular))
+            let notComppletedBeforeCurrentDate = NSPredicate(format: "Any %K == nil",  #keyPath(TrackerCoreData.trackerRecord.trackerDate))
+            
+            let notRegularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [notRegular, notComppletedBeforeCurrentDate])
+            
+            let regular = NSPredicate(format: "%K == true", #keyPath(TrackerCoreData.isRegular))
+            let notCompleted = NSPredicate(format: "Any %K != %@ OR Any %K == nil" ,  #keyPath(TrackerCoreData.trackerRecord.trackerDate), selectedDate as NSDate, #keyPath(TrackerCoreData.trackerRecord.trackerDate))
+            
+            let regularAndNotCompleted = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [regular, notCompleted])
+            
+            let notCompletedTrackers = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.or, subpredicates: [notRegularAndNotCompleted, regularAndNotCompleted])
+            
             predicate = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate, datePredicate, notCompletedTrackers])
         } else {
             let setAllTrackersForSelectedDate = setAllTrackersForSelectedDatePredicate(selectedDate: selectedDate)
