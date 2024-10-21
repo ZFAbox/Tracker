@@ -104,7 +104,6 @@ final class TrackerRecordStore{
         dates = Array(datesSet).sorted(by: { d1, d2 in
             d1 < d2
         })
-        print(dates)
         return dates
     }
     
