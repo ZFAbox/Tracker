@@ -17,7 +17,6 @@ final class TrackerCategoryStore: NSObject{
     
     private var context: NSManagedObjectContext
     private var delegate: TrackerCategoryStoreProtocol?
-    
     private var insertedIndexes: IndexPath?
     private var deletedIndexes: IndexPath?
     

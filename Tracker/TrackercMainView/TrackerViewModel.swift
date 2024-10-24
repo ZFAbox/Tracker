@@ -17,7 +17,7 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
         }
     }
     
-    var selectedDate: Date? {
+    var selectedDate: Date? = Date().removeTimeInfo {
         didSet {
             let selectedDate = selectedDate ?? DateFormatter.removeTime(date: Date())
             if (selectedFilter == L10n.trackerForToday) && (selectedDate != todayDate) {
@@ -106,13 +106,6 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
         trackerStore.objectPinCategoris(indexPath)
     }
     
-    func isCompletedTracker(for id: UUID) -> Bool {
-        guard let date = selectedDate else {
-            print("Нет даты")
-            return false }
-        return trackerRecordStore.isCompletedTrackerRecords(id: id, date: date)
-    }
-    
     func isCompletedBefore(for id: UUID) -> Bool {
         guard let date = selectedDate else {
             print("Нет даты")
@@ -137,12 +130,7 @@ final class TrackerViewModel: TrackerViewModelProtocol, FilterViewControllerProt
     func completedTrackersCount(id:UUID) -> Int {
         trackerRecordStore.completedTrackersCount(id: id)
     }
-    
-    func isTrackerCompletedToday(id: UUID) -> Bool{
-        let isTrackerCompleted = isCompletedTracker(for: id)
-        return isTrackerCompleted
-    }
-    
+
     func headerTitle(for indexPath: IndexPath) -> String {
         trackerStore.header(indexPath)
     }
@@ -175,10 +163,10 @@ extension TrackerViewModel: TrackerStoreUpdateDelegateProtocol {
 
 extension TrackerViewModel: TrackerCollectionViewCellProtocol {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
-        guard let date = selectedDate else {
+        guard let selectedDate = selectedDate else {
             assertionFailure("Нет даты")
             return}
-        let trackerRecord = TrackerRecord(trackerId: id, trackerDate: date)
+        let trackerRecord = TrackerRecord(trackerId: id, trackerDate: selectedDate)
         trackerRecordStore.saveTrackerRecord(trackerRecord: trackerRecord)
     }
     
@@ -186,7 +174,18 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
         guard let date = selectedDate else {
             assertionFailure("Нет даты")
             return}
-        trackerRecordStore.deleteTrackerRecord(id: id, currentDate: date)
+        trackerRecordStore.deleteTrackerRecord(id: id, selectedDate: date)
+    }
+    
+    func getAllRecords() -> [TrackerRecord] {
+        trackerRecordStore.getAllRecords()
+    }
+    
+    func isTrackerCompletedToday(id: UUID) -> Bool{
+        guard let date = selectedDate else {
+            print("Нет даты")
+            return false }
+        return trackerRecordStore.isCompletedTrackerRecords(id: id, selectedDate: date)
     }
     
     func model(indexPath: IndexPath) -> TrackerCellModel? {
@@ -202,7 +201,8 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
             currentDate: selectedDate,
             isCompletedBefore: isCompletedBefore,
             isPined: false,
-            metrica: metrica)
+            metrica: metrica,
+            delegate: self)
         return model
     }
     
@@ -219,7 +219,8 @@ extension TrackerViewModel: TrackerCollectionViewCellProtocol {
             currentDate: selectedDate,
         isCompletedBefore: isCompletedBefore,
             isPined: true,
-            metrica: metrica)
+            metrica: metrica,
+            delegate: self)
         return model
     }
     

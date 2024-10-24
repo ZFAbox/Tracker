@@ -16,4 +16,5 @@ struct TrackerCellModel {
     let isCompletedBefore: Bool
     let isPined: Bool
     let metrica: Metrica
+    let delegate: TrackerCollectionViewCellProtocol
 }

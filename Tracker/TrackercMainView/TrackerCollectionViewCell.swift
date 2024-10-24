@@ -11,16 +11,19 @@ import UIKit
 protocol TrackerCollectionViewCellProtocol: AnyObject {
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
+    func getAllRecords() -> [TrackerRecord]
+    func isTrackerCompletedToday(id: UUID) -> Bool
 }
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     
     var count = 0
-    weak var delegate: TrackerCollectionViewCellProtocol?
+    var delegate: TrackerCollectionViewCellProtocol?
     var tracker: Tracker?
     var trackerId: UUID?
     var completedDays: Int = 0
     var indexPath: IndexPath?
+    var isCompletedToday: Bool = false
     var isCompletedBefore: Bool = false
     var metrica: Metrica?
     
@@ -95,7 +98,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return dayMarkButton
     }()
     
-    var isCompletedToday: Bool = false
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -112,8 +115,9 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     func configure(with model: TrackerCellModel) {
         let tracker = model.tracker
-        let currentDate = model.currentDate
+        let selctedDate = model.currentDate
         self.isCompletedToday = model.isCompletedToday
+        self.delegate = model.delegate
         self.isCompletedBefore = model.isCompletedBefore
         self.trackerId = tracker.trackerId
         self.completedDays = model.completedDays
@@ -135,31 +139,37 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             trackerUndone()
         }
         
-        if let selectedDate = currentDate {
+        if let selectedDate = selctedDate {
             dayMarkButton.isEnabled = selectedDate > Date() ? false : true
         }
     }
     
     @objc func buttonTapped(){
+//        print("Записи до нажатия на кнопку \(String(describing: delegate?.getAllRecords()))")
         if let metrica = metrica {
             metrica.report(event: Event.click, screen: Screen.main, item: Item.completeTracker)
         }
+        guard let delegate = delegate else { return }
         if isCompletedToday {
             UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
-                self.delegate?.uncompleteTracker(id: trackerId, at: indexPath)
+                delegate.uncompleteTracker(id: trackerId, at: indexPath)
+//                print("Удаление записи \(String(describing: delegate.getAllRecords()))")
                 self.completedDays -= 1
                 self.trackerUndone()
             }
         }else {
             UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
-                self.delegate?.completeTracker(id: trackerId, at: indexPath)
+                delegate.completeTracker(id: trackerId, at: indexPath)
+//                print("Добавение записи записи \(String(describing: delegate.getAllRecords()))")
                 self.completedDays += 1
                 self.trackerDone()
             }
         }
-        isCompletedToday = !isCompletedToday
+        
+        self.isCompletedToday = delegate.isTrackerCompletedToday(id: self.trackerId ?? UUID())
+//        print (self.isCompletedToday)
     }
     
     func trackerDone() {

@@ -16,7 +16,7 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
             isCreateButtonEnable()
         }
     }
-    private var regular: Bool
+    private var regular: Bool = true
     private var trackerTypeSelectViewController: TrackerTypeSelectViewController
     var trackerSchedule: [String] = [] {
         didSet {
@@ -288,7 +288,8 @@ class RegularTrackerCreateViewController: UIViewController, ScheduleViewControll
             isRegular: regular,
             createDate: Date().removeTimeInfo ?? Date())
         
-        createButton.backgroundColor = .trackerBlack
+        print(tracker)
+//        createButton.backgroundColor = .trackerBlack
         delegate?.createTracker(category: category, tracker: tracker)
         self.dismiss(animated: false)
         trackerTypeSelectViewController.dismiss(animated: true)

@@ -32,28 +32,22 @@ final class TrackerRecordStore{
     }
     
     func deleteTrackerRecord(id: UUID, selectedDate: Date) {
+        let request1 = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        request1.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerCoreData.trackerRecord.trackerId),  id as NSUUID, )
+        guard let tracker = try? context.fetch(request1).first else { return }
+        tracker.trackerRecord.re
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
         request.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), selectedDate as NSDate)
         guard let recordsData = try? context.fetch(request).first else { return }
+ 
+        print (recordsData)
         context.delete(recordsData)
         saveTrackerRecord()
     }
     
-    func getAllRecords() -> [TrackerRecord] {
-        var trackerRecords: [TrackerRecord] = []
-        let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-        guard let trackerRecordsData = try? context.fetch(request) else { return []}
-        trackerRecordsData.forEach { record in
-            let trackerRecord = TrackerRecord(trackerId: record.trackerId ?? UUID(),
-                                              trackerDate: record.trackerDate ?? DateFormatter.removeTime(date: Date()))
-            trackerRecords.append(trackerRecord)
-        }
-        return trackerRecords
-    }
-
     func isCompletedTrackerRecords(id: UUID, selectedDate: Date) -> Bool{
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
-        request.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), selectedDate as NSDate)
+        request.predicate = NSPredicate(format: "%K == %@ AND %K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID, #keyPath(TrackerRecordCoreData.trackerDate), DateFormatter.removeTime(date: selectedDate) as NSDate)
         guard let recordsData = try? context.fetch(request).first else { return false }
             return true
     }
@@ -68,9 +62,11 @@ final class TrackerRecordStore{
     
     func completedTrackersCount(id:UUID) -> Int {
         let request = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        request.resultType = .countResultType
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerRecordCoreData.trackerId), id as NSUUID)
-        guard let trackerRecordsData = try? context.fetch(request) else { return 0 }
-        return trackerRecordsData.count
+        if let count = try? context.execute(request) as? NSAsynchronousFetchResult<NSFetchRequestResult> {
+            return count.finalResult?.first as! Int
+        } else { return 0 }
     }
     
     func calculateTrackersCompleted() -> Int {
@@ -118,7 +114,6 @@ final class TrackerRecordStore{
         do{
             try context.save()
         } catch {
-            preconditionFailure("Запись не сохранилась")
             print("Ошибка сохранения")
         }
     }
