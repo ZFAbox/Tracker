@@ -145,7 +145,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     }
     
     @objc func buttonTapped(){
-//        print("Записи до нажатия на кнопку \(String(describing: delegate?.getAllRecords()))")
         if let metrica = metrica {
             metrica.report(event: Event.click, screen: Screen.main, item: Item.completeTracker)
         }
@@ -154,7 +153,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
                 delegate.uncompleteTracker(id: trackerId, at: indexPath)
-//                print("Удаление записи \(String(describing: delegate.getAllRecords()))")
                 self.completedDays -= 1
                 self.trackerUndone()
             }
@@ -162,14 +160,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
                 delegate.completeTracker(id: trackerId, at: indexPath)
-//                print("Добавение записи записи \(String(describing: delegate.getAllRecords()))")
                 self.completedDays += 1
                 self.trackerDone()
             }
         }
-        
         self.isCompletedToday = delegate.isTrackerCompletedToday(id: self.trackerId ?? UUID())
-//        print (self.isCompletedToday)
     }
     
     func trackerDone() {
