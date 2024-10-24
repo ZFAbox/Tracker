@@ -11,18 +11,21 @@ import UIKit
 protocol TrackerCollectionViewCellProtocol: AnyObject {
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
+    func getAllRecords() -> [TrackerRecord]
+    func isTrackerCompletedToday(id: UUID) -> Bool
 }
 
-class TrackerCollectionViewCell: UICollectionViewCell {
+final class TrackerCollectionViewCell: UICollectionViewCell {
     
     var count = 0
-    
-    weak var delegate: TrackerCollectionViewCellProtocol?
-    
+    var delegate: TrackerCollectionViewCellProtocol?
     var tracker: Tracker?
     var trackerId: UUID?
     var completedDays: Int = 0
     var indexPath: IndexPath?
+    var isCompletedToday: Bool = false
+    var isCompletedBefore: Bool = false
+    var metrica: Metrica?
     
     let cardView: UIView = {
         let cardView = UIView()
@@ -55,11 +58,21 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return emoji
     }()
     
+    let pinImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        let image = Asset.Images.pin.image
+        imageView.image = image
+        imageView.tintColor = .trackerWhite
+        return imageView
+    }()
+    
     let trackerNameLable: UILabel = {
         let trackerNameLable = UILabel()
         trackerNameLable.translatesAutoresizingMaskIntoConstraints = false
         trackerNameLable.text = "Бегать по утрам"
         trackerNameLable.font = UIFont(name: "SFProDisplay-Medium", size: 12)
+        trackerNameLable.numberOfLines = 2
         trackerNameLable.textColor = .trackerWhite
         return trackerNameLable
     }()
@@ -73,33 +86,45 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         return dayMarkLable
     }()
     
-    
     let dayMarkButton: UIButton = {
         let dayMarkButton = UIButton(type: .system)
         dayMarkButton.translatesAutoresizingMaskIntoConstraints = false
         dayMarkButton.backgroundColor = .trackerGreen
         dayMarkButton.layer.cornerRadius = 17
-        let buttonImage = UIImage(named: "Tracker Plus")
+        let buttonImage = Asset.Images.trackerPlus.image
         dayMarkButton.setImage(buttonImage, for: .normal)
-        dayMarkButton.tintColor = .trackerWhite
+        dayMarkButton.tintColor = .applicationBackgroundColor
         dayMarkButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         return dayMarkButton
     }()
     
-    var isCompletedToday: Bool = false
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubviews()
         setConstrains()
+        traitCollectionDidChange(.current)
     }
     
-    func configure(with tracker: Tracker, isCompletedToday: Bool, indexPath: IndexPath, completedDays: Int, currentDate: Date?) {
-        
-        self.isCompletedToday = isCompletedToday
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        let isDarkMode = traitCollection.userInterfaceStyle == .dark
+        dayMarkLable.textColor = isDarkMode ? .trackerWhite : .trackerBlack
+    }
+    
+    func configure(with model: TrackerCellModel) {
+        let tracker = model.tracker
+        let selctedDate = model.currentDate
+        self.isCompletedToday = model.isCompletedToday
+        self.delegate = model.delegate
+        self.isCompletedBefore = model.isCompletedBefore
         self.trackerId = tracker.trackerId
-        self.completedDays = completedDays
-        self.indexPath = indexPath
+        self.completedDays = model.completedDays
+        self.indexPath = model.indexPath
+        self.metrica = model.metrica
+        
+        pinImageView.isHidden =  model.isPined ? false : true
         
         let color = tracker.color
         trackerView.backgroundColor = color
@@ -113,48 +138,53 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         } else {
             trackerUndone()
         }
-        if let date = currentDate {
-            if date > Date(){
-                dayMarkButton.isEnabled = false
-            } else {
-                dayMarkButton.isEnabled = true
-            }
+        
+        if let selectedDate = selctedDate {
+            dayMarkButton.isEnabled = selectedDate > Date() ? false : true
         }
     }
     
     @objc func buttonTapped(){
+        if let metrica = metrica {
+            metrica.report(event: Event.click, screen: Screen.main, item: Item.completeTracker)
+        }
+        guard let delegate = delegate else { return }
         if isCompletedToday {
-            UIView.animate(withDuration: 0.2, delay: 0) {
+            UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
-                self.delegate?.uncompleteTracker(id: trackerId, at: indexPath)
+                delegate.uncompleteTracker(id: trackerId, at: indexPath)
                 self.completedDays -= 1
                 self.trackerUndone()
-
             }
-           
         }else {
-            UIView.animate(withDuration: 0.2, delay: 0) {
+            UIView.animate(withDuration: 0.2) {
                 guard let trackerId = self.trackerId, let indexPath = self.indexPath else { return }
-                self.delegate?.completeTracker(id: trackerId, at: indexPath)
+                delegate.completeTracker(id: trackerId, at: indexPath)
                 self.completedDays += 1
                 self.trackerDone()
             }
         }
-        isCompletedToday = !isCompletedToday
+        self.isCompletedToday = delegate.isTrackerCompletedToday(id: self.trackerId ?? UUID())
     }
     
     func trackerDone() {
-        let buttonImage = UIImage(named: "Tracker Done")
+        let buttonImage = Asset.Images.trackerDone.image
         self.dayMarkButton.layer.opacity = 0.7
         self.dayMarkButton.setImage(buttonImage, for: .normal)
-        self.dayMarkLable.text = completedDays.daysEnding()
+        let dayText = L10n.numberOfDays(self.completedDays)
+        self.dayMarkLable.text = dayText
     }
     
     func trackerUndone() {
-        let buttonImage = UIImage(named: "Tracker Plus")
+        let buttonImage = Asset.Images.trackerPlus.image
         self.dayMarkButton.layer.opacity = 1
         self.dayMarkButton.setImage(buttonImage, for: .normal)
-        self.dayMarkLable.text = completedDays.daysEnding()
+        let dayText = L10n.numberOfDays(self.completedDays)
+        self.dayMarkLable.text = dayText
+    }
+    
+    func setSelectedView() -> UIView {
+        return trackerView
     }
     
     func addSubviews(){
@@ -162,6 +192,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         cardView.addSubview(trackerView)
         trackerView.addSubview(emojiView)
         trackerView.addSubview(emoji)
+        trackerView.addSubview(pinImageView)
         trackerView.addSubview(trackerNameLable)
         cardView.addSubview(dayMarkLable)
         self.addSubview(dayMarkButton)
@@ -172,6 +203,7 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         setTrackerViewConstrains()
         setEmojiViewConstrains()
         setEmojiConstrains()
+        setPinCnstraints()
         setTrackerNameConstrains()
         setDayMarkLable()
         setDayMarkButton()
@@ -185,13 +217,12 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             cardView.bottomAnchor.constraint(equalTo: self.bottomAnchor)])
     }
     
-
     func setTrackerViewConstrains(){
         NSLayoutConstraint.activate([
-        trackerView.topAnchor.constraint(equalTo: cardView.topAnchor),
-        trackerView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
-        trackerView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
-        trackerView.heightAnchor.constraint(equalToConstant: 90)
+            trackerView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            trackerView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            trackerView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            trackerView.heightAnchor.constraint(equalToConstant: 90)
         ])
     }
     
@@ -208,6 +239,15 @@ class TrackerCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             emoji.centerXAnchor.constraint(equalTo: emojiView.centerXAnchor),
             emoji.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor)
+        ])
+    }
+    
+    func setPinCnstraints() {
+        NSLayoutConstraint.activate([
+            pinImageView.topAnchor.constraint(equalTo: trackerView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: trackerView.trailingAnchor, constant: -4),
+            pinImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinImageView.widthAnchor.constraint(equalToConstant: 24)
         ])
     }
     
@@ -232,7 +272,6 @@ class TrackerCollectionViewCell: UICollectionViewCell {
             dayMarkButton.heightAnchor.constraint(equalToConstant: 34),
             dayMarkButton.widthAnchor.constraint(equalToConstant: 34)
         ])
-
     }
     
     required init?(coder: NSCoder) {

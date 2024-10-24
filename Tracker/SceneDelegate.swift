@@ -2,7 +2,7 @@
 //  SceneDelegate.swift
 //  Tracker
 //
-//  Created by Федор Завьялов on 31.05.2024.
+//  Created by Fedor on 11.10.2024.
 //
 
 import UIKit
@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UINavigationController(rootViewController: TabBarViewController())
+        window?.rootViewController = TrackerPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         window?.makeKeyAndVisible()
     }
 
@@ -48,7 +48,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-//        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
 
